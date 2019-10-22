@@ -1,24 +1,37 @@
-This document has been prepared to help you approaching Latex as a formatting tool for your Travlendar+ deliverables. This document suggests you a possible style and format for your deliverables and contains information about basic formatting commands in Latex. A good guide to Latex is available here \href{https://tobi.oetiker.ch/lshort/lshort.pdf}{https://tobi.oetiker.ch/lshort/lshort.pdf}, but you can find many other good references on the web. 
+\subsection{Purpose}
 
-Writing in Latex means writing textual files having a \texttt{.tex} extension and exploiting the Latex markup commands for formatting purposes. Your files then need to be compiled using the Latex compiler. Similarly to programming languages, you can find many editors that help you writing and compiling your latex code. Here \href{https://beebom.com/best-latex-editors/}{https://beebom.com/best-latex-editors/} you have a short oviewview of some of them. Feel free to choose the one you like.  
+The purpose of this document is to provide a description of the SafeStreets system. A detailed explanation of the proposed solution is given, along with the requirements and assumptions made to achieve it.
 
-Include a subsection for each of the following items\footnote{By the way, what follows is the structure of an itemized list in Latex.}:
+SafeStreets is a crowd-sourced application that	 intends to provide users with the possibility to notify authorities when traffic violations occur, and in particular	 parking violations. With the amount of traffic we are seeing nowadays, it is hard to maintain order throughout the entire city, so the help of the community is more than welcome.
+The application allows users to report violations by sending pictures, along with important information, like the date, time and position.
+Examples of violations are vehicles parked in the middle of bike lanes or in places reserved for people with disabilities, double parking, and so on.
+The system also allows both end users and authorities to access the information gathered, with different levels of visibility depending on the roles.
+With the information provided, it is then possible for the municipality to integrate it with their traffic ticket system and automatically issue the corresponding ticket to a reported offender. This will accelerate the whole process, saving time and money to the state and could eventually result in a decrease in violations.
+At the same time, the ticketing system can provide information to SafeStreets, which presents the possibility of building statistics such as the most egregious offenders and analyse the effect of the application by looking at the trend in violations.
+
+\subsection{Scope}
+
+As already mentioned, the SafeStreets system is designed to provide users with the ability to report traffic violations through an application. In order to achieve this, the user needs to take and upload photos of the scene, which captures the license plate of the vehicle committing the violation and complete a form with information such as the license plate number and the type of violation. This data, along with metadata retrieved from the user’s device (geographical position, date and time) is then sent to the system.
+
+\subsubsection{Goals}
 \begin{itemize}
 \item
-Purpose: here we include the goals of the project
+[G1] - The user is able to report a traffic violation to authorities.
 \item
-Scope: here we include an analysis of the world and of the shared phenomena
+[G2] - License plates can be recognized from the pictures of the violation report.
 \item
-Definitions, Acronyms, Abbreviations
+[G3] - Roles with different levels of permission are assigned to users and authorities.
 \item
-Revision history
+[G4] - The information gathered from the reports is provided to users and authorities according to their role.
 \item
-Reference Documents 
+[G5] - The system must protect the chain of custody of the reports. 
 \item
-Document Structure
+[G6] - Reports that had their integrity compromised and malicious reports will be detected and discarded.
+\item
+[G7] - Information about issued tickets provided by the municipality system can be cross referenced with the SafeStreets database and analysed.
 \end{itemize}
-Below you see how to define the header for a subsection.
-\subsection{Scope}
-... Here you see a subsubsection
-\subsubsection{World Phenomena}
-%what you write here is a comment that is not shown in the final text
+
+\subsubsection{Definitions, Acronyms, Abbreviations}
+\subsubsection{Revision history}
+\subsubsection{Reference documents}
+\subsubsection{Document structure}
