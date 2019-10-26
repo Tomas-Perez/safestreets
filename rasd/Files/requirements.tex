@@ -1,5 +1,51 @@
 \subsection{External interface requirements}
 \subsubsection{User interfaces}
+The following mockups show an approximation of the mobile application.
+
+\setlength{\intextsep}{0pt plus \textheight minus 10pt}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{.4\textwidth}
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/sign-in.png}
+    \caption{\label{fig:class-general}Mockup - Sign in.}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/sign-up.png}
+    \caption{\label{fig:class-general}Mockup - Sign up.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{.4\textwidth}
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/home.png}
+    \caption{\label{fig:class-general}Mockup - Home.}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/photo-review.png}
+    \caption{\label{fig:class-general}Mockup - Photo review.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{.4\textwidth}
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/report-violation.png}
+    \caption{\label{fig:class-general}Mockup - Report violation.}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/reports-map.png}
+    \caption{\label{fig:class-general}Mockup - Reports map.}
+\end{minipage}
+\end{figure}
+
 \subsubsection{Hardware interfaces}
 \subsubsection{Software interfaces}
 \begin{itemize}
@@ -167,7 +213,7 @@ Actor           & User
 Entry condition &
 The application is running.
 
-The user is signed up.
+The user is signed in.
 
 The user is in the home screen.
 \\ \hline
@@ -208,7 +254,7 @@ Actor           & User
 Entry condition &
 The application is running.
 
-The user is signed up.
+The user is signed in.
 
 The user is in the home screen.
 \\ \hline
@@ -226,6 +272,44 @@ Exit condition  &
 \\ \hline
 Exceptions      &
     - No reports matching the filter were found. The system shows the empty map.
+\\ \hline
+\end{tabular}
+\end{table}
+
+% CASE 5: REVIEW PHOTO 
+\begin{table}[H]
+\begin{tabular}{|p{0.17\linewidth}|p{0.77\linewidth}|}
+\hline
+Name            & Review photo
+\\ \hline
+
+Actor           & User
+\\ \hline
+
+Entry condition &
+The application is running.
+
+The user is signed in.
+
+The user is in the home screen.
+\\ \hline
+Event flow      & 
+    1. The user presses the review photo button.
+
+    2. The user fills the “license plate” field.
+
+    3. The user presses the “confirm” button.
+
+    4. The system saves the review.
+\\ \hline
+Exit condition  & 
+    - The review is saved in the system.
+
+    - The system shows another photo to review.
+\\ \hline
+Exceptions      &
+    - The user did not fill the “license plate” field. The system marks the empty field for the user to fill.
+    - The user presses the “The photo is not clear” button. The system shows another photo to review.
 \\ \hline
 \end{tabular}
 \end{table}
