@@ -11,27 +11,69 @@ At the same time, the ticketing system can provide information to SafeStreets, w
 
 \subsection{Scope}
 
+\subsubsection{General purpose}
+
 As already mentioned, the SafeStreets system is designed to provide users with the ability to report traffic violations through an application. In order to achieve this, the user needs to take and upload photos of the scene, which captures the license plate of the vehicle committing the violation and complete a form with information such as the license plate number and the type of violation. This data, along with metadata retrieved from the user’s device (geographical position, date and time) is then sent to the system.
+
+\subsubsection{World and Machine phenomena}
+To mark the boundaries of the system, here we denote:
+    \begin{itemize}
+        \item The world phenomena which concern the system (the machine).
+        \item The phenomena internal to the machine from a high level point of view.
+        \item Shared phenomena that cross from the world to the machine or vice versa.
+    \end{itemize}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{10cm}|c|c|}
+    \hline
+    \textbf{Phenomenon} & \textbf{Shared} & \textbf{Controlled by} \\ \hline
+    A person commits a traffic violation & N & World \\ \hline
+    User spots a traffic violation & N & World \\ \hline
+    User logs in & Y & World \\ \hline
+    User fills a report form & Y & World \\ \hline
+    User takes pictures of the traffic violation & Y & World \\ \hline
+    User submits report & Y & World \\ \hline
+    Machine analyzes the pictures to find a license plate & N & Machine \\ \hline
+    Machine accepts the submitted report & Y & Machine \\ \hline
+    Machine rejects the submitted report & Y & Machine \\ \hline
+    User wants to find information about traffic violations & N & World \\ \hline
+    User requests report information in a specific area and time & Y & World \\ \hline
+    Machine receives the request and filters its stored reports according to the query & N & Machine \\ \hline
+    Machine answers the request for information & Y & Machine \\ \hline
+    Authority uses report information to generate traffic tickets & N & World \\ \hline
+    Machine requests information about traffic tickets to an external traffic ticket system & Y & Machine \\ \hline
+    Traffic ticket system responds to the information request & Y & World \\ \hline
+    Machine cross references its stored report information with the traffic ticket system response and analyses it & N & Machine \\ \hline
+    \end{tabular}
+    \caption{\label{tbl} World and Machine phenomena}
+    \end{table}
 
 \subsubsection{Goals}
 \begin{itemize}
 \item
 [G1] - The user is able to report a traffic violation to authorities.
 \item
-[G2] - License plates can be recognized from the pictures of the violation report.
+[G2] - The user is able to visualize reports in a specified area and time.
 \item
-[G3] - Roles with different levels of permission are assigned to users and authorities.
+[G3] - It is possible to query report information in an easily parsable format to allow for data analysis.
 \item
-[G4] - The information gathered from the reports is provided to users and authorities according to their role.
+[G4] - Only authorities are able to access report pictures and license plates.
 \item
 [G5] - The system must protect the chain of custody of the reports. 
 \item
-[G6] - Reports that had their integrity compromised and malicious reports will be detected and discarded.
+[G6] - Compromised reports are detected and discarded.
 \item
 [G7] - Information about issued tickets provided by the municipality system can be cross referenced with the SafeStreets database and analysed.
 \end{itemize}
 
-\subsubsection{Definitions, Acronyms, Abbreviations}
+\subsection{Definitions, Acronyms, Abbreviations}
+\subsubsection{Definitions}
+\begin{itemize}
+    \item Compromised report: a report that has been modified by an unauthorized agent outside the system boundaries.
+    \item Authority: a local agency whose purpose is, as indicated by the current law, to enforce traffic rules. For example: the police.      
+\end{itemize}
+
 \subsubsection{Revision history}
 \subsubsection{Reference documents}
 \subsubsection{Document structure}

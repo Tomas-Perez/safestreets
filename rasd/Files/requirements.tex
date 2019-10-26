@@ -149,9 +149,9 @@ Event flow      &
 %\end{tabular}
 \\ \hline
 Exit condition  & 
-The user is successfully registered in the system.
+ - The user is successfully registered in the system.
 
-The user is redirected to the login screen.
+ - The user is redirected to the login screen.
 \\ \hline
 Exceptions      &
     - The user is already registered in the system. The system warns the user that the email is already in use. 
@@ -211,14 +211,16 @@ Actor           & User
 \\ \hline
 
 Entry condition &
-The application is running.
+    - The application is running.
 
-The user is signed in.
+    - The user is signed in.
 
-The user is in the home screen.
+    - The user is in the home screen.
+
+    - The user’s GPS is active.
 \\ \hline
 Event flow      & 
-    1. The user presses the “Submit report” button.
+    1. The user presses the “Report a violation” button.
 
     2. The user fills the fields with the required data.
 
@@ -226,9 +228,17 @@ Event flow      &
 
     4. The user takes a photo of the vehicle committing the violation.
 
-    5. The user presses the “Confirm” button
+    5. The user repeats steps 3 and 4 as desired until the amount of photos reaches the limit.
+
+    6. The user presses the “Confirm” button.
+
+    7. The system prompts the user to select a photo where the license plate is clearly identifiable.
+
+    8. The user selects a photo.
+
+    9. The user presses the “Confirm” button.
     
-    6. The system submits the report
+    10. The system submits the report
 \\ \hline
 Exit condition  & 
     - The report is successfully submitted.
@@ -252,11 +262,11 @@ Actor           & User
 \\ \hline
 
 Entry condition &
-The application is running.
+    - The application is running.
 
-The user is signed in.
+    - The user is signed in.
 
-The user is in the home screen.
+    - The user is in the home screen.
 \\ \hline
 Event flow      & 
     1. The user presses the “Reports map” button.
@@ -287,11 +297,11 @@ Actor           & User
 \\ \hline
 
 Entry condition &
-The application is running.
+    - The application is running.
 
-The user is signed in.
+    - The user is signed in.
 
-The user is in the home screen.
+    - The user is in the home screen.
 \\ \hline
 Event flow      & 
     1. The user presses the review photo button.
@@ -322,7 +332,18 @@ Exceptions      &
 
 \subsection{Software system attributes}
 \subsubsection{Reliability}
+The application is expected to run continuously with no downtime. But given that the system is by no means critical to any of its users, exceptions to this requirement are tolerated. In terms of stored data, the system is required to be fault tolerant, which means that the data needs to be replicated and stored in more than one location.
+
 \subsubsection{Availability}
+Although minimal downtime is tolerated, the system is expected to be available 99.9\% of the time. Because of this, some redundancy is to be provided in the application servers.
+
 \subsubsection{Security}
+The system manages sensitive user data, which requires confidentiality. Information like passwords is encrypted before being stored in the database.
+Measures are to be taken for the protection of servers and databases from both external attacks and hardware malfunctions.
+
+
 \subsubsection{Maintainability}
-\subsubsection{Portability}
+The application is meant to be continuously worked and improved upon, possibly by different teams. This means that good design and documentation are required to facilitate its maintainability.
+
+\subsubsection{Interoperability}
+The system both utilizes services provided by other systems and acts as a service provider. It needs to be compliant with standards for information exchange between systems and provide a clear interface for external users.

@@ -1,6 +1,3 @@
-%Here is the command to refer to another element (section, figure, table, ...) in the document: \emph{As discussed in Section~\ref{sect:overview} and as shown in Figure~\ref{fig:class-general}, ...}. Here is how to introduce a bibliographic citation~\cite{DAM}. Bibliographic references should be included in a \texttt{.bib} file. 
-%Table generation is a bit complicated in Latex. You will soon become proficient, but to start you can rely on tools or external services. See for instance this \href{https://www.tablesgenerator.com}{https://www.tablesgenerator.com}. 
-
 \subsection{Product perspective}
 
 As for the SafeStreets system, the domain model is described in the diagram shown in Figure~\ref{fig:class-general}. Note that the diagram is not a complete description of the system, but rather a simplified version for easier understanding.
@@ -26,11 +23,11 @@ As observed in the diagram, for submitting a report, the user is first required 
 The functionality of the system can be divided into three groups. In the following section, these functions are listed and explained, taking into account the already specified goals of the system.
 
 \subsubsection{Violation report}
-The reporting of violations is the main functionality of the system. It allows its registered users to submit a traffic violation report. The user is required to provide data, such as a picture of the violation, the license plate of the vehicle committing the violation and the type of violation. On top of this information, the mobile application will provide the system with metadata which includes the gps location, date and time of the report.
+The reporting of violations is the main functionality of the system. It allows its registered users to submit a traffic violation report. The user is required to provide data, such as pictures of the violation, the license plate of the vehicle committing the violation and the type of violation. On top of this information, the mobile application will provide the system with metadata which includes the gps location, date and time of the report.
 After the submission, the system analyses the provided information, checking its integrity. If the report is considered invalid or to have been compromised, it is discarded and the user is flagged as not trustworthy. Otherwise, the report is saved and made available to the rest of the system.
 
 \subsubsection{Image analysis}
-In order to confirm the validity of a report, the system performs an analysis of the submitted image. The picture is expected to show the vehicle committing the violation along with a clear view of its license plate. The analysis searches the image for this information and matches the detected license plate with the one provided in the report.
+In order to confirm the validity of a report, the system performs an analysis of the submitted images. The pictures are expected to show the vehicle committing the violation, with at least one of them providing a clear view of its license plate. The analysis searches the images for this information and matches the detected license plate with the one provided by the user in the report.
 
 \subsubsection{Data querying}
 Gathered information by SafeStreets can be accessed by all users. There are two ways in which the data can be accessed, via the mobile application or through the public API.
