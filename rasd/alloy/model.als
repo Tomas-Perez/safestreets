@@ -6,6 +6,8 @@ sig AnalyzedPhoto {
 	detected: set LicensePlate
 }
 
+// Repeating the image analysis over a photo gives the same result
+// There cannot be two analysis of the same photo with a different set of detected license plates
 fact ImageAnalysisAlwaysReturnsTheSameResult {
 	all p, p': AnalyzedPhoto | p.photo = p'.photo implies p.detected = p'.detected
 }
@@ -45,8 +47,7 @@ sig NoLicensePlateReport extends AnalyzedReport {} {
 }
 
 // Report definitions do not overlap, meaning that a given Submission 
-// can only be classified under one of the established definitions
-
+// can be classified under only one of the established definitions
 assert ReportDefinitionsAreDisjointed {
 	ValidReport.submission & AmbiguousPictureReport.submission = none
 	ValidReport.submission & NoLicensePlateReport.submission = none
