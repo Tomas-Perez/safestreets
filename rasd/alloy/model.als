@@ -22,36 +22,95 @@ sig ReportSubmission {
 	licensePlatePhoto in photos
 }
 
-abstract sig AnalyzedReport {
+fact NoDanglingData {
+	Location = ReportSubmission.location
+	Time = ReportSubmission.time
+	Photo = ReportSubmission.photos
+	LicensePlate = AnalyzedPhoto.detected + ReportSubmission.licensePlate
+}
+
+sig AnalyzedReport {
 	submission: ReportSubmission,
 	analyzedPhoto: AnalyzedPhoto
 } {
 	analyzedPhoto.photo = submission.licensePlatePhoto
 }
 
-sig ValidReport extends AnalyzedReport {} {
+pred reportIsValid [r: AnalyzedReport]  {
 	(
-		some submission.licensePlate and
-		submission.licensePlate in analyzedPhoto.detected
-	) or 
-		one analyzedPhoto.detected
+		one r.submission.licensePlate and
+		r.submission.licensePlate in r.analyzedPhoto.detected
+	) 
+	or 
+	(
+		one r.analyzedPhoto.detected and 
+		no r.submission.licensePlate
+	)
 }
 
-sig AmbiguousPictureReport extends AnalyzedReport {} {
-	no submission.licensePlate
-	#analyzedPhoto.detected > 1
+pred reportHasAmbiguousPicture [r: AnalyzedReport] {
+	no r.submission.licensePlate
+	#r.analyzedPhoto.detected > 1
 }
 
-sig NoLicensePlateReport extends AnalyzedReport {} {
-	no analyzedPhoto.detected
+pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
+	no r.analyzedPhoto.detected
+}
+
+pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
+	some r.analyzedPhoto.detected
+	! r.submission.licensePlate in r.analyzedPhoto.detected
 }
 
 // Report definitions do not overlap, meaning that a given Submission 
 // can be classified under only one of the established definitions
 assert ReportDefinitionsAreDisjointed {
-	no ValidReport.submission & AmbiguousPictureReport.submission
-	no ValidReport.submission & NoLicensePlateReport.submission
-	no NoLicensePlateReport.submission & AmbiguousPictureReport.submission
+	all r: AnalyzedReport | 
+		!(reportIsValid[r] and reportHasAmbiguousPicture[r]) and
+		!(reportIsValid[r] and reportHasNonMatchingLicensePlates[r]) and
+		!(reportIsValid[r] and reportHasNoDetectedLicensePlate[r]) and
+		!(reportHasAmbiguousPicture[r] and reportHasNoDetectedLicensePlate[r]) and
+		!(reportHasAmbiguousPicture[r] and reportHasNonMatchingLicensePlates[r]) and
+		!(reportHasNonMatchingLicensePlates[r] and reportHasNoDetectedLicensePlate[r])
+}
+
+// Ensure that all possible variations of a report are covered by our established definitions
+assert AllReportCasesAreCovered {
+	no r: AnalyzedReport | 
+		!reportIsValid[r] and 
+		!reportHasAmbiguousPicture[r] and 
+		!reportHasNoDetectedLicensePlate[r] and
+		!reportHasNonMatchingLicensePlates[r]
 }
 
 check ReportDefinitionsAreDisjointed for 4
+check AllReportCasesAreCovered for 4
+
+pred ValidReportExists {
+	some r: AnalyzedReport | reportIsValid[r]
+}
+
+run ValidReportExists for 1
+
+pred AmbiguousReportExists {
+	some r: AnalyzedReport | reportHasAmbiguousPicture[r]
+}
+
+run AmbiguousReportExists for 1 but 2 LicensePlate
+
+pred NoDetectedLicensePlateReportExists {
+	some r: AnalyzedReport | reportHasNoDetectedLicensePlate[r]
+}
+
+run NoDetectedLicensePlateReportExists for 1
+
+pred NonMatchingLicensePlateReportExists {
+	some r: AnalyzedReport | reportHasNonMatchingLicensePlates[r]
+}
+
+run NonMatchingLicensePlateReportExists for 1 but 2 LicensePlate
+
+
+
+
+
