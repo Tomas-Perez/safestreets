@@ -23,7 +23,7 @@ fact ImageAnalysisAlwaysReturnsTheSameResult {
 }
 
 sig ReportSubmission {
-	licensePlate: lone LicensePlate,
+	licensePlate: LicensePlate,
 	photos: set Photo,
 	licensePlatePhoto: Photo
 } {
@@ -44,20 +44,7 @@ sig AnalyzedReport {
 }
 
 pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
-	(
-		one r.submission.licensePlate and
-		r.submission.licensePlate in r.analyzedPhoto.detected.licensePlate
-	) 
-	or 
-	(
-		one r.analyzedPhoto.detected and 
-		no r.submission.licensePlate
-	)
-}
-
-pred reportHasAmbiguousPicture [r: AnalyzedReport] {
-	no r.submission.licensePlate
-	#r.analyzedPhoto.detected > 1
+	r.submission.licensePlate in r.analyzedPhoto.detected.licensePlate
 }
 
 pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
@@ -75,11 +62,8 @@ pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
 */
 assert ReportDefinitionsAreDisjointed {
 	all r: AnalyzedReport | 
-		!(reportHasConfirmedLicensePlate[r] and reportHasAmbiguousPicture[r]) and
 		!(reportHasConfirmedLicensePlate[r] and reportHasNonMatchingLicensePlates[r]) and
 		!(reportHasConfirmedLicensePlate[r] and reportHasNoDetectedLicensePlate[r]) and
-		!(reportHasAmbiguousPicture[r] and reportHasNoDetectedLicensePlate[r]) and
-		!(reportHasAmbiguousPicture[r] and reportHasNonMatchingLicensePlates[r]) and
 		!(reportHasNonMatchingLicensePlates[r] and reportHasNoDetectedLicensePlate[r])
 }
 
@@ -87,7 +71,6 @@ assert ReportDefinitionsAreDisjointed {
 assert AllReportCasesAreCovered {
 	no r: AnalyzedReport | 
 		!reportHasConfirmedLicensePlate[r] and 
-		!reportHasAmbiguousPicture[r] and 
 		!reportHasNoDetectedLicensePlate[r] and
 		!reportHasNonMatchingLicensePlates[r]
 }
@@ -100,12 +83,6 @@ pred ReportWithConfirmedLicensePlateExists {
 }
 
 run ReportWithConfirmedLicensePlateExists for 1 but 5 Int
-
-pred AmbiguousReportExists {
-	some r: AnalyzedReport | reportHasAmbiguousPicture[r]
-}
-
-run AmbiguousReportExists for 1 but 2 LicensePlate, 2 DetectedLicensePlate, 5 Int
 
 pred NoDetectedLicensePlateReportExists {
 	some r: AnalyzedReport | reportHasNoDetectedLicensePlate[r]
