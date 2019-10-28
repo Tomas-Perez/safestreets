@@ -1,9 +1,17 @@
 sig Photo, LicensePlate {}
 
+sig DetectedLicensePlate {
+	licensePlate: LicensePlate,
+	confidenceRate: Int
+} {
+	// Confidence is between 0 and 100%. But not exactly 0.
+	confidenceRate > 0 && confidenceRate <= 10
+}
+
 // An analyzed photo, where multiple license plates could be detected
 sig AnalyzedPhoto {
 	photo: Photo,
-	detected: set LicensePlate
+	detected: set DetectedLicensePlate
 }
 
 /*
@@ -24,7 +32,8 @@ sig ReportSubmission {
 
 fact NoDanglingData {
 	Photo = ReportSubmission.photos
-	LicensePlate = AnalyzedPhoto.detected + ReportSubmission.licensePlate
+	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate
+	DetectedLicensePlate = AnalyzedPhoto.detected
 }
 
 sig AnalyzedReport {
@@ -37,7 +46,7 @@ sig AnalyzedReport {
 pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
 	(
 		one r.submission.licensePlate and
-		r.submission.licensePlate in r.analyzedPhoto.detected
+		r.submission.licensePlate in r.analyzedPhoto.detected.licensePlate
 	) 
 	or 
 	(
@@ -57,7 +66,7 @@ pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
 
 pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
 	some r.analyzedPhoto.detected
-	! r.submission.licensePlate in r.analyzedPhoto.detected
+	! r.submission.licensePlate in r.analyzedPhoto.detected.licensePlate
 }
 
 /*
@@ -90,27 +99,25 @@ pred ReportWithConfirmedLicensePlateExists {
 	some r: AnalyzedReport | reportHasConfirmedLicensePlate[r]
 }
 
-run ReportWithConfirmedLicensePlateExists for 1
+run ReportWithConfirmedLicensePlateExists for 1 but 5 Int
 
 pred AmbiguousReportExists {
 	some r: AnalyzedReport | reportHasAmbiguousPicture[r]
 }
 
-run AmbiguousReportExists for 1 but 2 LicensePlate
+run AmbiguousReportExists for 1 but 2 LicensePlate, 2 DetectedLicensePlate, 5 Int
 
 pred NoDetectedLicensePlateReportExists {
 	some r: AnalyzedReport | reportHasNoDetectedLicensePlate[r]
 }
 
-run NoDetectedLicensePlateReportExists for 1
+run NoDetectedLicensePlateReportExists for 1 but 5 Int
 
 pred NonMatchingLicensePlateReportExists {
 	some r: AnalyzedReport | reportHasNonMatchingLicensePlates[r]
 }
 
-run NonMatchingLicensePlateReportExists for 1 but 2 LicensePlate
-
-
+run NonMatchingLicensePlateReportExists for 1 but 2 LicensePlate, 5 Int
 
 
 
