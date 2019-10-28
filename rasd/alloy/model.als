@@ -6,8 +6,10 @@ sig AnalyzedPhoto {
 	detected: set LicensePlate
 }
 
-// Repeating the image analysis over a photo gives the same result
-// There cannot be two analysis of the same photo with a different set of detected license plates
+/*
+	Repeating the image analysis over a photo gives the same result
+	There cannot be two analysis of the same photo with a different set of detected license plates
+*/
 fact ImageAnalysisAlwaysReturnsTheSameResult {
 	all p, p': AnalyzedPhoto | p.photo = p'.photo implies p.detected = p'.detected
 }
@@ -32,7 +34,7 @@ sig AnalyzedReport {
 	analyzedPhoto.photo = submission.licensePlatePhoto
 }
 
-pred reportIsValid [r: AnalyzedReport]  {
+pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
 	(
 		one r.submission.licensePlate and
 		r.submission.licensePlate in r.analyzedPhoto.detected
@@ -58,13 +60,15 @@ pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
 	! r.submission.licensePlate in r.analyzedPhoto.detected
 }
 
-// Report definitions do not overlap, meaning that a given Submission 
-// can be classified under only one of the established definitions
+/*
+	Report definitions do not overlap, meaning that a given Submission 
+	can be classified under only one of the established definitions
+*/
 assert ReportDefinitionsAreDisjointed {
 	all r: AnalyzedReport | 
-		!(reportIsValid[r] and reportHasAmbiguousPicture[r]) and
-		!(reportIsValid[r] and reportHasNonMatchingLicensePlates[r]) and
-		!(reportIsValid[r] and reportHasNoDetectedLicensePlate[r]) and
+		!(reportHasConfirmedLicensePlate[r] and reportHasAmbiguousPicture[r]) and
+		!(reportHasConfirmedLicensePlate[r] and reportHasNonMatchingLicensePlates[r]) and
+		!(reportHasConfirmedLicensePlate[r] and reportHasNoDetectedLicensePlate[r]) and
 		!(reportHasAmbiguousPicture[r] and reportHasNoDetectedLicensePlate[r]) and
 		!(reportHasAmbiguousPicture[r] and reportHasNonMatchingLicensePlates[r]) and
 		!(reportHasNonMatchingLicensePlates[r] and reportHasNoDetectedLicensePlate[r])
@@ -73,7 +77,7 @@ assert ReportDefinitionsAreDisjointed {
 // Ensure that all possible variations of a report are covered by our established definitions
 assert AllReportCasesAreCovered {
 	no r: AnalyzedReport | 
-		!reportIsValid[r] and 
+		!reportHasConfirmedLicensePlate[r] and 
 		!reportHasAmbiguousPicture[r] and 
 		!reportHasNoDetectedLicensePlate[r] and
 		!reportHasNonMatchingLicensePlates[r]
@@ -82,11 +86,11 @@ assert AllReportCasesAreCovered {
 check ReportDefinitionsAreDisjointed for 4
 check AllReportCasesAreCovered for 4
 
-pred ValidReportExists {
-	some r: AnalyzedReport | reportIsValid[r]
+pred ReportWithConfirmedLicensePlateExists {
+	some r: AnalyzedReport | reportHasConfirmedLicensePlate[r]
 }
 
-run ValidReportExists for 1
+run ReportWithConfirmedLicensePlateExists for 1
 
 pred AmbiguousReportExists {
 	some r: AnalyzedReport | reportHasAmbiguousPicture[r]
