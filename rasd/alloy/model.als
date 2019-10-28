@@ -1,4 +1,4 @@
-sig Photo, LicensePlate, Location, Time {}
+sig Photo, LicensePlate {}
 
 // An analyzed photo, where multiple license plates could be detected
 sig AnalyzedPhoto {
@@ -13,8 +13,6 @@ fact ImageAnalysisAlwaysReturnsTheSameResult {
 }
 
 sig ReportSubmission {
-	location: Location,
-	time: Time,
 	licensePlate: lone LicensePlate,
 	photos: set Photo,
 	licensePlatePhoto: Photo
@@ -23,8 +21,6 @@ sig ReportSubmission {
 }
 
 fact NoDanglingData {
-	Location = ReportSubmission.location
-	Time = ReportSubmission.time
 	Photo = ReportSubmission.photos
 	LicensePlate = AnalyzedPhoto.detected + ReportSubmission.licensePlate
 }
