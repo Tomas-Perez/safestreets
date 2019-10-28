@@ -31,10 +31,10 @@ abstract sig AnalyzedReport {
 
 sig ValidReport extends AnalyzedReport {} {
 	(
-		! submission.licensePlate = none and
+		some submission.licensePlate and
 		submission.licensePlate in analyzedPhoto.detected
 	) or 
-	#analyzedPhoto.detected = 1
+		one analyzedPhoto.detected
 }
 
 sig AmbiguousPictureReport extends AnalyzedReport {} {
@@ -49,9 +49,9 @@ sig NoLicensePlateReport extends AnalyzedReport {} {
 // Report definitions do not overlap, meaning that a given Submission 
 // can be classified under only one of the established definitions
 assert ReportDefinitionsAreDisjointed {
-	ValidReport.submission & AmbiguousPictureReport.submission = none
-	ValidReport.submission & NoLicensePlateReport.submission = none
-	NoLicensePlateReport.submission & AmbiguousPictureReport.submission = none
+	no ValidReport.submission & AmbiguousPictureReport.submission
+	no ValidReport.submission & NoLicensePlateReport.submission
+	no NoLicensePlateReport.submission & AmbiguousPictureReport.submission
 }
 
 check ReportDefinitionsAreDisjointed for 4
