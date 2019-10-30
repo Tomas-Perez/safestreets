@@ -1,17 +1,43 @@
 sig Photo, LicensePlate {}
 
-sig DetectedLicensePlate {
-	licensePlate: LicensePlate,
-	confidenceRate: Int
+sig Confidence {
+	rate: Int
 } {
 	// Confidence is between 0 and 100%. But not exactly 0.
-	confidenceRate > 0 && confidenceRate <= 10
+	rate > 0 && rate <= 10
 }
 
-// An analyzed photo, where multiple license plates could be detected
+sig DetectedLicensePlate {
+	licensePlate: LicensePlate,
+	confidence: Confidence
+}
+
+sig Make, Model, Color {}
+
+sig Car {
+	make: Make,
+	model: Model,
+	color: Color
+}
+
+sig DetectedCar {
+	car: Car,
+	confidence: Confidence
+}
+
+// Detection of a license plate and the car on which it is set on
+sig Detection {
+	car: lone DetectedCar,
+	licensePlate: lone DetectedLicensePlate
+} {
+	no car => some licensePlate
+	no licensePlate => some car
+}
+
+// An analyzed photo, where multiple cars and their license plates could be detected
 sig AnalyzedPhoto {
 	photo: Photo,
-	detected: set DetectedLicensePlate
+	detected: set Detection
 }
 
 /*
@@ -33,7 +59,11 @@ sig ReportSubmission {
 fact NoDanglingData {
 	Photo = ReportSubmission.photos
 	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate
-	DetectedLicensePlate = AnalyzedPhoto.detected
+	Detection = AnalyzedPhoto.detected
+	Confidence = DetectedLicensePlate.confidence + DetectedCar.confidence
+	Make = Car.make
+	Model = Car.model
+	Color = Car.color
 }
 
 sig AnalyzedReport {
@@ -43,17 +73,21 @@ sig AnalyzedReport {
 	analyzedPhoto.photo = submission.licensePlatePhoto
 }
 
+fun getAnalyzedPhotoLicensePlates [p: AnalyzedPhoto] : set LicensePlate {
+	p.detected.(Detection <: licensePlate).(DetectedLicensePlate <: licensePlate)
+}
+
 pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
-	r.submission.licensePlate in r.analyzedPhoto.detected.licensePlate
+	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
 }
 
 pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
-	no r.analyzedPhoto.detected
+	no getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
 }
 
 pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
-	some r.analyzedPhoto.detected
-	! r.submission.licensePlate in r.analyzedPhoto.detected.licensePlate
+	some getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
+	! r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
 }
 
 /*
