@@ -1,4 +1,6 @@
-sig Photo, LicensePlate {}
+module model
+
+sig Photo, LicensePlate, Car {}
 
 sig Confidence {
 	rate: Int
@@ -12,14 +14,6 @@ sig DetectedLicensePlate {
 	confidence: Confidence
 }
 
-sig Make, Model, Color {}
-
-sig Car {
-	make: Make,
-	model: Model,
-	color: Color
-}
-
 sig DetectedCar {
 	car: Car,
 	confidence: Confidence
@@ -30,14 +24,39 @@ sig Detection {
 	car: lone DetectedCar,
 	licensePlate: lone DetectedLicensePlate
 } {
-	no car => some licensePlate
-	no licensePlate => some car
+	some car or some licensePlate
+}
+
+fun Detection.getCarWithLicensePlate: set Car -> LicensePlate {
+	this.car.car -> this.licensePlate.licensePlate
 }
 
 // An analyzed photo, where multiple cars and their license plates could be detected
 sig AnalyzedPhoto {
 	photo: Photo,
 	detected: set Detection
+}
+
+fact NoCarIsDetectedTwice {
+	no disj d1, d2: AnalyzedPhoto.detected | 
+		some d1.car and
+		some d2.car and
+		d1.car.car = d2.car.car
+}
+
+fact NoLicensePlateIsDetectedTwice {
+	no disj d1, d2: AnalyzedPhoto.detected |
+		some d1.licensePlate and 
+		some d2.licensePlate and
+		d1.licensePlate.licensePlate = d2.licensePlate.licensePlate
+}
+
+fun AnalyzedPhoto.getAnalyzedPhotoLicensePlates : set LicensePlate {
+	this.detected.(Detection <: licensePlate).(DetectedLicensePlate <: licensePlate)
+}
+
+fun AnalyzedPhoto.getAnalyzedPhotoCars : set Car {
+	this.detected.(Detection <: car).(DetectedCar <: car)
 }
 
 /*
@@ -56,16 +75,6 @@ sig ReportSubmission {
 	licensePlatePhoto in photos
 }
 
-fact NoDanglingData {
-	Photo = ReportSubmission.photos
-	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate
-	Detection = AnalyzedPhoto.detected
-	Confidence = DetectedLicensePlate.confidence + DetectedCar.confidence
-	Make = Car.make
-	Model = Car.model
-	Color = Car.color
-}
-
 sig AnalyzedReport {
 	submission: ReportSubmission,
 	analyzedPhoto: AnalyzedPhoto
@@ -73,62 +82,26 @@ sig AnalyzedReport {
 	analyzedPhoto.photo = submission.licensePlatePhoto
 }
 
-fun getAnalyzedPhotoLicensePlates [p: AnalyzedPhoto] : set LicensePlate {
-	p.detected.(Detection <: licensePlate).(DetectedLicensePlate <: licensePlate)
+fun AnalyzedReport.getDetectedCarForSubmittedLicensePlate : set Car {
+	getCarWithLicensePlate[this.analyzedPhoto.detected].(this.submission.licensePlate)
 }
 
-pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
-	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-}
-
-pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
-	no getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-}
-
-pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
-	some getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-	! r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
+one sig LicensePlateRegistry {
+	registration: LicensePlate -> Car
 }
 
 /*
-	Report definitions do not overlap, meaning that a given Submission 
-	can be classified under only one of the established definitions
+	Two license plates cannot be attached to the same car
+	Two cars cannot be registered under the same license plate
 */
-assert ReportDefinitionsAreDisjointed {
-	all r: AnalyzedReport | 
-		!(reportHasConfirmedLicensePlate[r] and reportHasNonMatchingLicensePlates[r]) and
-		!(reportHasConfirmedLicensePlate[r] and reportHasNoDetectedLicensePlate[r]) and
-		!(reportHasNonMatchingLicensePlates[r] and reportHasNoDetectedLicensePlate[r])
+fact NoRepeatedRegistrations {
+	no disj l1, l2: LicensePlate | l1.(LicensePlateRegistry.registration) = l2.(LicensePlateRegistry.registration)
+	no disj c1, c2: Car | LicensePlateRegistry.registration.c1 = LicensePlateRegistry.registration.c2
 }
 
-// Ensure that all possible variations of a report are covered by our established definitions
-assert AllReportCasesAreCovered {
-	no r: AnalyzedReport | 
-		!reportHasConfirmedLicensePlate[r] and 
-		!reportHasNoDetectedLicensePlate[r] and
-		!reportHasNonMatchingLicensePlates[r]
+fact NoDanglingData {
+	Photo = ReportSubmission.photos
+	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate + LicensePlateRegistry.registration.Car
+	Detection = AnalyzedPhoto.detected
+	Confidence = DetectedLicensePlate.confidence + DetectedCar.confidence
 }
-
-check ReportDefinitionsAreDisjointed for 4
-check AllReportCasesAreCovered for 4
-
-pred ReportWithConfirmedLicensePlateExists {
-	some r: AnalyzedReport | reportHasConfirmedLicensePlate[r]
-}
-
-run ReportWithConfirmedLicensePlateExists for 1 but 5 Int
-
-pred NoDetectedLicensePlateReportExists {
-	some r: AnalyzedReport | reportHasNoDetectedLicensePlate[r]
-}
-
-run NoDetectedLicensePlateReportExists for 1 but 5 Int
-
-pred NonMatchingLicensePlateReportExists {
-	some r: AnalyzedReport | reportHasNonMatchingLicensePlates[r]
-}
-
-run NonMatchingLicensePlateReportExists for 1 but 2 LicensePlate, 5 Int
-
-
-
