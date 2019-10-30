@@ -3,17 +3,34 @@
 The purpose of this document is to provide a description of the SafeStreets system. A detailed explanation of the proposed solution is given, along with the requirements and assumptions made to achieve it.
 
 SafeStreets is a crowd-sourced application that	 intends to provide users with the possibility to notify authorities when traffic violations occur, and in particular	 parking violations. With the amount of traffic we are seeing nowadays, it is hard to maintain order throughout the entire city, so the help of the community is more than welcome.
+
 The application allows users to report violations by sending pictures, along with important information, like the date, time and position.
+
 Examples of violations are vehicles parked in the middle of bike lanes or in places reserved for people with disabilities, double parking, and so on.
+
 The system also allows both end users and authorities to access the information gathered, with different levels of visibility depending on the roles.
+
 With the information provided, it is then possible for the municipality to integrate it with their traffic ticket system and automatically issue the corresponding ticket to a reported offender. This will accelerate the whole process, saving time and money to the state and could eventually result in a decrease in violations.
+
 At the same time, the ticketing system can provide information to SafeStreets, which presents the possibility of building statistics such as the most egregious offenders and analyse the effect of the application by looking at the trend in violations.
 
 \subsection{Scope}
 
 \subsubsection{General purpose}
 
-As already mentioned, the SafeStreets system is designed to provide users with the ability to report traffic violations through an application. In order to achieve this, the user needs to take and upload photos of the scene, which captures the license plate of the vehicle committing the violation and complete a form with information such as the license plate number and the type of violation. This data, along with metadata retrieved from the user’s device (geographical position, date and time) is then sent to the system.
+As already mentioned, the SafeStreets system is designed to provide users with the ability to report and get information of reported traffic violations through an application.
+
+Any user with a device capable of running the application can sign up to the system, which enables them to access its functionalities.
+
+In order to submit a report, the user needs to fill a form. In it they have to enter the license plate number of the vehicle committing the violation, the type of violation and at least one photo of the scene, where the license plate of the vehicle can be easily recognized. This data, along with metadata retrieved from the user's device (geographical position, date and time) is then sent to the system.
+
+The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. The output consists of possibly multiple license plates (the picture could include more than one car), along with the certainty of the detection.
+
+If multiple license plates are detected, the target of the report is determined by comparing it with the input of the user in the form.
+
+After a target license plate is confirmed, the confidence of the detection is evaluated, if it is below a certain threshold, it must pass through a community review. During this process, multiple users willing to participate are shown a cutout of the license plate in the picture and asked to input what they see. If a consensus is reached, then the report is considered valid.
+
+The data collected by the system in relation to reports is to be queried by its users. There are two distinct targets of this functionality: standard users and the municipality. The main difference between the two is that the municipality can access information that should not be freely accessible to everyone because of security and privacy concerns. Through the application, users are capable of visualizing a city map showing where the violations happened. Furthermore, a public API is made available, facilitating data analysis and system integration.
 
 \subsubsection{World and Machine phenomena}
 To mark the boundaries of the system, here we denote:
@@ -75,6 +92,10 @@ To mark the boundaries of the system, here we denote:
 \end{itemize}
 
 \subsubsection{Revision history}
+\begin{itemize}
+    \item Version 1.0: First release.
+\end{itemize}
+
 \subsubsection{Reference documents}
 
 \subsubsection{Document structure}
