@@ -11,6 +11,13 @@ pred carDetectionIsTrustworthy [d: Detection] {
 	d.car.confidence.rate >= 8
 }
 
+pred detectionLicensePlateCarMatchIsTrustworthy [d: Detection] {
+	let detectedLicensePlateToCar = getLicensePlateWithCar[d] {
+		some detectedLicensePlateToCar
+		detectedLicensePlateToCar in LicensePlateRegistry.registration
+	}
+}
+
 pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
 	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
 }

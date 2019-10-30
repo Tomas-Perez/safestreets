@@ -27,8 +27,8 @@ sig Detection {
 	some car or some licensePlate
 }
 
-fun Detection.getCarWithLicensePlate: set Car -> LicensePlate {
-	this.car.car -> this.licensePlate.licensePlate
+fun Detection.getLicensePlateWithCar: set LicensePlate -> Car {
+	this.licensePlate.licensePlate -> this.car.car 
 }
 
 // An analyzed photo, where multiple cars and their license plates could be detected
@@ -83,9 +83,10 @@ sig AnalyzedReport {
 }
 
 fun AnalyzedReport.getDetectedCarForSubmittedLicensePlate : set Car {
-	getCarWithLicensePlate[this.analyzedPhoto.detected].(this.submission.licensePlate)
+	this.submission.licensePlate.(getLicensePlateWithCar[this.analyzedPhoto.detected])
 }
 
+// Placeholder for the license plate registration service API
 one sig LicensePlateRegistry {
 	registration: LicensePlate -> Car
 }
