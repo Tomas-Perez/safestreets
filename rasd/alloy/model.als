@@ -31,10 +31,6 @@ fun Detection.getLicensePlateWithCar: set LicensePlate -> Car {
 	this.licensePlate.licensePlate -> this.car.car 
 }
 
-fun Detection.matchWithLicensePlateAndCar: set LicensePlate -> Car -> Detection {
-	getLicensePlateWithCar[this] -> this
-}
-
 pred licensePlateDetectionIsTrustworthy [d: Detection] {
 	d.licensePlate.confidence.rate >= 8
 }
@@ -128,20 +124,65 @@ pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
 	}
 }
 
-pred reportHasNoDetectedCar [r: AnalyzedReport] {
-	no getAnalyzedPhotoCars[r.analyzedPhoto]
+pred reportHasNoDetectedCarForLicensePlate [r: AnalyzedReport] {
+	reportHasConfirmedLicensePlate[r]
+	no getTargetCar[r]
 }
 
 pred reportHasBadlyDetectedLicensePlate [r: AnalyzedReport] {
 	badDetectionReview[(Review <: detection).(getTargetDetection[r])]
 }
 
-pred reportHasAcceptableLicensePlateDetection [r: AnalyzedReport] {
+pred reportHasAcceptableLicensePlateReview [r: AnalyzedReport] {
 	acceptableDetectionReview[(Review <: detection).(getTargetDetection[r])]
 }
 
-pred reportHasHighConfidenceLicensePlateDetection [r: AnalyzedReport] {
+pred reportHasHighConfidenceLicensePlateReview [r: AnalyzedReport] {
 	highConfidenceDetectionReview[(Review <: detection).(getTargetDetection[r])]
+}
+
+pred reportHasConfirmedCar [r: AnalyzedReport] {
+	some getTargetCar[r]
+}
+
+pred reportHasHighConfidenceLicensePlate [r: AnalyzedReport] {
+	licensePlateDetectionIsTrustworthy[getTargetDetection[r]] or
+	reportHasHighConfidenceLicensePlateReview[r]
+}
+
+pred reportHasConfirmedCarCharacteristics [r: AnalyzedReport] {
+	carDetectionIsTrustworthy[getTargetDetection[r]]
+}
+
+pred reportHasReview [r: AnalyzedReport] {
+	some Review.detection & getTargetDetection[r]
+}
+
+pred reportIsInReview [r: AnalyzedReport] {
+	reportHasConfirmedLicensePlate[r]
+	reportHasConfirmedCar[r]
+	!licensePlateDetectionIsTrustworthy[getTargetDetection[r]] 
+	!reportHasReview[r]
+}
+
+pred reportIsHighConfidence [r: AnalyzedReport] {
+	reportHasConfirmedLicensePlate[r]
+	reportHasConfirmedCar[r]
+	reportHasHighConfidenceLicensePlate[r]
+	reportHasConfirmedCarCharacteristics[r]
+	detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
+}
+
+pred reportIsLowConfidence [r: AnalyzedReport] {
+	reportHasConfirmedLicensePlate[r]
+	reportHasConfirmedCar[r]
+	!reportHasBadlyDetectedLicensePlate[r]
+	(
+		reportHasAcceptableLicensePlateReview[r] or 
+		!carDetectionIsTrustworthy[getTargetDetection[r]] or 
+		noCarRegisteredForLicensePlate[r.submission.licensePlate] or 
+		!detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
+	)
 }
 
 // Placeholder for the license plate registration service API
@@ -178,7 +219,11 @@ fact OnlyReviewLowConfidenceLicensePlateDetections {
 	no r: Review | licensePlateDetectionIsTrustworthy[r.detection]
 }
 
-fact OnlyReviewDetectionsOfTargetCarAndLicensePlate {
+fact OnlyReviewDetectionsWithLicensePlateAndCar {
+	all d: Review.detection | some d.car and some d.licensePlate
+}
+
+fact OnlyReviewDetectionsOfTarget {
 	Review.detection in getTargetDetection[AnalyzedReport]
 }
 

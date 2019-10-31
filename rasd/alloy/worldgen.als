@@ -56,7 +56,7 @@ pred DetectionWithCarAndLicensePlateExists {
 run DetectionWithCarAndLicensePlateExists for 2 but 1 AnalyzedReport, 5 Int
 
 pred ReportWithConfirmedCarExists {
-	some r: AnalyzedReport | some getTargetCar[r]
+	some r: AnalyzedReport | reportHasConfirmedCar[r]
 }
 
 run ReportWithConfirmedCarExists for 2 but 5 Int
@@ -71,7 +71,7 @@ run {
 } for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
 
 run {
-	some r: AnalyzedReport | reportHasAcceptableLicensePlateDetection[r]
+	some r: AnalyzedReport | reportHasAcceptableLicensePlateReview[r]
 	ReportWithConfirmedCarExists
 	DetectionWithCarAndLicensePlateExists
 	ReportWithConfirmedLicensePlateExists
@@ -79,7 +79,7 @@ run {
 } for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
 
 run {
-	some r: AnalyzedReport | reportHasHighConfidenceLicensePlateDetection[r]
+	some r: AnalyzedReport | reportHasHighConfidenceLicensePlateReview[r]
 	ReportWithConfirmedCarExists
 	DetectionWithCarAndLicensePlateExists
 	ReportWithConfirmedLicensePlateExists
