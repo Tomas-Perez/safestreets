@@ -6,7 +6,7 @@ sig Confidence {
 	rate: Int
 } {
 	// Confidence is between 0 and 100%. But not exactly 0.
-	rate > 0 && rate <= 10
+	rate > 0 and rate <= 10
 }
 
 sig DetectedLicensePlate {
@@ -29,6 +29,25 @@ sig Detection {
 
 fun Detection.getLicensePlateWithCar: set LicensePlate -> Car {
 	this.licensePlate.licensePlate -> this.car.car 
+}
+
+fun Detection.matchWithLicensePlateAndCar: set LicensePlate -> Car -> Detection {
+	getLicensePlateWithCar[this] -> this
+}
+
+pred licensePlateDetectionIsTrustworthy [d: Detection] {
+	d.licensePlate.confidence.rate >= 8
+}
+
+pred carDetectionIsTrustworthy [d: Detection] {
+	d.car.confidence.rate >= 8
+}
+
+pred detectionLicensePlateCarMatchIsTrustworthy [d: Detection] {
+	let detectedLicensePlateToCar = getLicensePlateWithCar[d] {
+		some detectedLicensePlateToCar
+		detectedLicensePlateToCar in LicensePlateRegistry.registration
+	}
 }
 
 // An analyzed photo, where multiple cars and their license plates could be detected
@@ -82,8 +101,47 @@ sig AnalyzedReport {
 	analyzedPhoto.photo = submission.licensePlatePhoto
 }
 
-fun AnalyzedReport.getDetectedCarForSubmittedLicensePlate : set Car {
-	this.submission.licensePlate.(getLicensePlateWithCar[this.analyzedPhoto.detected])
+fun AnalyzedReport.getTargetDetection : set Detection {
+	let 
+		targetLicensePlate = this.submission.licensePlate, 
+		licensePlateDetections = this.analyzedPhoto.detected <: licensePlate {
+			licensePlateDetections.(DetectedLicensePlate <: licensePlate).targetLicensePlate
+	}
+}
+
+fun AnalyzedReport.getTargetCar : set Car {
+	getTargetDetection[this].car.car
+}
+
+pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
+	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
+}
+
+pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
+	no getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
+}
+
+pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
+	let licensePlates = getAnalyzedPhotoLicensePlates[r.analyzedPhoto] {
+		some licensePlates
+		! r.submission.licensePlate in licensePlates
+	}
+}
+
+pred reportHasNoDetectedCar [r: AnalyzedReport] {
+	no getAnalyzedPhotoCars[r.analyzedPhoto]
+}
+
+pred reportHasBadlyDetectedLicensePlate [r: AnalyzedReport] {
+	badDetectionReview[(Review <: detection).(getTargetDetection[r])]
+}
+
+pred reportHasAcceptableLicensePlateDetection [r: AnalyzedReport] {
+	acceptableDetectionReview[(Review <: detection).(getTargetDetection[r])]
+}
+
+pred reportHasHighConfidenceLicensePlateDetection [r: AnalyzedReport] {
+	highConfidenceDetectionReview[(Review <: detection).(getTargetDetection[r])]
 }
 
 // Placeholder for the license plate registration service API
@@ -96,8 +154,49 @@ one sig LicensePlateRegistry {
 	Two cars cannot be registered under the same license plate
 */
 fact NoRepeatedRegistrations {
-	no disj l1, l2: LicensePlate | l1.(LicensePlateRegistry.registration) = l2.(LicensePlateRegistry.registration)
+	no disj l1, l2: LicensePlate | getCarRegisteredUnderLicensePlate[l1] = getCarRegisteredUnderLicensePlate[l2]
 	no disj c1, c2: Car | LicensePlateRegistry.registration.c1 = LicensePlateRegistry.registration.c2
+}
+
+fun getCarRegisteredUnderLicensePlate [l: LicensePlate] : set Car {
+	 l.(LicensePlateRegistry.registration)
+}
+
+pred noCarRegisteredForLicensePlate [l: LicensePlate] {
+	no getCarRegisteredUnderLicensePlate[l]
+}
+
+sig Review {
+	detection: Detection,
+	matchPercentage: Int
+} {
+	// Percentage between 0 and 100%
+	matchPercentage >= 0 and matchPercentage <= 10
+}
+
+fact OnlyReviewLowConfidenceLicensePlateDetections {
+	no r: Review | licensePlateDetectionIsTrustworthy[r.detection]
+}
+
+fact OnlyReviewDetectionsOfTargetCarAndLicensePlate {
+	Review.detection in getTargetDetection[AnalyzedReport]
+}
+
+fact NoRepeatedReviews {
+	no disj r1, r2: Review | r1.detection = r2.detection
+}
+
+pred badDetectionReview [r: Review] {
+	some r
+	r.matchPercentage < 6
+}
+
+pred acceptableDetectionReview [r: Review] {
+	r.matchPercentage >= 6 and r.matchPercentage < 8
+}
+
+pred highConfidenceDetectionReview [r: Review] {
+	r.matchPercentage >= 8
 }
 
 fact NoDanglingData {
@@ -106,3 +205,4 @@ fact NoDanglingData {
 	Detection = AnalyzedPhoto.detected
 	Confidence = DetectedLicensePlate.confidence + DetectedCar.confidence
 }
+

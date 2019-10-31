@@ -1,49 +1,11 @@
-module predicates
+module worldgen
 open model
-
-// Utility predicates
-
-pred licensePlateDetectionIsTrustworthy [d: Detection] {
-	d.licensePlate.confidence.rate >= 8
-}
-
-pred carDetectionIsTrustworthy [d: Detection] {
-	d.car.confidence.rate >= 8
-}
-
-pred detectionLicensePlateCarMatchIsTrustworthy [d: Detection] {
-	let detectedLicensePlateToCar = getLicensePlateWithCar[d] {
-		some detectedLicensePlateToCar
-		detectedLicensePlateToCar in LicensePlateRegistry.registration
-	}
-}
-
-pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
-	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-}
-
-pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
-	no getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-}
-
-pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
-	let licensePlates = getAnalyzedPhotoLicensePlates[r.analyzedPhoto] {
-		some licensePlates
-		! r.submission.licensePlate in licensePlates
-	}
-}
-
-pred reportHasNoDetectedCar [r: AnalyzedReport] {
-	no getAnalyzedPhotoCars[r.analyzedPhoto]
-}
-
-// World generation
 
 pred ReportWithConfirmedLicensePlateExists {
 	some r: AnalyzedReport | reportHasConfirmedLicensePlate[r]
 }
 
-run ReportWithConfirmedLicensePlateExists for 4 but 5 Int
+run ReportWithConfirmedLicensePlateExists for 2 but 5 Int
 
 pred ReportWithNoDetectedLicensePlateExists {
 	some r: AnalyzedReport | reportHasNoDetectedLicensePlate[r]
@@ -91,10 +53,35 @@ pred DetectionWithCarAndLicensePlateExists {
 	some d: Detection | some d.car and some d.licensePlate
 }
 
-run DetectionWithCarAndLicensePlateExists for 2 but 5 Int
+run DetectionWithCarAndLicensePlateExists for 2 but 1 AnalyzedReport, 5 Int
 
 pred ReportWithConfirmedCarExists {
-	some r: AnalyzedReport | some getDetectedCarForSubmittedLicensePlate[r]
+	some r: AnalyzedReport | some getTargetCar[r]
 }
 
 run ReportWithConfirmedCarExists for 2 but 5 Int
+
+
+run {
+	some r: AnalyzedReport | reportHasBadlyDetectedLicensePlate[r]
+	ReportWithConfirmedCarExists
+	DetectionWithCarAndLicensePlateExists
+	ReportWithConfirmedLicensePlateExists
+	#Detection = 3
+} for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
+
+run {
+	some r: AnalyzedReport | reportHasAcceptableLicensePlateDetection[r]
+	ReportWithConfirmedCarExists
+	DetectionWithCarAndLicensePlateExists
+	ReportWithConfirmedLicensePlateExists
+	#Detection = 3
+} for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
+
+run {
+	some r: AnalyzedReport | reportHasHighConfidenceLicensePlateDetection[r]
+	ReportWithConfirmedCarExists
+	DetectionWithCarAndLicensePlateExists
+	ReportWithConfirmedLicensePlateExists
+	#Detection = 3
+} for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int

@@ -1,5 +1,5 @@
+module assertions
 open model
-open predicates
 
 /*
 	Report definitions do not overlap, meaning that a given Submission 
@@ -21,7 +21,7 @@ assert AllReportCasesAreCovered {
 }
 
 assert DetectedCarForLicensePlateIsAlwaysOne {
-	all r: AnalyzedReport | #getDetectedCarForSubmittedLicensePlate[r] <= 1
+	all r: AnalyzedReport | #getTargetCar[r] <= 1
 }
 
 check ReportDefinitionsAreDisjointed for 10
