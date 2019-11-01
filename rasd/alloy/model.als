@@ -1,6 +1,8 @@
 module model
 
-sig Photo, LicensePlate, Car {}
+-------------------------------------------- DETECTION --------------------------------------------
+
+sig LicensePlate, Car {}
 
 sig Confidence {
 	rate: Int
@@ -23,8 +25,10 @@ sig DetectedCar {
 sig Detection {
 	car: lone DetectedCar,
 	licensePlate: lone DetectedLicensePlate
-} {
-	some car or some licensePlate
+}
+
+fact DetectionsCannotLackCarAndLicensePlate {
+	no d: Detection | no d.car and no d.licensePlate
 }
 
 fun Detection.getLicensePlateWithCar: set LicensePlate -> Car {
@@ -39,12 +43,9 @@ pred carDetectionIsTrustworthy [d: Detection] {
 	d.car.confidence.rate >= 8
 }
 
-pred detectionLicensePlateCarMatchIsTrustworthy [d: Detection] {
-	let detectedLicensePlateToCar = getLicensePlateWithCar[d] {
-		some detectedLicensePlateToCar
-		detectedLicensePlateToCar in LicensePlateRegistry.registration
-	}
-}
+----------------------------------------- PHOTO ANALYSIS ------------------------------------------
+
+sig Photo {}
 
 // An analyzed photo, where multiple cars and their license plates could be detected
 sig AnalyzedPhoto {
@@ -70,10 +71,6 @@ fun AnalyzedPhoto.getAnalyzedPhotoLicensePlates : set LicensePlate {
 	this.detected.(Detection <: licensePlate).(DetectedLicensePlate <: licensePlate)
 }
 
-fun AnalyzedPhoto.getAnalyzedPhotoCars : set Car {
-	this.detected.(Detection <: car).(DetectedCar <: car)
-}
-
 /*
 	Repeating the image analysis over a photo gives the same result
 	There cannot be two analysis of the same photo with a different set of detected license plates
@@ -81,6 +78,8 @@ fun AnalyzedPhoto.getAnalyzedPhotoCars : set Car {
 fact ImageAnalysisAlwaysReturnsTheSameResult {
 	all p, p': AnalyzedPhoto | p.photo = p'.photo implies p.detected = p'.detected
 }
+
+--------------------------------------------- REPORTS ---------------------------------------------
 
 sig ReportSubmission {
 	licensePlate: LicensePlate,
@@ -109,81 +108,7 @@ fun AnalyzedReport.getTargetCar : set Car {
 	getTargetDetection[this].car.car
 }
 
-pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
-	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-}
-
-pred reportHasNoDetectedLicensePlate [r: AnalyzedReport] {
-	no getAnalyzedPhotoLicensePlates[r.analyzedPhoto]
-}
-
-pred reportHasNonMatchingLicensePlates [r: AnalyzedReport] {
-	let licensePlates = getAnalyzedPhotoLicensePlates[r.analyzedPhoto] {
-		some licensePlates
-		! r.submission.licensePlate in licensePlates
-	}
-}
-
-pred reportHasNoDetectedCarForLicensePlate [r: AnalyzedReport] {
-	reportHasConfirmedLicensePlate[r]
-	no getTargetCar[r]
-}
-
-pred reportHasBadlyDetectedLicensePlate [r: AnalyzedReport] {
-	badDetectionReview[(Review <: detection).(getTargetDetection[r])]
-}
-
-pred reportHasAcceptableLicensePlateReview [r: AnalyzedReport] {
-	acceptableDetectionReview[(Review <: detection).(getTargetDetection[r])]
-}
-
-pred reportHasHighConfidenceLicensePlateReview [r: AnalyzedReport] {
-	highConfidenceDetectionReview[(Review <: detection).(getTargetDetection[r])]
-}
-
-pred reportHasConfirmedCar [r: AnalyzedReport] {
-	some getTargetCar[r]
-}
-
-pred reportHasHighConfidenceLicensePlate [r: AnalyzedReport] {
-	licensePlateDetectionIsTrustworthy[getTargetDetection[r]] or
-	reportHasHighConfidenceLicensePlateReview[r]
-}
-
-pred reportHasConfirmedCarCharacteristics [r: AnalyzedReport] {
-	carDetectionIsTrustworthy[getTargetDetection[r]]
-}
-
-pred reportHasReview [r: AnalyzedReport] {
-	some Review.detection & getTargetDetection[r]
-}
-
-pred reportIsInReview [r: AnalyzedReport] {
-	reportHasConfirmedLicensePlate[r]
-	reportHasConfirmedCar[r]
-	!licensePlateDetectionIsTrustworthy[getTargetDetection[r]] 
-	!reportHasReview[r]
-}
-
-pred reportIsHighConfidence [r: AnalyzedReport] {
-	reportHasConfirmedLicensePlate[r]
-	reportHasConfirmedCar[r]
-	reportHasHighConfidenceLicensePlate[r]
-	reportHasConfirmedCarCharacteristics[r]
-	detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
-}
-
-pred reportIsLowConfidence [r: AnalyzedReport] {
-	reportHasConfirmedLicensePlate[r]
-	reportHasConfirmedCar[r]
-	!reportHasBadlyDetectedLicensePlate[r]
-	(
-		reportHasAcceptableLicensePlateReview[r] or 
-		!carDetectionIsTrustworthy[getTargetDetection[r]] or 
-		noCarRegisteredForLicensePlate[r.submission.licensePlate] or 
-		!detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
-	)
-}
+------------------------------------- LICENSE PLATE REGISTRY --------------------------------------
 
 // Placeholder for the license plate registration service API
 one sig LicensePlateRegistry {
@@ -191,21 +116,34 @@ one sig LicensePlateRegistry {
 }
 
 /*
-	Two license plates cannot be attached to the same car
-	Two cars cannot be registered under the same license plate
+	Every car is registered under at most 1 license plate
+	Every license plate is registered for at most 1 car
+
+	There could be cases where a car or license plate is not registered:
+		- Bad detection
+		- Fake license plate
 */
 fact NoRepeatedRegistrations {
-	no disj l1, l2: LicensePlate | getCarRegisteredUnderLicensePlate[l1] = getCarRegisteredUnderLicensePlate[l2]
-	no disj c1, c2: Car | LicensePlateRegistry.registration.c1 = LicensePlateRegistry.registration.c2
+	all c: Car | lone LicensePlateRegistry.registration.c
+	all l: LicensePlate | lone getCarRegisteredUnderLicensePlate[l]
 }
 
 fun getCarRegisteredUnderLicensePlate [l: LicensePlate] : set Car {
 	 l.(LicensePlateRegistry.registration)
 }
 
+pred detectionLicensePlateCarMatchIsTrustworthy [d: Detection] {
+	let detectedLicensePlateToCar = getLicensePlateWithCar[d] {
+		some detectedLicensePlateToCar
+		detectedLicensePlateToCar in LicensePlateRegistry.registration
+	}
+}
+
 pred noCarRegisteredForLicensePlate [l: LicensePlate] {
 	no getCarRegisteredUnderLicensePlate[l]
 }
+
+--------------------------------------------- REVIEWS ---------------------------------------------
 
 sig Review {
 	detection: Detection,
@@ -244,10 +182,31 @@ pred highConfidenceDetectionReview [r: Review] {
 	r.matchPercentage >= 8
 }
 
+---------------------------------------------- EXTRA ----------------------------------------------
+
 fact NoDanglingData {
+	// All reports are analyzed
+	ReportSubmission = AnalyzedReport.submission
+
+	// All photos come from submissions
 	Photo = ReportSubmission.photos
+
+	// LicensePlates are detected, submitted, or are registered
 	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate + LicensePlateRegistry.registration.Car
+	
+	// Detections come from a photo analysis
 	Detection = AnalyzedPhoto.detected
+	
+	// Confidence is attached to a detection
 	Confidence = DetectedLicensePlate.confidence + DetectedCar.confidence
+	
+	// Only photos from a report are analyzed
+	AnalyzedPhoto = AnalyzedReport.analyzedPhoto
+	
+	// Detected license plates come from a photo detection
+	DetectedLicensePlate = Detection.licensePlate
+	
+	// Detected cars come from a photo detection
+	DetectedCar = Detection.car
 }
 

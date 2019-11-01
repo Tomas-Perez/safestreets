@@ -1,87 +1,97 @@
 module worldgen
 open model
-
-pred ReportWithConfirmedLicensePlateExists {
-	some r: AnalyzedReport | reportHasConfirmedLicensePlate[r]
-}
-
-run ReportWithConfirmedLicensePlateExists for 2 but 5 Int
+open reportDefinitions
 
 pred ReportWithNoDetectedLicensePlateExists {
 	some r: AnalyzedReport | reportHasNoDetectedLicensePlate[r]
 }
 
-run ReportWithNoDetectedLicensePlateExists for 4 but 5 Int
+run ReportWithNoDetectedLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
 
 pred ReportWithNonMatchingLicensePlatesExists {
 	some r: AnalyzedReport | reportHasNonMatchingLicensePlates[r]
 }
 
-run ReportWithNonMatchingLicensePlatesExists for 4 but 5 Int
+run ReportWithNonMatchingLicensePlatesExists for 2 but 5 Int, 1 AnalyzedReport
 
-pred AnalyzedPhotoWithNoCarsExists {
-	some p: AnalyzedPhoto | no getAnalyzedPhotoCars[p]
-}
-
-run AnalyzedPhotoWithNoCarsExists for 4 but 5 Int
-
-pred AnalyzedPhotoWithNoLicensePlatesExists {
-	some p: AnalyzedPhoto | no getAnalyzedPhotoLicensePlates[p]
-}
-
-run AnalyzedPhotoWithNoLicensePlatesExists for 4 but 5 Int
-
-pred AnalyzedPhotoWithLicensePlatesAndCarsExists {
-	some p: AnalyzedPhoto | some getAnalyzedPhotoLicensePlates[p] and some getAnalyzedPhotoCars[p]
-}
-
-run AnalyzedPhotoWithLicensePlatesAndCarsExists for 4 but 5 Int
-
-pred AnalyzedPhotoWithLicensePlatesButNoCarsExists {
-	some p: AnalyzedPhoto | some getAnalyzedPhotoLicensePlates[p] and no getAnalyzedPhotoCars[p]
-}
-
-run AnalyzedPhotoWithLicensePlatesButNoCarsExists for 4 but 5 Int
-
-pred AnalyzedPhotoWithCarsButNoLicensePlatesExists {
-	some p: AnalyzedPhoto | no getAnalyzedPhotoLicensePlates[p] and some getAnalyzedPhotoCars[p]
-}
-
-run AnalyzedPhotoWithCarsButNoLicensePlatesExists for 4 but 5 Int
-
-pred DetectionWithCarAndLicensePlateExists {
-	some d: Detection | some d.car and some d.licensePlate
-}
-
-run DetectionWithCarAndLicensePlateExists for 2 but 1 AnalyzedReport, 5 Int
-
-pred ReportWithConfirmedCarExists {
-	some r: AnalyzedReport | reportHasConfirmedCar[r]
-}
-
-run ReportWithConfirmedCarExists for 2 but 5 Int
-
-
-run {
+pred ReportWithBadlyDetectedLicensePlateExists {
 	some r: AnalyzedReport | reportHasBadlyDetectedLicensePlate[r]
-	ReportWithConfirmedCarExists
-	DetectionWithCarAndLicensePlateExists
-	ReportWithConfirmedLicensePlateExists
-	#Detection = 3
-} for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
+}
 
-run {
-	some r: AnalyzedReport | reportHasAcceptableLicensePlateReview[r]
-	ReportWithConfirmedCarExists
-	DetectionWithCarAndLicensePlateExists
-	ReportWithConfirmedLicensePlateExists
-	#Detection = 3
-} for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
+run ReportWithBadlyDetectedLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
 
-run {
-	some r: AnalyzedReport | reportHasHighConfidenceLicensePlateReview[r]
-	ReportWithConfirmedCarExists
-	DetectionWithCarAndLicensePlateExists
-	ReportWithConfirmedLicensePlateExists
-	#Detection = 3
-} for 1 but 3 Detection, 2 Car, 2 LicensePlate, 2 DetectedCar, 2 DetectedLicensePlate, 5 Int
+pred ReportWithNoDetectedCarForLicensePlateExists {
+	some r: AnalyzedReport | reportHasNoDetectedCarForLicensePlate[r]
+}
+
+run ReportWithNoDetectedCarForLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred ReportInReviewExists{
+	some r: AnalyzedReport | reportIsInReview[r]
+}
+
+run ReportInReviewExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred HighConfidenceReportWithoutReviewExists {
+	some r: AnalyzedReport | reportIsHighConfidence[r] and !reportHasReview[r]
+}
+
+run HighConfidenceReportWithoutReviewExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred HighConfidenceReportWithReviewExists {
+	some r: AnalyzedReport | reportIsHighConfidence[r] and reportHasReview[r]
+}
+
+run HighConfidenceReportWithReviewExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred LowConfidenceReportWithoutReviewExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and !reportHasReview[r]
+}
+
+run LowConfidenceReportWithoutReviewExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred LowConfidenceReportWithReviewExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and reportHasReview[r]
+}
+
+run LowConfidenceReportWithReviewExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred reportHasMultipleLicensePlates [r: AnalyzedReport] {
+	#getAnalyzedPhotoLicensePlates[r.analyzedPhoto] > 1
+}
+
+pred HighConfidenceReportWithMultipleLicensePlatesExists {
+	some r: AnalyzedReport | reportIsHighConfidence[r] and reportHasMultipleLicensePlates[r]
+}
+
+run HighConfidenceReportWithMultipleLicensePlatesExists for 2 but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
+
+pred LowConfidenceReportWithMultipleLicensePlatesExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and reportHasMultipleLicensePlates[r]
+}
+
+run LowConfidenceReportWithMultipleLicensePlatesExists for 2 but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
+
+pred LowConfidenceReportBecauseOfAcceptableReviewExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and reportHasAcceptableLicensePlateReview[r]
+}
+
+run LowConfidenceReportBecauseOfAcceptableReviewExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred LowConfidenceReportBecauseOfBadCarDetectionExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and !carDetectionIsTrustworthy[getTargetDetection[r]]
+}
+
+run LowConfidenceReportBecauseOfBadCarDetectionExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and noCarRegisteredForLicensePlate[r.submission.licensePlate]
+}
+
+run LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
+
+pred LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists {
+	some r: AnalyzedReport | reportIsLowConfidence[r] and !detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
+}
+
+run LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists for 2 but 5 Int, 1 AnalyzedReport

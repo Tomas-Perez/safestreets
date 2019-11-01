@@ -1,5 +1,6 @@
 module assertions
 open model
+open reportDefinitions
 
 /*
 	Report definitions do not overlap, meaning that a given Submission 
@@ -64,6 +65,8 @@ assert ReportDefinitionsAreDisjointed {
 	}
 }
 
+check ReportDefinitionsAreDisjointed for 6 but 5 Int
+
 // Ensure that all possible variations of a report are covered by our established definitions
 assert AllReportCasesAreCovered {
 	no r: AnalyzedReport | 
@@ -76,5 +79,4 @@ assert AllReportCasesAreCovered {
 		!reportIsInReview[r]
 }
 
-check ReportDefinitionsAreDisjointed for 6 but 5 Int
 check AllReportCasesAreCovered for 10 but 5 Int
