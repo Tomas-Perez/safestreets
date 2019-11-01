@@ -1,5 +1,7 @@
 \subsection{Product perspective}
 
+SafeStreets is built from the ground up as a new software application, specifically a mobile application, as required by the functionality that is provided. This mobile app communicates with a server, where the data is analysed and stored. External services are also utilized, particularly a government licence plate registry and a maps API.
+
 As for the SafeStreets system, the domain model is described in the diagram shown in Figure~\ref{fig:class-general}. Note that the diagram is not a complete description of the system, but rather a simplified version for easier understanding.
 
 \begin{figure}[!h]
@@ -17,7 +19,18 @@ In the state diagram shown in Figure~\ref{fig:state-report-submission}, the proc
 \caption{\label{fig:state-report-submission}State diagram - Report submission.}
 \end{figure}
 
-As observed in the diagram, for submitting a report, the user is first required to fill a formulary with the required information and photo. After the submission, the SafeStreets system executes an analysis of the data, matching it with the provided image. This can result in either a invalid or a valid report. An invalid report is discarded, with possible measures taken against the account that submitted it. A valid report is saved in the database. When the report is saved, it is made available for the different users to query, either through the mobile application or through the public API.
+As observed in the diagram, for submitting a report, the user is required to both fill a formulary with the required information and take photos of the event. After the submission, the SafeStreets system executes an analysis of the data, matching it with the provided image. This can result in either a invalid or a valid report. An invalid report is discarded, with possible measures taken against the account that submitted it. A valid report is saved in the database. When the report is saved, it is made available for the different users to query, either through the mobile application or through the public API.
+
+Further explaining the analysis process Figure~\ref{fig:state-report-validation}, the system utilizes a license plate recognition algorithm which output consists of possibly multiple license plates (the picture could include more than one car), along with the certainty of the detection.
+If multiple license plates are detected, the target of the report is determined by comparing it with the input of the user in the form.
+After the target license plate is confirmed, the confidence of the detection is evaluated, if it is below a certain threshold, it must pass through a community review. During this process, multiple users willing to participate are shown a cutout of the license plate in the picture and asked to input what they see. If a consensus is reached, then the report is considered valid.
+
+%% TODO: Change image %%
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Images/state-image-validation.png}
+\caption{\label{fig:state-report-validation}State diagram - Image validation.}
+\end{figure}
 
 \subsection{Product functions}
 The functionality of the system can be divided into three groups. In the following section, these functions are listed and explained, taking into account the already specified goals of the system.
