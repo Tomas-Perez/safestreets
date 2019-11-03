@@ -108,7 +108,7 @@ pred LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists {
 	some r: AnalyzedReport | 
 		reportIsLowConfidence[r] and 
 		!detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]] and
-		noCarRegisteredForLicensePlate[r.submission.licensePlate] and
+		!noCarRegisteredForLicensePlate[r.submission.licensePlate] and
 		carDetectionIsTrustworthy[getTargetDetection[r]] and
 		!reportHasAcceptableLicensePlateReview[r]
 }
