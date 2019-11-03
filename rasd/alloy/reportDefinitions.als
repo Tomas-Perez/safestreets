@@ -1,7 +1,7 @@
 open model
 module reportDefinitions
 
--------------------------------------- MAIN DEFINITIONS --------------------------------------
+---------------------------- MAIN DEFINITIONS -----------------------------
 
 pred reportIsHighConfidence [r: AnalyzedReport] {
 	reportHasConfirmedLicensePlate[r]
@@ -50,7 +50,7 @@ pred reportIsInReview [r: AnalyzedReport] {
 	!reportHasReview[r]
 }
 
-------------------------------------- UTILITY PREDICATES -------------------------------------
+--------------------------- UTILITY PREDICATES ----------------------------
 
 pred reportHasConfirmedLicensePlate [r: AnalyzedReport]  {
 	r.submission.licensePlate in getAnalyzedPhotoLicensePlates[r.analyzedPhoto]

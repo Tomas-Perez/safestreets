@@ -1,6 +1,6 @@
 module model
 
--------------------------------------------- DETECTION --------------------------------------------
+---------------------------------- DETECTION -----------------------------------
 
 sig LicensePlate, Car {}
 
@@ -21,7 +21,7 @@ sig DetectedCar {
 	confidence: Confidence
 }
 
-// Detection of a license plate and the car on which it is set on
+// Detection of a license plate and the car on which it is set on.
 sig Detection {
 	car: lone DetectedCar,
 	licensePlate: lone DetectedLicensePlate
@@ -43,11 +43,14 @@ pred carDetectionIsTrustworthy [d: Detection] {
 	d.car.confidence.rate >= 8
 }
 
------------------------------------------ PHOTO ANALYSIS ------------------------------------------
+-------------------------------- PHOTO ANALYSIS --------------------------------
 
 sig Photo {}
 
-// An analyzed photo, where multiple cars and their license plates could be detected
+/*
+	An analyzed photo, where multiple cars and their license plates
+	could be detected.
+*/
 sig AnalyzedPhoto {
 	photo: Photo,
 	detected: set Detection
@@ -72,14 +75,15 @@ fun AnalyzedPhoto.getAnalyzedPhotoLicensePlates : set LicensePlate {
 }
 
 /*
-	Repeating the image analysis over a photo gives the same result
-	There cannot be two analysis of the same photo with a different set of detected license plates
+	Repeating the image analysis over a photo gives the same result.
+	There cannot be two analysis of the same photo with a different 
+	set of detected license plates.
 */
 fact ImageAnalysisAlwaysReturnsTheSameResult {
 	all p, p': AnalyzedPhoto | p.photo = p'.photo implies p.detected = p'.detected
 }
 
---------------------------------------------- REPORTS ---------------------------------------------
+----------------------------------- REPORTS ------------------------------------
 
 sig ReportSubmission {
 	licensePlate: LicensePlate,
@@ -98,9 +102,9 @@ sig AnalyzedReport {
 
 fun AnalyzedReport.getTargetDetection : set Detection {
 	let 
-		targetLicensePlate = this.submission.licensePlate, 
-		licensePlateDetections = this.analyzedPhoto.detected <: licensePlate {
-			licensePlateDetections.(DetectedLicensePlate <: licensePlate).targetLicensePlate
+		targetLP = this.submission.licensePlate, 
+		lpDetections = this.analyzedPhoto.detected <: licensePlate {
+			lpDetections.(DetectedLicensePlate <: licensePlate).targetLP
 	}
 }
 
@@ -108,16 +112,16 @@ fun AnalyzedReport.getTargetCar : set Car {
 	getTargetDetection[this].car.car
 }
 
-------------------------------------- LICENSE PLATE REGISTRY --------------------------------------
+---------------------------- LICENSE PLATE REGISTRY ----------------------------
 
-// Placeholder for the license plate registration service API
+// Placeholder for the license plate registration service API.
 one sig LicensePlateRegistry {
 	registration: LicensePlate -> Car
 }
 
 /*
-	Every car is registered under at most 1 license plate
-	Every license plate is registered for at most 1 car
+	Every car is registered under at most 1 license plate.
+	Every license plate is registered for at most 1 car.
 
 	There could be cases where a car or license plate is not registered:
 		- Bad detection
@@ -143,13 +147,13 @@ pred noCarRegisteredForLicensePlate [l: LicensePlate] {
 	no getCarRegisteredUnderLicensePlate[l]
 }
 
---------------------------------------------- REVIEWS ---------------------------------------------
+----------------------------------- REVIEWS ------------------------------------
 
 sig Review {
 	detection: Detection,
 	matchPercentage: Int
 } {
-	// Percentage between 0 and 100%
+	// Percentage between 0 and 100%.
 	matchPercentage >= 0 and matchPercentage <= 10
 }
 
@@ -182,34 +186,37 @@ pred highConfidenceDetectionReview [r: Review] {
 	r.matchPercentage >= 8
 }
 
----------------------------------------------- EXTRA ----------------------------------------------
+------------------------------------ EXTRA -------------------------------------
 
 fact NoDanglingData {
-	// All reports are analyzed
+	// All reports are analyzed.
 	ReportSubmission = AnalyzedReport.submission
 
-	// All photos come from submissions
+	// All photos come from submissions.
 	Photo = ReportSubmission.photos
 
-	// LicensePlates are detected, submitted, or in the license plate registry
-	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate + LicensePlateRegistry.registration.Car
+	// LicensePlates are detected, submitted, or in the license plate registry.
+	LicensePlate = 
+		DetectedLicensePlate.licensePlate + 
+		ReportSubmission.licensePlate + 
+		LicensePlateRegistry.registration.Car
 
-	// Cars are detected or in the license plate registry
+	// Cars are detected or in the license plate registry.
 	Car = DetectedCar.car + LicensePlate.(LicensePlateRegistry.registration)
 	
-	// Detections come from a photo analysis
+	// Detections come from a photo analysis.
 	Detection = AnalyzedPhoto.detected
 	
-	// Confidence is attached to a detection
+	// Confidence is attached to a detection.
 	Confidence = DetectedLicensePlate.confidence + DetectedCar.confidence
 	
-	// Only photos from a report are analyzed
+	// Only photos from a report are analyzed.
 	AnalyzedPhoto = AnalyzedReport.analyzedPhoto
 	
-	// Detected license plates come from a photo detection
+	// Detected license plates come from a photo detection.
 	DetectedLicensePlate = Detection.licensePlate
 	
-	// Detected cars come from a photo detection
+	// Detected cars come from a photo detection.
 	DetectedCar = Detection.car
 }
 

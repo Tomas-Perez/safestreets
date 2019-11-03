@@ -24,7 +24,8 @@ pred ReportWithNoDetectedCarForLicensePlateExists {
 	some r: AnalyzedReport | reportHasNoDetectedCarForLicensePlate[r]
 }
 
-run ReportWithNoDetectedCarForLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
+run ReportWithNoDetectedCarForLicensePlateExists for 2 
+	but 5 Int, 1 AnalyzedReport
 
 pred ReportInReviewExists{
 	some r: AnalyzedReport | reportIsInReview[r]
@@ -61,16 +62,20 @@ pred reportHasMultipleLicensePlates [r: AnalyzedReport] {
 }
 
 pred HighConfidenceReportWithMultipleLicensePlatesExists {
-	some r: AnalyzedReport | reportIsHighConfidence[r] and reportHasMultipleLicensePlates[r]
+	some r: AnalyzedReport | 
+		reportIsHighConfidence[r] and reportHasMultipleLicensePlates[r]
 }
 
-run HighConfidenceReportWithMultipleLicensePlatesExists for 2 but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
+run HighConfidenceReportWithMultipleLicensePlatesExists for 2 
+	but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
 
 pred LowConfidenceReportWithMultipleLicensePlatesExists {
-	some r: AnalyzedReport | reportIsLowConfidence[r] and reportHasMultipleLicensePlates[r]
+	some r: AnalyzedReport | 
+		reportIsLowConfidence[r] and reportHasMultipleLicensePlates[r]
 }
 
-run LowConfidenceReportWithMultipleLicensePlatesExists for 2 but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
+run LowConfidenceReportWithMultipleLicensePlatesExists for 2 
+	but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfAcceptableReviewExists {
 	some r: AnalyzedReport | 
@@ -81,7 +86,8 @@ pred LowConfidenceReportBecauseOfAcceptableReviewExists {
 		detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
 }
 
-run LowConfidenceReportBecauseOfAcceptableReviewExists for 2 but 5 Int, 1 AnalyzedReport
+run LowConfidenceReportBecauseOfAcceptableReviewExists for 2 
+	but 5 Int, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfBadCarDetectionExists {
 	some r: AnalyzedReport | 
@@ -92,7 +98,8 @@ pred LowConfidenceReportBecauseOfBadCarDetectionExists {
 		!reportHasAcceptableLicensePlateReview[r]
 }
 
-run LowConfidenceReportBecauseOfBadCarDetectionExists for 2 but 5 Int, 1 AnalyzedReport
+run LowConfidenceReportBecauseOfBadCarDetectionExists for 2 
+	but 5 Int, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists {
 	some r: AnalyzedReport |
@@ -102,7 +109,8 @@ pred LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists {
 		!reportHasAcceptableLicensePlateReview[r]
 }
 
-run LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
+run LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists for 2 
+	but 5 Int, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists {
 	some r: AnalyzedReport | 
@@ -113,4 +121,5 @@ pred LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists {
 		!reportHasAcceptableLicensePlateReview[r]
 }
 
-run LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists for 2 but 5 Int, 1 AnalyzedReport
+run LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists for 2 
+	but 5 Int, 1 AnalyzedReport

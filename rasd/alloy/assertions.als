@@ -4,11 +4,11 @@ open reportDefinitions
 
 /*
 	Report definitions do not overlap, meaning that a given Submission 
-	can be classified under only one of the established definitions
+	can be classified under only one of the established definitions.
 */
 assert ReportDefinitionsAreDisjointed {
 	all r: AnalyzedReport {
-		reportIsHighConfidence[r] =>
+		reportIsHighConfidence[r] implies
 			!reportIsLowConfidence[r] and
 			!reportHasNoDetectedLicensePlate[r] and
 			!reportHasNonMatchingLicensePlates[r] and
@@ -16,7 +16,7 @@ assert ReportDefinitionsAreDisjointed {
 			!reportHasNoDetectedCarForLicensePlate[r]
 			!reportIsInReview[r] 
 		and
-		reportIsHighConfidence[r] => 
+		reportIsHighConfidence[r] implies 
 			!reportIsLowConfidence[r] and
 			!reportHasNoDetectedLicensePlate[r] and
 			!reportHasNonMatchingLicensePlates[r] and
@@ -24,14 +24,14 @@ assert ReportDefinitionsAreDisjointed {
 			!reportHasNoDetectedCarForLicensePlate[r]
 			!reportIsInReview[r] 
 		and 
-		reportHasNoDetectedLicensePlate[r] => 
+		reportHasNoDetectedLicensePlate[r] implies 
 			!reportIsHighConfidence[r] and
 			!reportIsLowConfidence[r] and
 			!reportHasNonMatchingLicensePlates[r] and
 			!reportHasBadlyDetectedLicensePlate[r] and
 			!reportHasNoDetectedCarForLicensePlate[r]
 		and
-		reportHasNonMatchingLicensePlates[r] =>
+		reportHasNonMatchingLicensePlates[r] implies
 			!reportIsHighConfidence[r] and
 			!reportIsLowConfidence[r] and
 			!reportHasNoDetectedLicensePlate[r] and
@@ -39,7 +39,7 @@ assert ReportDefinitionsAreDisjointed {
 			!reportHasNoDetectedCarForLicensePlate[r]
 			!reportIsInReview[r] 
 		and
-		reportHasBadlyDetectedLicensePlate[r] =>
+		reportHasBadlyDetectedLicensePlate[r] implies
 			!reportIsHighConfidence[r] and
 			!reportIsLowConfidence[r] and
 			!reportHasNoDetectedLicensePlate[r] and
@@ -47,7 +47,7 @@ assert ReportDefinitionsAreDisjointed {
 			!reportHasNoDetectedCarForLicensePlate[r]
 			!reportIsInReview[r] 
 		and
-		reportHasNoDetectedCarForLicensePlate[r] =>
+		reportHasNoDetectedCarForLicensePlate[r] implies
 			!reportIsHighConfidence[r] and
 			!reportIsLowConfidence[r] and
 			!reportHasNoDetectedLicensePlate[r] and
@@ -55,7 +55,7 @@ assert ReportDefinitionsAreDisjointed {
 			!reportHasBadlyDetectedLicensePlate[r]	
 			!reportIsInReview[r] 
 		and
-		reportIsInReview[r] =>
+		reportIsInReview[r] implies
 			!reportIsHighConfidence[r] and
 			!reportIsLowConfidence[r] and
 			!reportHasNoDetectedLicensePlate[r] and
@@ -67,7 +67,10 @@ assert ReportDefinitionsAreDisjointed {
 
 check ReportDefinitionsAreDisjointed for 6 but 5 Int
 
-// Ensure that all possible variations of a report are covered by our established definitions
+/*
+	Ensure that all possible variations of a report are covered by our
+	established definitions.
+*/
 assert AllReportCasesAreCovered {
 	no r: AnalyzedReport | 
 		!reportIsHighConfidence[r] and 
