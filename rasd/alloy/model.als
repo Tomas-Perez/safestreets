@@ -191,8 +191,11 @@ fact NoDanglingData {
 	// All photos come from submissions
 	Photo = ReportSubmission.photos
 
-	// LicensePlates are detected, submitted, or are registered
+	// LicensePlates are detected, submitted, or in the license plate registry
 	LicensePlate = DetectedLicensePlate.licensePlate + ReportSubmission.licensePlate + LicensePlateRegistry.registration.Car
+
+	// Cars are detected or in the license plate registry
+	Car = DetectedCar.car + LicensePlate.(LicensePlateRegistry.registration)
 	
 	// Detections come from a photo analysis
 	Detection = AnalyzedPhoto.detected
