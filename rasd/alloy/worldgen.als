@@ -73,25 +73,44 @@ pred LowConfidenceReportWithMultipleLicensePlatesExists {
 run LowConfidenceReportWithMultipleLicensePlatesExists for 2 but 5 Int, 4 LicensePlate, 4 DetectedLicensePlate, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfAcceptableReviewExists {
-	some r: AnalyzedReport | reportIsLowConfidence[r] and reportHasAcceptableLicensePlateReview[r]
+	some r: AnalyzedReport | 
+		reportIsLowConfidence[r] and 
+		reportHasAcceptableLicensePlateReview[r] and
+		carDetectionIsTrustworthy[getTargetDetection[r]] and
+		!noCarRegisteredForLicensePlate[r.submission.licensePlate] and
+		detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
 }
 
 run LowConfidenceReportBecauseOfAcceptableReviewExists for 2 but 5 Int, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfBadCarDetectionExists {
-	some r: AnalyzedReport | reportIsLowConfidence[r] and !carDetectionIsTrustworthy[getTargetDetection[r]]
+	some r: AnalyzedReport | 
+		reportIsLowConfidence[r] and 
+		!carDetectionIsTrustworthy[getTargetDetection[r]] and
+		!noCarRegisteredForLicensePlate[r.submission.licensePlate] and
+		detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]] and 
+		!reportHasAcceptableLicensePlateReview[r]
 }
 
 run LowConfidenceReportBecauseOfBadCarDetectionExists for 2 but 5 Int, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists {
-	some r: AnalyzedReport | reportIsLowConfidence[r] and noCarRegisteredForLicensePlate[r.submission.licensePlate]
+	some r: AnalyzedReport |
+		reportIsLowConfidence[r] and 
+		noCarRegisteredForLicensePlate[r.submission.licensePlate] and
+		carDetectionIsTrustworthy[getTargetDetection[r]] and
+		!reportHasAcceptableLicensePlateReview[r]
 }
 
 run LowConfidenceReportBecauseOfNoCarRegisteredForLicensePlateExists for 2 but 5 Int, 1 AnalyzedReport
 
 pred LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists {
-	some r: AnalyzedReport | reportIsLowConfidence[r] and !detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]]
+	some r: AnalyzedReport | 
+		reportIsLowConfidence[r] and 
+		!detectionLicensePlateCarMatchIsTrustworthy[getTargetDetection[r]] and
+		noCarRegisteredForLicensePlate[r.submission.licensePlate] and
+		carDetectionIsTrustworthy[getTargetDetection[r]] and
+		!reportHasAcceptableLicensePlateReview[r]
 }
 
 run LowConfidenceReportBecauseOfBadCarAndLicensePlateMatchExists for 2 but 5 Int, 1 AnalyzedReport
