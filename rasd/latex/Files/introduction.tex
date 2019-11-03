@@ -18,19 +18,15 @@ At the same time, the ticketing system can provide information to SafeStreets, w
 
 \subsubsection{General purpose}
 
-As already mentioned, the SafeStreets system is designed to provide users with the ability to report and get information of reported traffic violations through an application.
+As already mentioned, the SafeStreets system is designed to provide users with the ability to report and get information of reported traffic violations through an application. 
 
 Any user with a device capable of running the application can sign up to the system, which enables them to access its functionalities.
 
-In order to submit a report, the user needs to fill a form. In it they have to enter the license plate number of the vehicle committing the violation, the type of violation and at least one photo of the scene, where the license plate of the vehicle can be easily recognized. This data, along with metadata retrieved from the user's device (geographical position, date and time) is then sent to the system.
+In order to submit a report, the user needs to fill a form. In it, they have to enter the license plate number of the vehicle committing the violation, the type of violation and at least one photo of the scene, where the license plate of the vehicle can be easily recognized. This data, along with metadata retrieved from the user's device (geographical position, date and time) is then sent to the system.
 
-The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. The output consists of possibly multiple license plates (the picture could include more than one car), along with the certainty of the detection.
+The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. The output consists of possibly multiple license plates (the picture could include more than one car), along with the certainty of the detection. If multiple license plates are detected, the target of the report is determined by comparing it with the input of the user in the form. After a target license plate is confirmed, the confidence of the detection is evaluated, if it is below a certain threshold, it must pass through a community review. During this process, multiple users willing to participate are shown a cutout of the license plate in the picture and asked to input what they see. If a consensus is reached, then the report is considered valid.
 
-If multiple license plates are detected, the target of the report is determined by comparing it with the input of the user in the form.
-
-After a target license plate is confirmed, the confidence of the detection is evaluated, if it is below a certain threshold, it must pass through a community review. During this process, multiple users willing to participate are shown a cutout of the license plate in the picture and asked to input what they see. If a consensus is reached, then the report is considered valid.
-
-The data collected by the system in relation to reports is to be queried by its users. There are two distinct targets of this functionality: standard users and the municipality. The main difference between the two is that the municipality can access information that should not be freely accessible to everyone because of security and privacy concerns. Through the application, users are capable of visualizing a city map showing where the violations happened. Furthermore, a public API is made available, facilitating data analysis and system integration.
+The data collected by the system in relation to reports is to be queried by its users. There are two distinct targets of this functionality: standard users and the municipality. The main difference between the two is that the municipality can access information that should not be freely accessible to everyone because of security and privacy concerns. Through the application, users are capable of visualizing a city map showing where the violations happened. Furthermore, a public API is made available, facilitating data 
 
 \subsubsection{World and Machine phenomena}
 To mark the boundaries of the system, here we denote:
