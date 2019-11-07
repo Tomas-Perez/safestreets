@@ -1,6 +1,7 @@
 \subsection{External interface requirements}
 \subsubsection{User interfaces}
-The following mockups show an approximation of the mobile application.
+\begin{@empty}
+The following mockups show an approximation of the mobile application.\\
 
 \setlength{\intextsep}{0pt plus \textheight minus 10pt}
 
@@ -45,6 +46,7 @@ The following mockups show an approximation of the mobile application.
     \caption{\label{fig:mockup-reports-map}Mockup - Reports map.}
 \end{minipage}
 \end{figure}
+\end{@empty}
 
 \subsubsection{Hardware interfaces}
 \subsubsection{Software interfaces}
@@ -133,9 +135,9 @@ Actor           & User
 \\ \hline
 
 Entry condition &
-The user has installed the application on their device.
+- The user has installed the application on their device.
 
-The application is running.
+- The application is running.
 \\ \hline
 %Event flow      & \begin{tabular}[c]{p{0.95\linewidth}}
 Event flow      & 
@@ -174,9 +176,9 @@ Actor           & User
 \\ \hline
 
 Entry condition &
-The application is running.
+- The application is running.
 
-The user is signed up.
+- The user is signed up.
 \\ \hline
 Event flow      & 
     1. The user presses the “Sign in” button.
@@ -200,7 +202,74 @@ Exceptions      &
 \end{tabular}
 \end{table}
 
-% CASE 3: SUBMIT REPORT 
+% CASE 3: SEE PROFILE 
+\begin{table}[H]
+\begin{tabular}{|p{0.17\linewidth}|p{0.77\linewidth}|}
+\hline
+Name            & See profile
+\\ \hline
+
+Actor           & User
+\\ \hline
+
+Entry condition &
+- The application is running.
+
+- The user is signed in.
+
+- The user is in the home screen.
+\\ \hline
+Event flow      & 
+    1. The user presses the user icon button.
+
+    2. The system shows the user information.
+\\ \hline
+Exit condition  & 
+    - The user information is displayed to the user.
+\\ \hline
+\end{tabular}
+\end{table}
+
+% CASE 4: EDIT USER INFORMATION 
+\begin{table}[H]
+\begin{tabular}{|p{0.17\linewidth}|p{0.77\linewidth}|}
+\hline
+Name            & Edit user information
+\\ \hline
+
+Actor           & User
+\\ \hline
+
+Entry condition &
+- The application is running.
+
+- The user is signed in.
+
+- The user is in the home screen.
+\\ \hline
+Event flow      & 
+    1. The user presses the “edit” button.
+
+    2. The user edits the fields they want to change.
+
+    3. The user presses the “confirm” button.
+    
+    4. The system saves the data.
+\\ \hline
+Exit condition  & 
+    - The user information is successfully updated.
+
+    - The user profile is in view-only state.
+\\ \hline
+Exceptions      &
+    - The user did not fill all the required fields. The system marks the empty fields for the user to fill.
+
+    - The email is already registered in the system. The system warns the user that the email is already in use.
+\\ \hline
+\end{tabular}
+\end{table}
+
+% CASE 5: SUBMIT REPORT 
 \begin{table}[H]
 \begin{tabular}{|p{0.17\linewidth}|p{0.77\linewidth}|}
 \hline
@@ -251,7 +320,7 @@ Exceptions      &
 \end{tabular}
 \end{table}
 
-% CASE 4: SEE REPORTS MAP 
+% CASE 6: SEE REPORTS MAP 
 \begin{table}[H]
 \begin{tabular}{|p{0.17\linewidth}|p{0.77\linewidth}|}
 \hline
@@ -286,7 +355,7 @@ Exceptions      &
 \end{tabular}
 \end{table}
 
-% CASE 5: REVIEW PHOTO 
+% CASE 7: REVIEW PHOTO 
 \begin{table}[H]
 \begin{tabular}{|p{0.17\linewidth}|p{0.77\linewidth}|}
 \hline
