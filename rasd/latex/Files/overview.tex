@@ -40,12 +40,32 @@ The reporting of violations is the main functionality of the system. It allows i
 After the submission, the system analyses the provided information, checking its integrity. If the report is considered invalid or to have been compromised, it is discarded and the user is flagged as not trustworthy. Otherwise, the report is saved and made available to the rest of the system.
 
 \subsubsection{Image analysis}
-In order to confirm the validity of a report, the system performs an analysis of the submitted images. The pictures are expected to show the vehicle committing the violation, with at least one of them providing a clear view of its license plate. The analysis searches the images for this information and matches the detected license plate with the one provided by the user in the report.
+In order to confirm the validity of a report, the system performs an analysis of the submitted images. The pictures are expected to show the vehicle committing the violation, with at least one of them providing a clear view of its license plate. The analysis searches the images for this information and matches the detected license plate with the one provided by the user in the report. If the analysis is not certain enough, the system gets support from its users by showing them the photo and asking them to input the license plate being shown.
 
 \subsubsection{Data querying}
 Gathered information by SafeStreets can be accessed by all users. There are two ways in which the data can be accessed, via the mobile application or through the public API.
 In the first case, the mobile application provides users with the ability to see violations in a map, allowing the user to also filter these violations by date and type. 
-On the other hand, the API allows for SafeStreets to be integrated with other third party systems. Users are able to query the available data according to their role and obtain the information in an analysis-friendly format.
+On the other hand, the API allows for SafeStreets to be integrated with other third party systems. Users are able to query the available data according to their role and obtain the information in an analysis-friendly format.\\\\
+The data provided for each violation is the following:
+\begin{itemize}
+\item
+Report ID: unique reference to each report
+\item
+Type of violation
+\item
+Date and time
+\item
+Location: gps coordinates, approximate street name and number
+\item
+Photos
+\item
+License plate
+\item
+The system’s degree of confidence in the report
+\item
+Whether the report contributed to issuing a traffic ticket
+\end{itemize}
+
 
 \subsection{User characteristics}
 The actors identified as the users of the application are:

@@ -61,21 +61,44 @@ The following mockups show an approximation of the mobile application.\\
 \subsubsection{Software interfaces}
 \begin{itemize}
 \item
-License plate recognition: it is necessary to be able to recognize the license plate in the picture a report. For this, a good option is OpenALPR, an open source library that can be run server-side (due to performance limitations). A cloud API is also provided, which could be used during early stages of development.
+License plate recognition: An external library or API is necessary to perform license plate recognition on the photos submitted and determine the validity of a report.
+\item
+Car recognition: To determine the legitimacy of a report, a way to detect cars in the photos is essential. Thanks to this, it can be ensured that the license plate is attached to a car. Also, by cross referencing the characteristics of the car with the license plate registry, it can be ensured that there was no swapping of license plates.
+\item
+License plate registry: Access to the local government’s license plate registry is needed to be able to cross reference the detected license plate and car with a trustworthy source.
+\item
+Ticketing system: Provided by the local government. With access to information about traffic tickets, the system can determine how the submitted reports contribute to the issuing of the tickets.
+\item
+Maps: An external map service is required to allow showing transport violations to users. Popular and tested options are Google Maps and Leaflet, both allowing easy integration of maps in the application and the possibility to mark events in them.
+\item
+GPS: To know the location of a violation report, the mobile application requires an operating GPS. The information is obtained by interfacing with the device’s operating system.
+\item
+Camera: In order to take photos of a violation scene, the application needs to access the device’s camera. This is done by communicating with the device’s operating system.
 \end{itemize}
+
 \subsubsection{Communication interfaces}
+Communication between the mobile application and the SafeStreets system is performed through the standard HTTP protocol. End-to-end encryption must be provided on top of it to protect the submitted reports from becoming compromised.
 
 \subsection{Scenarios}
 \subsubsection{Scenario 1}
 John has a spot on his street reserved for his garage entrance. During the week, he commutes to work by subway, and leaves the car to his wife, Sarah, who leaves later in the day. It is not unusual for him to find someone blocking the garage when he goes to work in the morning. If the car is still there by the time Sarah needs to leave, she will be late to the office. 
-Before using SafeStreets, he would have to call the police and provide a license plate and address, all while hurrying on his way to work. Now, he can just take a picture and then submit a report while he is sitting on the subway.
+Before using SafeStreets, he would have to call the police and provide a license plate and address, all while hurrying on his way to work. Now, he can just open the app, take a picture and then finish submitting the report while he is sitting on the subway.
+
 \subsubsection{Scenario 2}
 Marco is a data science student at Politecnico di Milano. As he bikes every day to the university, he is familiar with the problem of cars parking in the bike lane. Thanks to the SafeStreets API, he can easily obtain data about it using Python. So, he decides to base his thesis on this topic and analyzes the patterns in violations throughout all of Italy, comparing different cities and their countermeasures.
+
 \subsubsection{Scenario 3}
 Chad’s girlfriend broke up with him last week because he was too jealous and would not let her go out with her friends. He is not over this and is really mad at her. All of the sudden he gets a brilliant idea, he takes a picture of the license plate of the girls car and prints it. Then, a couple days later he finds a double parked car, attaches the printed license plate to it and reports the incident with SafeStreets. 
-The system detects that something is wrong with the picture, so it decides not to save the report and marks Chad’s account with potential misuse of the application.
+The system detects that something is wrong with the picture, so it decides not to save the report.
+
 \subsubsection{Scenario 4}
 Sally wants to go to the city centre to buy some groceries, but she is not sure if she should take the car or go by bus. She grabs her phone, boots up SafeStreets and checks the vicinity to the supermarket. The app shows a high concentration of badly parked cars, she assumes that there is a lot of traffic and nowhere to park her car properly, so she decides to take the bus.
+
+\subsubsection{Scenario 5}
+Jason is on a run and notices a car parked in the bike lane so he takes a picture and submits a report on the go. After analysis the submission, the system cannot determine the license plate number with enough accuracy, so it sends the photo to user review.
+Mike is bored waiting at the bus stop, he decides to check out SafeStreets to see what’s going on around him on the map. When he opens the app, he notices a notification. He touches to see what it is about and a pop up appears asking him to review the photo submitted by Jason. After squinting for a bit, he inputs his best guess and submits the form.
+Once enough people review Jason’s photo, the system acquires enough votes to determine the license plate with good accuracy and marks the report as valid, making it available to all users.
+
 
 \subsection{Functional requirements}
 \begin{itemize}
@@ -405,8 +428,6 @@ Exceptions      &
 \subsection{Performance requirements}
 
 \subsection{Design constraints}
-
-\subsubsection{Standards compliance}
 
 \subsubsection{Hardware limitations}
 
