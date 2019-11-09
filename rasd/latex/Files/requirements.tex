@@ -89,16 +89,15 @@ Marco is a data science student at Politecnico di Milano. As he bikes every day 
 
 \subsubsection{Scenario 3}
 Chad’s girlfriend broke up with him last week because he was too jealous and would not let her go out with her friends. He is not over this and is really mad at her. All of the sudden he gets a brilliant idea, he takes a picture of the license plate of the girls car and prints it. Then, a couple days later he finds a double parked car, attaches the printed license plate to it and reports the incident with SafeStreets. 
-The system detects that something is wrong with the picture, so it decides not to save the report.
+The system detects that something is wrong with the picture, as the license plate does not belong to the pictured car. Because of this, the report is not marked as worthy of a ticket against the license plate.
 
 \subsubsection{Scenario 4}
-Sally wants to go to the city centre to buy some groceries, but she is not sure if she should take the car or go by bus. She grabs her phone, boots up SafeStreets and checks the vicinity to the supermarket. The app shows a high concentration of badly parked cars, she assumes that there is a lot of traffic and nowhere to park her car properly, so she decides to take the bus.
+Sally wants to go to the city centre to buy some groceries, but she is not sure if she should take the car or go by public transport. She grabs her phone, boots up SafeStreets and checks the vicinity to the supermarket. The app shows a high concentration of badly parked cars and she assumes that there is a lot of traffic with nowhere to park her car properly, so she decides to take the bus.
 
 \subsubsection{Scenario 5}
-Jason is on a run and notices a car parked in the bike lane so he takes a picture and submits a report on the go. After analysis the submission, the system cannot determine the license plate number with enough accuracy, so it sends the photo to user review.
+Jason is on a run and notices a car parked in the bike lane, he takes a picture and submits a report on the go. After analysis the submission, the system cannot determine the license plate number with enough accuracy, so it sends the photo to user review.
 Mike is bored waiting at the bus stop, he decides to check out SafeStreets to see what’s going on around him on the map. When he opens the app, he notices a notification. He touches to see what it is about and a pop up appears asking him to review the photo submitted by Jason. After squinting for a bit, he inputs his best guess and submits the form.
-Once enough people review Jason’s photo, the system acquires enough votes to determine the license plate with good accuracy and marks the report as valid, making it available to all users.
-
+Once enough people review Jason’s photo, the system acquires a good number of votes to determine the license plate with good accuracy and marks the report as valid, making it available to all users.
 
 \subsection{Functional requirements}
 \begin{itemize}

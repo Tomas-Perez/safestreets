@@ -85,9 +85,22 @@ Administrator: An employee of SafeStreets that maintains and updates the system.
 
 \subsection{Assumptions, dependencies and constraints}
 
+\newcommand{\assumptionLocation}{
+    {[D1]} - Location obtained from the device running SafeStreets is accurate.
+}
+\newcommand{\assumptionDateTime}{
+    {[D2]} - Date and time obtained from the device running SafeStreets is accurate. 
+}
+\newcommand{\assumptionTicketingInfo}{
+    {[D3]} - The information provided by the ticketing system is accurate and up to date. 
+}
+\newcommand{\assumptionLicensePlateRegistry}{
+    {[D4]} - The information provided by the license plate registry is accurate and up to date.
+}
+
 \begin{itemize}[label={}]
-    \item \begin{assumption} Location obtained from the device running SafeStreets is accurate. \end{assumption}
-    \item \begin{assumption} Date and time obtained from the device running SafeStreets is accurate. \end{assumption}
-    \item \begin{assumption} The information provided by the ticketing system is accurate and up to date. \end{assumption}
-    \item \begin{assumption} The information provided by the license plate registry is accurate and up to date. \end{assumption}
+    \item \assumptionLocation{}
+    \item \assumptionDateTime{}
+    \item \assumptionTicketingInfo{}
+    \item \assumptionLicensePlateRegistry{}
 \end{itemize}
