@@ -278,6 +278,9 @@ TSWLatexianTemp*
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+__latexindent_temp.tex
 
 ### Drive
 desktop.ini
+
+

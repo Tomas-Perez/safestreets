@@ -24,9 +24,9 @@ Any user with a device capable of running the application can sign up to the sys
 
 In order to submit a report, the user needs to fill a form. In it, they have to enter the license plate number of the vehicle committing the violation, the type of violation and at least one photo of the scene, where the license plate of the vehicle can be easily recognized. This data, along with metadata retrieved from the user's device (geographical position, date and time) is then sent to the system.
 
-The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. The output consists of possibly multiple license plates (the picture could include more than one car), along with the certainty of the detection. If multiple license plates are detected, the target of the report is determined by comparing it with the input of the user in the form. After a target license plate is confirmed, the confidence of the detection is evaluated, if it is below a certain threshold, it must pass through a community review. During this process, multiple users willing to participate are shown a cutout of the license plate in the picture and asked to input what they see. If a consensus is reached, then the report is considered valid.
+The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. When faced with difficulties in the detection, the photo must pass through community review, in which users reach a consensus on the validity of the report photo.
 
-The data collected by the system in relation to reports is to be queried by its users. There are two distinct targets of this functionality: standard users and the municipality. The main difference between the two is that the municipality can access information that should not be freely accessible to everyone because of security and privacy concerns. Through the application, users are capable of visualizing a city map showing where the violations happened. Furthermore, a public API is made available, facilitating data 
+The data collected by the system in relation to reports is to be queried by its users. There are two distinct targets of this functionality: standard users and the municipality. The main difference between the two is that the municipality can access information that should not be freely accessible to everyone because of security and privacy concerns. Through the application, users are capable of visualizing a city map showing where the violations happened. Furthermore, a public API is made available, facilitating data analysis and system integration.
 
 \subsubsection{World and Machine phenomena}
 To mark the boundaries of the system, here we denote:
@@ -63,41 +63,81 @@ To mark the boundaries of the system, here we denote:
     \end{table}
 
 \subsubsection{Goals}
-\begin{itemize}
+\begin{itemize}[label={}]
 \item
-[G1] - The user is able to report a traffic violation to authorities.
+\begin{goal}
+    The user is able to report a traffic violation to authorities.
+\end{goal}
 \item
-[G2] - The user is able to visualize reports in a specified area and time.
+\begin{goal}
+    The user is able to visualize reports in a specified area and time.
+\end{goal}
 \item
-[G3] - It is possible to query report information in an easily parsable format to allow for data analysis.
+\begin{goal}
+    It is possible to query report information in an easily parsable format to allow for data analysis.
+\end{goal}
 \item
-[G4] - Only authorities are able to access report pictures and license plates.
+\begin{goal}
+    Only authorities are able to access report pictures and license plates.
+\end{goal}
 \item
-[G5] - The system must protect the chain of custody of the reports. 
+\begin{goal}
+    Compromised reports are detected and discarded.
+\end{goal}
 \item
-[G6] - Compromised reports are detected and discarded.
+\begin{goal}
+    Authorities are able to access a curated list of reports which are considered to have a higher than average level of accuracy and reliability.
+\end{goal}
 \item
-[G7] - Information about issued tickets provided by the municipality system can be cross referenced with the SafeStreets database and analysed.
+\begin{goal}
+    It is possible to determine if a particular report contributed in issuing a traffic ticket.
+\end{goal}
 \end{itemize}
 
 \subsection{Definitions, Acronyms, Abbreviations}
 \subsubsection{Definitions}
 \begin{itemize}
-    \item Compromised report: a report that has been modified by an unauthorized agent outside the system boundaries.
-    \item Authority: a local agency whose purpose is, as indicated by the current law, to enforce traffic rules. For example: the police.      
+    \item Traffic violation: An action performed by a driver of a vehicle which is against the local traffic regulations.
+    \item Report: Information submitted by a user to notify the system and, by extension, authorities of a traffic violation.
+    \item Compromised report: A report that has been modified by an unauthorized agent outside the system boundaries.
+    \item Authority: A local agency whose purpose is, as indicated by the current law, to enforce traffic rules. For example: the police.
+    \item Ticketing system: A government database containing information about issued traffic tickets.
+    \item License plate registry: A government database connecting a license plate with the car registered to it and information about it such as the make, model and color.
+    \item False-positive report: An invalid report that is considered valid by the system.
+    \item False-negative report: A valid report that is considered invalid by the system.
 \end{itemize}
 
-\subsubsection{Revision history}
+\subsubsection{Acronyms}
+\begin{itemize}
+    \item GPS: Global Positioning System
+    \item API: Application Programming Interface
+\end{itemize}
+
+\subsubsection{Abbreviations}
+\begin{itemize}
+    \item {[Gn]}: n-th goal
+    \item {[Dn]}: n-th domain assumption 
+    \item {[FRn]}: n-th functional requirement
+    \item {[SRn]}: n-th security requirement
+\end{itemize}
+
+\subsection{Revision history}
 \begin{itemize}
     \item Version 1.0: First release.
 \end{itemize}
 
-\subsubsection{Reference documents}
+\subsection{Document structure}
+The RASD document is composed of six chapters:
 
-\subsubsection{Document structure}
-The RASD document is composed of five chapters:\\\\
-Chapter 1: The problem is introduced. A description of the purpose of the application is given, followed by the scope, where the world and machine phenomena are explained, along with the system goals. Also, definitions are listed to help the reader understand the concepts used.\\\\
-Chapter 2: An overall description of the product. Including a further detailed description of the product, with the help of class and state diagrams, a description of the main functionalities, the different types of actors that interact with the system, and the domain assumptions considered for solving the problem.\\\\
-Chapter 3: Specific requirements. This is the main chapter of the document. It includes the external interface requirements, like the user and software interfaces. Scenarios for typical application usage are provided, followed by functional and performance requirements, and the constraints under which the system needs to function. Lastly, the system software attributes are discussed.\\\\
-Chapter 4: In this chapter a documented Alloy model is presented for a formal analysis of the problem, along with a discussion of the purpose of this model and what it proves.\\\\
-Chapter 5: Shows the effort spent by each member of the group in the development of the document.
+\paragraph{Chapter 1} The problem is introduced. A description of the purpose of the application is given, followed by the scope, where the world and machine phenomena are explained, along with the system goals. Also, definitions are listed to help the reader understand the concepts used.
+
+\paragraph{Chapter 2} An overall description of the product. Including a further detailed description, with the help of class and state diagrams, a description of the main functionalities, the different types of actors that interact with the system, and the domain assumptions considered for solving the problem.
+
+\paragraph{Chapter 3} Specific requirements. This is the main chapter of the document. It includes the external interface requirements, like the user and software interfaces. Scenarios for typical application usage are provided, followed by functional and security requirements, and the constraints under which the system needs to function. Lastly, the system software attributes are discussed.
+
+\paragraph{Chapter 4} In this chapter a documented Alloy model is presented for a formal analysis of the problem, along with a discussion of the purpose of this model and what it proves.
+
+\paragraph{Chapter 5} Shows the effort spent by each member of the group in the development of the document.
+
+\paragraph{Chapter 6} Reference documents that were useful in writing this one
+
