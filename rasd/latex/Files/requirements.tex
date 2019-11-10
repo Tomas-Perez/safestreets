@@ -371,7 +371,7 @@ Entry condition &
 Event flow      & 
     1. The user presses the “Reports map” button.
 
-    2. The user fills the “from”, “to” and “type” fields.
+    2. The user fills the “from”, “to”, “type” and "search" fields.
 
     3. The user presses the “filter” button.
 
@@ -424,10 +424,22 @@ Exceptions      &
 \end{tabular}
 \end{table}
 
-\subsection{Performance requirements}
-
 \subsection{Design constraints}
-
+SR1 - Only photos taken through the mobile application are submitted, the user cannot upload a picture previously saved on their device.
+\begin{itemize}
+\item
+[G4] - Only authorities are able to access report pictures and license plates.
+    \begin{itemize}
+    \item
+    SR2 - Special API keys are generated and provided to authorities
+    \end{itemize}
+\item
+[G5] - Compromised reports are detected and discarded.
+    \begin{itemize}
+    \item
+    SR3 - End-to-end encryption is provided for the submission of reports. 
+    \end{itemize}
+\end{itemize}
 \subsubsection{Hardware limitations}
 
 For use of the mobile application, a smartphone or tablet with the following specifications is required:
