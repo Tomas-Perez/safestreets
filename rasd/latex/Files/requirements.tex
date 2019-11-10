@@ -100,58 +100,94 @@ Mike is bored waiting at the bus stop, he decides to check out SafeStreets to se
 Once enough people review Jason’s photo, the system acquires a good number of votes to determine the license plate with good accuracy and marks the report as valid, making it available to all users.
 
 \subsection{Functional requirements}
-\begin{itemize}
-\item
-[G1] - The user is able to report a traffic violation to authorities
-    \begin{itemize}
-    \item
-    D1 - An accurate gps location can be acquired from the device the user is running SafeStreets on.
-    \item
-    D2 - The device running SafeStreets has a camera.
-    \item
-    D4 - The metadata of the picture in the violation report is accurate
-    \item
-    R1 - The user must be able to fill out a form providing information about a traffic violation.
+\begin{itemize}[label={}]
+\item \textbf{\goalUserReport{}}
+    \begin{itemize}[label={}]
+        \item \assumptionLocation{}
+        \item \assumptionDateTime{}
+        \item {[FR1]} - The user is able to take pictures from the mobile application to add to a report.
+        \item {[FR2]} - The user is able to fill out a form providing information about a traffic violation, consisting of:
+        \begin{itemize}[label={\textbullet}]
+            \item Type of violation
+            \item License plate
+            \item At least one photo of the scene
+        \end{itemize}
+        \item {[FR3]} - The application can determine date, time and location based on information provided by the device when then pictures are taken and adds this metadata to the report.
     \end{itemize}
 
-\item
-[G2] - License plates can be recognized from the pictures of the violation report
-    \begin{itemize}
-    \item
+\item \textbf{\goalVisualizeReports}
+    \begin{itemize}[label={}]
+        \item {[FR4]} - The user is provided a map where the location of reports are indicated by markers.
+        \item {[FR5]} - The user can filter the reports shown on the map by date, time and type of violation.
+        \item {[FR6]} - The user can search for a specific location on the map by inputting coordinates or an address.
+        \item {[FR7]} - The user can select a report on the map and obtain information about it. This information includes:
+        \begin{itemize}[label={\textbullet}]
+            \item Report ID: unique reference to each report
+            \item Type of violation
+            \item Date and time
+            \item Location: gps coordinates, approximate street name and number
+        \end{itemize}
+    
     \end{itemize}
 
-\item
-[G3] - Roles with different levels of permission are assigned to users and authorities.
-    \begin{itemize}
-    \item
-    \end{itemize}
-\item
-[G4] - The information gathered from the reports is provided to users and authorities according to their role.
-    \begin{itemize}
-    \item
+\item \textbf{\goalQueryInfo}
+    \begin{itemize}[label={}]
+        \item {[FR8]} - A secured API is provided to obtain and filter report information. The following filters are possible:
+        \begin{itemize}[label={\textbullet}]
+            \item Date and time
+            \item Location
+            \item Type of violation
+        \end{itemize}
+        \item {[FR9]} - The user can register by inputting his full name and email, and choosing a username and password.
+        \item {[FR10]} - The user has access to view his full account information.
+        \item {[FR11]} -The user can edit his email and full name.
+        \item {[FR12]} - An API key is provided to the user via their profile screen in the mobile application.
+        \item {[FR13]} - The user can login to the mobile application by providing their username and password.
     \end{itemize}
 
-\item
-[G5] - The system must protect the chain of custody of the reports 
-    \begin{itemize}
-    \item
-	RX - The system must provide e2e encryption from the device of the user to the server.
+\item \textbf{\goalPhotosAuthoritiesOnly}
+    \begin{itemize}[label={}]
+        \item {[FR14]} - A secured API accessible only to authorities, provides the following information about reports:
+        \begin{itemize}[label={\textbullet}]
+            \item Photos
+            \item License plate
+        \end{itemize}
     \end{itemize}
-	
-\item
-[G6] - Reports that had their integrity compromised and malicious reports will be detected and discarded.
-    \begin{itemize}
-    \item
-	D5 - There is a system available capable of connecting a license plate to characteristics of the car (make, model, color).
-    \item
-	RX - SafeStreets must cross reference the information of the car registered under the detected license plate with the information obtained from analyzing the report picture.
+
+\item \textbf{\goalCuratedReports}
+    \begin{itemize}[label={}]
+        \item \assumptionLicensePlateRegistry
+        \item {[FR15]} - Detected cars and license plates are cross referenced with the license plate registry to ensure the license plate belongs to the car.
+        \item {[FR16]} - A degree of confidence is assigned to each report, where a high confidence report will have:
+        \begin{itemize}[label={\textbullet}]
+            \item License plate recognition of 80\%+ confidence.
+            \item Car recognition of 80\%+ confidence.
+            \item The license plate and car pair are found in the license plate registry.
+        \end{itemize}
+        If any of these criteria are not met the report is considered low confidence.
+        \item {[FR17]} - The API includes the system’s degree of confidence in the report to the provided report information after a query.
+        \item {[FR18]} - Report information provided by the API can be filtered by their degree of confidence.
+        \item {[FR19]} - Users can review photos with a license plate recognition lower than 80\% to adjust the confidence in the recognition.
     \end{itemize}
-\item
-[G7] - Information about issued tickets provided by the municipality system can be cross referenced with the SafeStreets database and analysed 
-    \begin{itemize}
-    \item
-    \end{itemize} 
- \end{itemize}
+
+    \noindent\fbox{%
+        \parbox{\dimexpr\textwidth-10pt}{%
+        \textbf{Motivation behind low-confidence and high-confidence report distinction:} \\
+        For the general purpose of the application, false-positive reports are not a problem as, in the worst case, they would only add noise to the information provided to the users.\\
+        However, if the authorities use the information to generate traffic tickets, great care must be put to limit them. In this case, a greater number false-negative reports is the preferred choice.\\
+        Low-confidence reports, while valid, are more relaxed in their constraints in order to catch the majority of reports and, by extension, minimizing the number of false-negatives. \\
+        On the other hand, high-confidence reports are very constrained to minimize the number of false-positives and provide the authorities with the most reliable pool of reports possible.
+        }%
+    }
+
+\item \textbf{\goalTicketAnalysis}
+    \begin{itemize}[label={}]
+        \item \assumptionTicketingInfo
+        \item {[FR20]} - Information obtained from the ticketing system is used to determine if a report contributed to the issuing of a traffic ticket.
+        \item {[FR21]} - Whether the report contributed to a traffic ticket is included in the information provided by the mobile application and the API.
+    \end{itemize}
+    
+\end{itemize}
 
 \subsubsection{Use cases}
 
@@ -425,21 +461,18 @@ Exceptions      &
 \end{table}
 
 \subsection{Design constraints}
-SR1 - Only photos taken through the mobile application are submitted, the user cannot upload a picture previously saved on their device.
-\begin{itemize}
-\item
-[G4] - Only authorities are able to access report pictures and license plates.
-    \begin{itemize}
-    \item
-    SR2 - Special API keys are generated and provided to authorities
+{[SR1]} - Only photos taken through the mobile application are submitted, the user cannot upload a picture previously saved on their device.
+\begin{itemize}[label={}]
+    \item \textbf{\goalPhotosAuthoritiesOnly}
+    \begin{itemize}[label={}]
+        \item {[SR2]} - Special API keys are generated and provided to authorities
     \end{itemize}
-\item
-[G5] - Compromised reports are detected and discarded.
-    \begin{itemize}
-    \item
-    SR3 - End-to-end encryption is provided for the submission of reports. 
+    \item \textbf{\goalCompromisedReports}
+    \begin{itemize}[label={}]
+        \item {[SR3]} - End-to-end encryption is provided for the submission of reports. 
     \end{itemize}
 \end{itemize}
+
 \subsubsection{Hardware limitations}
 
 For use of the mobile application, a smartphone or tablet with the following specifications is required:
