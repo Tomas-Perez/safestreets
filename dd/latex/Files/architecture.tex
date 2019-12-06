@@ -64,7 +64,6 @@ The services (from top to bottom) provide the following functionality:
     \item ReportReviewService: submissions of report reviews.
 \end{itemize}
 
-Also, the ReportService uses the SignatureVerifier, a component which allows it to check whether a report submission was not modified between the user sending it and the server receiving it. It does this by verifying a digital signature submitted along with the report.
 
 \subsection{Deployment view}
 
@@ -81,9 +80,9 @@ As stated previously, the system presents a three tier architecture.
     \caption{\label{fig:deployment-diagram}Deployment diagram.}
 \end{figure}
 
-Figure~\ref{fig:deployment-diagram} shows a diagram of the deployment of all three tiers, along with their form of communication, which consists of HTTP from the mobile application to the business logic tier, and the corresponding database driver from the business logic tier to the persistence tier. 
+Figure~\ref{fig:deployment-diagram} shows a diagram of the deployment of all three tiers, along with their form of communication, which consists of HTTPS from the mobile application to the business logic tier, and the corresponding database driver from the business logic tier to the persistence tier. 
 
-External to the system a separate device is depicted, indicating third party system or some other kind of API user, communicating directly with the application server via HTTP.
+External to the system a separate device is depicted, indicating third party system or some other kind of API user, communicating directly with the application server via HTTPS.
 
 \subsection{Runtime view}
 To avoid repetition and explain each process more clearly, the first two sequence diagrams present the authorization procedures that are executed by all services on each request. These are needed to guarantee that whoever is performing a request has the proper authorization and the system can answer it. 
@@ -108,11 +107,11 @@ If the user wants to make use of the public API, then instead of a token, an API
 
 \subsubsection{Report submission}
 The following sequence describes the process of submitting a report.
-The ReportService is in charge of executing the action. First of all, it uses the SignatureVerifier to ensure that the submission was not modified by an external agent. Then, if the signature is valid, It gets the user from the AuthenticationManager through the token and gives the order to the ReportManager to submit the report. The ReportManager gets the ReportAnalyzer to analyse the report. If the report is invalid, then it is saved through the ReportRepository with an explanation of the error and an error message is returned to the user. If the report is valid, then it is saved along with the analysis result and an ok code is returned to the user.
+The ReportService is in charge of executing the action. First of all, it gets the user from the AuthenticationManager through the token and gives the order to the ReportManager to submit the report. The ReportManager gets the ReportAnalyzer to analyse the report. If the report is invalid, then it is saved through the ReportRepository with an explanation of the error and an error message is returned to the user. If the report is valid, then it is saved along with the analysis result and an ok code is returned to the user.
 
 \begin{figure}[H]
     \centering
-    \fbox{\includegraphics[angle=-90, origin=c, width=0.98\textwidth]{Images/architectural-design/Sequence/3-Report submission.png}}
+    \fbox{\includegraphics[angle=-90, origin=c, width=0.8\textwidth]{Images/architectural-design/Sequence/3-Report submission.png}}
     \caption{\label{fig:sequence-report-submission}Sequence diagram - Report submission.}
 \end{figure}
 
