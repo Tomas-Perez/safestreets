@@ -75,7 +75,7 @@ To mark the boundaries of the system, here we denote:
     {[G4]} -  Only authorities are able to access report pictures and license plates.
 }
 \newcommand{\goalCompromisedReports}{
-    {[G5]} - Compromised reports are detected and discarded.
+    {[G5]} - Reports are not compromised.
 }
 \newcommand{\goalCuratedReports}{
     {[G6]} - Authorities are able to access a curated list of reports which are considered to have a higher than average level of accuracy and reliability.
@@ -83,7 +83,7 @@ To mark the boundaries of the system, here we denote:
 \newcommand{\goalTicketAnalysis}{
     {[G7]} - It is possible to determine if a particular report contributed in issuing a traffic ticket.
 }
-\subsubsection{Goals}
+\subsubsection{Goals} \label{sub-sect:goals}
 \begin{itemize}[label={}]
 \item \goalUserReport{}
 \item \goalVisualizeReports{}
@@ -95,11 +95,11 @@ To mark the boundaries of the system, here we denote:
 \end{itemize}
 
 \subsection{Definitions, Acronyms, Abbreviations}
-\subsubsection{Definitions}
+\subsubsection{Definitions} \label{sub-sect:definitions}
 \begin{itemize}
     \item Traffic violation: An action performed by a driver of a vehicle which is against the local traffic regulations.
     \item Report: Information submitted by a user to notify the system and, by extension, authorities of a traffic violation.
-    \item Compromised report: A report that has been modified by an unauthorized agent outside the system boundaries.
+    \item Compromised: Information that has been seen or modified by an unauthorized agent outside the system boundaries.
     \item Authority: A local agency whose purpose is, as indicated by the current law, to enforce traffic rules. For example: the police.
     \item Ticketing system: A government database containing information about issued traffic tickets.
     \item License plate registry: A government database connecting a license plate with the car registered to it and information about it such as the make, model and color.
@@ -107,10 +107,12 @@ To mark the boundaries of the system, here we denote:
     \item False-negative report: A valid report that is considered invalid by the system.
 \end{itemize}
 
-\subsubsection{Acronyms}
+\subsubsection{Acronyms} \label{sub-sect:acronyms}
 \begin{itemize}
     \item GPS: Global Positioning System
     \item API: Application Programming Interface
+    \item HTTP: HyperText Transfer Protocol
+    \item HTTPS: HyperText Transfer Protocol Secure
 \end{itemize}
 
 \subsubsection{Abbreviations}
@@ -124,6 +126,15 @@ To mark the boundaries of the system, here we denote:
 \subsection{Revision history}
 \begin{itemize}
     \item Version 1.0: First release.
+    \item Version 1.1: 
+        \begin{itemize}
+            \item Add missing section \ref{sub-sect:security-requirements}, move misplaced SRs there.
+            \item Section \ref{sub-sect:functional-requirements}: Separate register, login and API key requirements from goal 3 as they concern multiple goals. Add explicit report submission functional requirement.
+            \item Section \ref{sub-sect:goals} \& section \ref{sub-sect:security-requirements}: Make goal 5 stricter.
+            \item Section \ref{sub-sect:definitions}: replace “Compromised Report” definition in favour of a more general “Compromised”.
+            \item Section \ref{sub-sect:communication-interfaces}: change protocol from HTTP to HTTPS
+            \item Section \ref{sub-sect:acronyms}: add missing acronyms
+        \end{itemize}
 \end{itemize}
 
 \subsection{Document structure}

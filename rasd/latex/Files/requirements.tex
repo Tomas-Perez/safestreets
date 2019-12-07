@@ -76,8 +76,8 @@ GPS: To know the location of a violation report, the mobile application requires
 Camera: In order to take photos of a violation scene, the application needs to access the device’s camera. This is done by communicating with the device’s operating system.
 \end{itemize}
 
-\subsubsection{Communication interfaces}
-Communication between the mobile application and the SafeStreets system is performed through the standard HTTP protocol. End-to-end encryption must be provided on top of it to protect the submitted reports from becoming compromised.
+\subsubsection{Communication interfaces} \label{sub-sect:communication-interfaces}
+Communication between the mobile application and the SafeStreets system is performed through the standard HTTPS protocol. This extension of HTTP provides the needed security to avoid reports and other sensitive data becoming compromised.
 
 \subsection{Scenarios}
 \subsubsection{Scenario 1}
@@ -99,7 +99,7 @@ Jason is on a run and notices a car parked in the bike lane, he takes a picture 
 Mike is bored waiting at the bus stop, he decides to check out SafeStreets to see what’s going on around him on the map. When he opens the app, he notices a notification. He touches to see what it is about and a pop up appears asking him to review the photo submitted by Jason. After squinting for a bit, he inputs his best guess and submits the form.
 Once enough people review Jason’s photo, the system acquires a good number of votes to determine the license plate with good accuracy and marks the report as valid, making it available to all users.
 
-\subsection{Functional requirements}
+\subsection{Functional requirements} \label{sub-sect:functional-requirements}
 \begin{itemize}[label={}]
 \item \textbf{\goalUserReport{}}
     \begin{itemize}[label={}]
@@ -113,14 +113,15 @@ Once enough people review Jason’s photo, the system acquires a good number of 
             \item At least one photo of the scene
         \end{itemize}
         \item {[FR3]} - The application can determine date, time and location based on information provided by the device when then pictures are taken and adds this metadata to the report.
+        \item {[FR4]} - The user can submit a full report to the system
     \end{itemize}
 
 \item \textbf{\goalVisualizeReports}
     \begin{itemize}[label={}]
-        \item {[FR4]} - The user is provided a map where the location of reports are indicated by markers.
-        \item {[FR5]} - The user can filter the reports shown on the map by date, time and type of violation.
-        \item {[FR6]} - The user can search for a specific location on the map by inputting coordinates or an address.
-        \item {[FR7]} - The user can select a report on the map and obtain information about it. This information includes:
+        \item {[FR5]} - The user is provided a map where the location of reports are indicated by markers.
+        \item {[FR6]} - The user can filter the reports shown on the map by date, time and type of violation.
+        \item {[FR7]} - The user can search for a specific location on the map by inputting coordinates or an address.
+        \item {[FR8]} - The user can select a report on the map and obtain information about it. This information includes:
         \begin{itemize}[label={\textbullet}]
             \item Report ID: unique reference to each report
             \item Type of violation
@@ -132,22 +133,17 @@ Once enough people review Jason’s photo, the system acquires a good number of 
 
 \item \textbf{\goalQueryInfo}
     \begin{itemize}[label={}]
-        \item {[FR8]} - A secured API is provided to obtain and filter report information. The following filters are possible:
+        \item {[FR9]} - A secured API is provided to obtain and filter report information. The following filters are possible:
         \begin{itemize}[label={\textbullet}]
             \item Date and time
             \item Location
             \item Type of violation
         \end{itemize}
-        \item {[FR9]} - The user can register by inputting his full name and email, and choosing a username and password.
-        \item {[FR10]} - The user has access to view his full account information.
-        \item {[FR11]} -The user can edit his email and full name.
-        \item {[FR12]} - An API key is provided to the user via their profile screen in the mobile application.
-        \item {[FR13]} - The user can login to the mobile application by providing their username and password.
     \end{itemize}
 
 \item \textbf{\goalPhotosAuthoritiesOnly}
     \begin{itemize}[label={}]
-        \item {[FR14]} - A secured API accessible only to authorities, provides the following information about reports:
+        \item {[FR10]} - A secured API accessible only to authorities, provides the following information about reports:
         \begin{itemize}[label={\textbullet}]
             \item Photos
             \item License plate
@@ -157,17 +153,17 @@ Once enough people review Jason’s photo, the system acquires a good number of 
 \item \textbf{\goalCuratedReports}
     \begin{itemize}[label={}]
         \item \assumptionLicensePlateRegistry
-        \item {[FR15]} - Detected cars and license plates are cross referenced with the license plate registry to ensure the license plate belongs to the car.
-        \item {[FR16]} - A degree of confidence is assigned to each report, where a high confidence report will have:
+        \item {[FR11]} - Detected cars and license plates are cross referenced with the license plate registry to ensure the license plate belongs to the car.
+        \item {[FR12]} - A degree of confidence is assigned to each report, where a high confidence report will have:
         \begin{itemize}[label={\textbullet}]
             \item License plate recognition of 80\%+ confidence.
             \item Car recognition of 80\%+ confidence.
             \item The license plate and car pair are found in the license plate registry.
         \end{itemize}
         If any of these criteria are not met the report is considered low confidence.
-        \item {[FR17]} - The API includes the system’s degree of confidence in the report to the provided report information after a query.
-        \item {[FR18]} - Report information provided by the API can be filtered by their degree of confidence.
-        \item {[FR19]} - Users can review photos with a license plate recognition lower than 80\% to adjust the confidence in the recognition.
+        \item {[FR13]} - The API includes the system’s degree of confidence in the report to the provided report information after a query.
+        \item {[FR14]} - Report information provided by the API can be filtered by their degree of confidence.
+        \item {[FR15]} - Users can review photos with a license plate recognition lower than 80\% to adjust the confidence in the recognition.
     \end{itemize}
 
     \noindent\fbox{%
@@ -183,8 +179,17 @@ Once enough people review Jason’s photo, the system acquires a good number of 
 \item \textbf{\goalTicketAnalysis}
     \begin{itemize}[label={}]
         \item \assumptionTicketingInfo
-        \item {[FR20]} - Information obtained from the ticketing system is used to determine if a report contributed to the issuing of a traffic ticket.
-        \item {[FR21]} - Whether the report contributed to a traffic ticket is included in the information provided by the mobile application and the API.
+        \item {[FR16]} - Information obtained from the ticketing system is used to determine if a report contributed to the issuing of a traffic ticket.
+        \item {[FR17]} - Whether the report contributed to a traffic ticket is included in the information provided by the mobile application and the API.
+    \end{itemize}
+
+\item \textbf{Other requirements, needed to identify the users of the mobile application and public API:}
+    \begin{itemize}
+        \item {[FR18]} - The user can register by inputting his full name and email, and choosing a username and password.
+        \item {[FR19]} - The user has access to view his full account information.
+        \item {[FR20]} -The user can edit his email and full name.
+        \item {[FR21]} - An API key is provided to the user via their profile screen in the mobile application.
+        \item {[FR22]} - The user can login to the mobile application by providing their username and password.
     \end{itemize}
     
 \end{itemize}
@@ -460,7 +465,8 @@ Exceptions      &
 \end{tabular}
 \end{table}
 
-\subsection{Design constraints}
+\subsection{Security requirements} \label{sub-sect:security-requirements}
+
 {[SR1]} - Only photos taken through the mobile application are submitted, the user cannot upload a picture previously saved on their device.
 \begin{itemize}[label={}]
     \item \textbf{\goalPhotosAuthoritiesOnly}
@@ -472,6 +478,9 @@ Exceptions      &
         \item {[SR3]} - End-to-end encryption is provided for the submission of reports. 
     \end{itemize}
 \end{itemize}
+
+\subsection{Design constraints}
+
 
 \subsubsection{Hardware limitations}
 
