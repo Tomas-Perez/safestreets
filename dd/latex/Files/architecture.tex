@@ -72,7 +72,7 @@ As stated previously, the system presents a three tier architecture.
 \begin{itemize}
     \item Tier 1 is the presentation tier, where the mobile app is installed on compatible Android or iOS phones. Distribution of the appropriate executable would be handled by the corresponding app stores. Deployment on both platforms is important to be able to reach the greatest amount of possible users.
     \item Tier 2 contains the business logic and is the home of the application server. To facilitate deployment and testing under controlled conditions, the executable itself is isolated from the underlying server OS through Docker. This minimizes the setup needed after a container is built and avoids any possible conflict with the OS.
-    \item Tier 3, persistence, then includes the database management system, which is again deployed using a docker container because of all the advantages stated before. 
+    \item Tier 3, persistence, includes the database management system, which is again deployed using a docker container because of all the advantages stated before. 
 \end{itemize}
 
 \begin{figure}[H]
