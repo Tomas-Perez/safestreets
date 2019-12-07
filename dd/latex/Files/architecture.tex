@@ -45,7 +45,7 @@ The purpose of each component is the following (going top-down, left-right):
     \item ReviewRepository: handles interaction with the DBMS regarding reviews
     \item AuthorizationGuard: checks whether a given token or API key is authorized to perform a certain request.
     \item IdentificationManager: assigns identification tokens and can extract information from them, used for authentication purposes.
-    \item AuthenticationManager: responsible for the authentication flow needed to use the application, registering as a new user, logging in and obtaining profile information.
+    \item UserManager: responsible for the authentication flow needed to use the application, registering as a new user, logging in and obtaining profile information.
 \end{itemize}
 
 \begin{figure}[H]
@@ -55,7 +55,7 @@ The purpose of each component is the following (going top-down, left-right):
 \end{figure}
 
 Figure~\ref{fig:component-services-zoom} goes into the four services exposed by the application server. These provide the functionality needed to the mobile application and allow other systems to integrate to SafeStreets.
-To identify who is performing the request and maintain security, all services are connected to and use the AuthorizationGuard and AuthenticationManager.
+To identify who is performing the request and maintain security, all services are connected to and use the AuthorizationGuard and UserManager.
 The services (from top to bottom) provide the following functionality:
 \begin{itemize}
     \item NotificationService: allows a user to obtain their pending notifications.
@@ -107,7 +107,7 @@ If the user wants to make use of the public API, then instead of a token, an API
 
 \subsubsection{Report submission}
 The following sequence describes the process of submitting a report.
-The ReportService is in charge of executing the action. First of all, it gets the user from the AuthenticationManager through the token and gives the order to the ReportManager to submit the report. The ReportManager gets the ReportAnalyzer to analyse the report. If the report is invalid, then it is saved through the ReportRepository with an explanation of the error and an error message is returned to the user. If the report is valid, then it is saved along with the analysis result and an ok code is returned to the user.
+The ReportService is in charge of executing the action. First of all, it gets the user from the UserManager through the token and gives the order to the ReportManager to submit the report. The ReportManager gets the ReportAnalyzer to analyse the report. If the report is invalid, then it is saved through the ReportRepository with an explanation of the error and an error message is returned to the user. If the report is valid, then it is saved along with the analysis result and an ok code is returned to the user.
 
 \begin{figure}[H]
     \centering
@@ -138,7 +138,7 @@ The recruitment process is simple. The ReviewRecruiter gets the list of users fr
 
 \subsubsection{Get notifications}
 In this sequence, the user asks for their pending notifications.
-The NotificationService first gets the user from the AuthenticationManager and then retrieves their pending notifications from the NotificationQueue.
+The NotificationService first gets the user from the UserManager and then retrieves their pending notifications from the NotificationQueue.
 
 \begin{figure}[H]
     \centering
@@ -184,7 +184,7 @@ This process is similar to the previous one, but no information is removed from 
 \end{figure}
 
 \subsubsection{Registration}
-This is the standard sign up procedure needed for the user to use the mobile application and be able to get a token when logging in. The RegistrationForm is submitted to the server, where the AuthenticationManager validates it (valid, non repeated email, secure password) and, if this validation is successful, stores the new user date.
+This is the standard sign up procedure needed for the user to use the mobile application and be able to get a token when logging in. The RegistrationForm is submitted to the server, where the UserManager validates it (valid, non repeated email, secure password) and, if this validation is successful, stores the new user date.
 
 \begin{figure}[H]
     \centering
@@ -202,12 +202,21 @@ The user enters their email and password, then the server looks for a registered
 \end{figure}
 
 \subsubsection{Get user information}
-The user solicits to obtain their stored information in the system. By looking at the token, the AuthenticationManager can query the UserRepository and provide this data if a user is found, otherwise an error message is sent (realistically speaking, this will never fail as the token has to first be verified by the AuthGuard for authorization purposes).
+The user solicits to obtain their stored information in the system. By looking at the token, the UserManager can query the UserRepository and provide this data if a user is found, otherwise an error message is sent (realistically speaking, this will never fail as the token has to first be verified by the AuthGuard for authorization purposes).
 
 \begin{figure}[H]
     \centering
     \fbox{\includegraphics[angle=-90, origin=c, width=0.98\textwidth]{Images/architectural-design/Sequence/13-User information.png}}
-    \caption{\label{fig:sequence-user-information}Sequence diagram - User information.}
+    \caption{\label{fig:sequence-user-information}Sequence diagram - Get user information.}
+\end{figure}
+
+\subsubsection{Edit user information}
+The user submits a form containing the desired information to change in their profile. The UserService looks for the stored User with the given token, if found, the information submitted is validated and if this succeeds the data is modified and stored again in the UserRepository.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.98\textwidth]{Images/architectural-design/Sequence/14-Edit user information.png}}
+    \caption{\label{fig:sequence-user-information}Sequence diagram - Edit user information.}
 \end{figure}
 
 \subsection{Component interfaces}
