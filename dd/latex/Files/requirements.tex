@@ -1,60 +1,191 @@
-Every design decision made and presented in this document was decided upon with the goals previously specified in de RASD in mind. From these goals, requirements were extracted; the following list provides a mapping between the goals and requirements, and the system components that help to accomplish them.\\
+Every design decision made and presented in this document was decided upon with the goals specified in the RASD in mind. From these goals, requirements were extracted; the following list provides a mapping between the goals and requirements, and the system components that help to accomplish them.\\
 
-\subsection{Functional requirements}
 \begin{itemize}[label={}]
-    \item {\textbf{[G1]}} - The user is able to report a traffic violation to authorities.\\
-    Requirements [FR1] - [FR2] - [FR3].
+    \item \textbf{[G1] - The user is able to report a traffic violation to authorities.}
+        \begin{itemize}[label={}]
+            \item {[FR1]} - The user is able to take pictures from the mobile application to add to a report.
+            \item {[FR2]} - The user is able to fill out a form providing information about a traffic violation, consisting of:
+            Type of violation
+            License plate
+            At least one photo of the scene
+            \item {[FR3]} - The application can determine date, time and location based on information provided by the device when the pictures are taken and adds this metadata to the report.
+            \item {[FR4]} - The user can submit a full report to the system
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item Report violation screen
+            \item ReportService
+            \item ReportManager
+            \item ReportRepository
+        \end{itemize}
 
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
+    \item \textbf{[G2] - The user is able to visualize reports in a specified area and time.}
+        \begin{itemize}[label={}]
+            \item {[FR5]} - The user is provided a map where the location of reports are indicated by markers.
+            \item {[FR6]} - The user can filter the reports shown on the map by date, time and type of violation.
+            \item {[FR7]} - The user can search for a specific location on the map by inputting coordinates or an address.
+            \item {[FR8]} - The user can select a report on the map and obtain information about it. This information includes:
+            \begin{itemize}[label={\textbullet}]
+                \item Report ID: unique reference to each report
+                \item Type of violation
+                \item Date and time
+                \item Location: gps coordinates, approximate street name and number
+            \end{itemize}
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item Reports map screen
+            \item ReportService
+            \item ReportManager
+            \item ReportRepository
+        \end{itemize}
 
-    \item {\textbf{[G2]}} - The user is able to visualize reports in a specified area and time.\\
-    Requirements [FR4] - [FR5] - [FR6] - [FR7].
+    \item \textbf{[G3] - It is possible to query report information in an easily parsable format to allow for data analysis.}
+        \begin{itemize}[label={}]
+            \item {[FR9]} - A secured API is provided to obtain and filter report information. The following filters are possible:
+            \begin{itemize}[label={\textbullet}]
+                \item Date and time
+                \item Location
+                \item Type of violation
+            \end{itemize}
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item AuthorizationGuard
+            \item ReportService
+            \item ReportManager
+            \item ReportRepository
+        \end{itemize}
 
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
+    \item \textbf{[G4] - Only authorities are able to access report pictures and license plates.}
+        \begin{itemize}[label={}]
+            \item {[SR2]} - Special API keys are generated and provided to authorities
+            \item {[FR10]} - A secured API accessible only to authorities, provides the following information about reports:
+            \begin{itemize}[label={\textbullet}]
+                \item Photos
+                \item License plate
+            \end{itemize}
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item AuthorizationGuard
+            \item ReportService
+            \item ReportRepository
+            \item Administrator providing API keys
+        \end{itemize}
 
-    \item {\textbf{[G3]}} - It is possible to query report information in an easily parsable format to allow for data analysis.\\
-    Requirements [FR9] - [FR10] - [FR11] - [FR12] - [FR13].
+    \item \textbf{[G5] - Compromised reports are detected and discarded.}
+        \begin{itemize}[label={}]
+            \item {[SR3]} - End-to-end encryption is provided for the submission of reports. 
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item HTTPS communication protocol between mobile application and server
+        \end{itemize}
 
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
+    \item \textbf{[G6] - Authorities are able to access a curated list of reports which are considered to have a higher than average level of accuracy and reliability.}
+        \begin{itemize}[label={}]
+            \item {[FR11]} - Detected cars and license plates are cross referenced with the license plate registry to ensure the license plate belongs to the car.
+            \item {[FR12]} - A degree of confidence is assigned to each report, where a high confidence report will have:
+                \begin{itemize}[label={\textbullet}]
+                    \item License plate recognition of 80\%+ confidence.
+                    \item Car recognition of 80\%+ confidence.
+                    \item The license plate and car pair are found in the license plate registry.
+                \end{itemize}
+            If any of these criteria are not met the report is considered low confidence.
+            \item {[FR13]} - The API includes the system’s degree of confidence in the report to the provided report information after a query.
+            \item {[FR14]} - Report information provided by the API can be filtered by their degree of confidence.
+            \item {[FR15]} - Users can review photos with a license plate recognition lower than 80\% to adjust the confidence in the recognition.
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item ReportAnalyzer
+            \item LicensePlateRegistry
+            \item PhotoAnalyzer
+            \item ReportAnalyzer
+            \item ReportService
+            \item ReportManager
+            \item ReportRepository
+            \item ReviewRecruiter
+            \item NotificationService
+            \item NotificationQueue
+            \item ReportReviewService
+            \item ReviewManager
+            \item ReviewRepository
+        \end{itemize}
 
-    \item {\textbf{[G4]}} - Only authorities are able to access report pictures and license plates.\\
-    Requirement [FR14] - [SR1].
+    \item \textbf{[G7] - It is possible to determine if a particular report contributed in issuing a traffic ticket.}
+        \begin{itemize}[label={}]
+            \item {[FR16]} - Information obtained from the ticketing system is used to determine if a report contributed to the issuing of a traffic ticket.
+            \item {[FR17]} - Whether the report contributed to a traffic ticket is included in the information provided by the mobile application and the API.
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item Report map screen
+            \item ReportService
+            \item ReportManager
+            \item TicketingSystem
+            \item ReportRepository
+        \end{itemize}
 
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
+    \item \textbf{Other requirements, needed to identify the users of the mobile application and public API:}
+        \begin{itemize}[label={}]
+            \item {[FR18]} - The user can register by inputting his full name and email, and choosing a username and password.
+            \item {[FR19]} - The user has access to view his full account information.
+            \item {[FR20]} - The user can edit his email and full name.
+            \item {[FR21]} - An API key is provided to the user via their profile screen in the mobile application
+            \item {[FR22]} - The user can login to the mobile application by providing their username and password.
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item Sign up screen
+            \item Profile screen
+            \item Sign in screen
+            \item UserService
+            \item UserManager
+            \item UserRepository
+        \end{itemize}
 
-    \item {\textbf{[G5]}} - Compromised reports are detected and discarded.
-
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
-
-    \item {\textbf{[G6]}} - Authorities are able to access a curated list of reports which are considered to have a higher than average level of accuracy and reliability.\\
-    Requirements [FR15] - [FR16] - [FR17] - [FR18] - [FR19] - [SR2].
-
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
-
-    \item {\textbf{[G7]}} - It is possible to determine if a particular report contributed in issuing a traffic ticket.\\
-    Requirements [FR20] - [FR21].
-
-    \begin{itemize}
-        \item 
-        <>
-    \end{itemize}
-
+    \item \textbf{Remaining security requirements:}
+        \begin{itemize}[label={}]
+            \item {[SR1]} - Only photos taken through the mobile application are submitted, the user cannot upload a picture previously saved on their device.
+        \end{itemize}
+        Accomplished by:
+        \begin{itemize}[label={\textbullet}]
+            \item Report violation screen
+        \end{itemize}
 \end{itemize}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{2cm}|c|p{8cm}|}
+        \hline
+        \textbf{Goal} & \textbf{Requirement} & \textbf{Accomplished by} \\ \hline
+        \multirow{4}{2cm}{G1} & FR1 & Report violation screen \\ \cline{2-3}
+        & FR2 & Report violation screen \\ \cline{2-3}
+        & FR3 & Report violation screen \\ \cline{2-3}
+        & FR4 & ReportService, ReportManager, ReportRepository \\ \hline
+        \multirow{4}{2cm}{G2} & FR5 & \multirow{4}{8cm}{Reports map screen, ReportService, ReportManager, ReportRepository} \\ \cline{2-2}
+        & FR6 & \\ \cline{2-2}
+        & FR7 & \\ \cline{2-2}
+        & FR8 & \\ \hline
+        G3 & FR9 & AuthorizationGuard, ReportService, ReportManager, ReportRepository \\ \hline
+        \multirow{2}{2cm}{G4} & SR2 & Provided by an administrator \\ \cline{2-3}
+        & FR10 & AuthorizationGuard, ReportService, ReportRepository \\ \hline
+        G5 & SR3 & Use of HTTPS protocol \\ \hline
+        \multirow{5}{2cm}{G6} & FR11 & ReportAnalyzer, LicensePlateRegistry, PhotoAnalyzer \\ \cline{2-3}
+        & FR12 & ReportAnalyzer \\ \cline{2-3}
+        & FR13 & ReportService, ReportManager \\ \cline{2-3}
+        & FR14 & ReportService, ReportManager, ReportRepository \\ \cline{2-3}
+        & FR15 & ReviewRecruiter, NotificationService, NotificationQueue, ReportReviewService, ReviewManager, ReviewRepository \\ \hline
+        \multirow{2}{2cm}{G7} & FR16 & ReportService, ReportManager, TicketingSystem, ReportRepository \\ \cline{2-3}
+        & FR17 & Report map screen, ReportService \\ \hline
+        \multirow{5}{2cm}{Identification requirements} & FR18 & Sign up screen, UserService, UserManager, UserRepository \\ \cline{2-3}
+        & FR19 & Report map screen, ReportService \\ \cline{2-3}
+        & FR20 & Report map screen, ReportService \\ \cline{2-3}
+        & FR21 & Report map screen, ReportService \\ \cline{2-3}
+        & FR22 & Report map screen, ReportService \\ \hline
+        Security requirements & SR1 & Report violation screen \\ \hline
+    \end{tabular}
+    \caption{\label{tbl:traceability-matrix} Traceability matrix}
+\end{table}
