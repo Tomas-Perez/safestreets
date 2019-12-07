@@ -112,6 +112,7 @@ Every design decision made and presented in this document was decided upon with 
             \item ReportReviewService
             \item ReviewManager
             \item ReviewRepository
+            \item Photo review screen
         \end{itemize}
 
     \item \textbf{[G7] - It is possible to determine if a particular report contributed in issuing a traffic ticket.}
@@ -177,14 +178,14 @@ Every design decision made and presented in this document was decided upon with 
         & FR12 & ReportAnalyzer \\ \cline{2-3}
         & FR13 & ReportService, ReportManager \\ \cline{2-3}
         & FR14 & ReportService, ReportManager, ReportRepository \\ \cline{2-3}
-        & FR15 & ReviewRecruiter, NotificationService, NotificationQueue, ReportReviewService, ReviewManager, ReviewRepository \\ \hline
+        & FR15 & ReviewRecruiter, NotificationService, NotificationQueue, ReportReviewService, ReviewManager, ReviewRepository, Photo review screen \\ \hline
         \multirow{2}{2cm}{G7} & FR16 & ReportService, ReportManager, TicketingSystem, ReportRepository \\ \cline{2-3}
         & FR17 & Report map screen, ReportService \\ \hline
         \multirow{5}{2cm}{Identification requirements} & FR18 & Sign up screen, UserService, UserManager, UserRepository \\ \cline{2-3}
-        & FR19 & Report map screen, ReportService \\ \cline{2-3}
-        & FR20 & Report map screen, ReportService \\ \cline{2-3}
-        & FR21 & Report map screen, ReportService \\ \cline{2-3}
-        & FR22 & Report map screen, ReportService \\ \hline
+        & FR19 & Profile screen, Report map screen, ReportService \\ \cline{2-3}
+        & FR20 & Profile screen, Report map screen, ReportService \\ \cline{2-3}
+        & FR21 & Profile screen, Report map screen, ReportService \\ \cline{2-3}
+        & FR22 & Sign in screen, Report map screen, ReportService \\ \hline
         Security requirements & SR1 & Report violation screen \\ \hline
     \end{tabular}
     \caption{\label{tbl:traceability-matrix} Traceability matrix}
