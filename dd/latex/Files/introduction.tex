@@ -1,6 +1,6 @@
 \subsection{Purpose}
 
-The purpose of this document is to dive into technical details concerning the SafeStreets system. In the RASD, the system and its functionalities were introduced in an abstract manner. The Design Document focuses more on implementation, explaining the decisions that had to be made and the reasoning behind them.
+The purpose of this document is to dive into technical details concerning the SafeStreets system. In the RASD, the system and its functionalities were introduced in an abstract manner. The Design Document focuses more on implementation, explaining the decisions that had to be made and the reasoning behind them.\\
 The topics covered in this document are the following:
 
 \begin{itemize}
@@ -24,9 +24,9 @@ The topics covered in this document are the following:
 \subsection{Scope}
 
 The SafeStreets system is designed to provide users with the ability to report and get information of reported traffic violations through an application. 
-Any user with a device capable of running the application can sign up to the system, which enables them to access its functionalities.
-In order to submit a report, the user needs to fill a form. In it, they have to enter the license plate number of the vehicle committing the violation, the type of violation and at least one photo of the scene, where the license plate of the vehicle can be easily recognized. This data, along with metadata retrieved from the user's device (geographical position, date and time) is then sent to the system.
-The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. When faced with difficulties in the detection, the photo must pass through community review, in which users reach a consensus on the validity of the report photo.
+Any user with a device capable of running the application can sign up to the system, which enables them to access its functionalities.\\
+In order to submit a report, the user needs to fill a form. In it, they have to enter the license plate number of the vehicle committing the violation, the type of violation and at least one photo of the scene, where the license plate of the vehicle can be easily recognized. This data, along with metadata retrieved from the user's device (geographical position, date and time) is then sent to the system.\\
+The system is responsible for analysing the validity of the report. To achieve this, a license plate recognition algorithm is utilized. When faced with difficulties in the detection, the photo must pass through community review, in which users reach a consensus on the validity of the report photo.\\
 The data collected by the system in relation to reports is to be queried by its users. There are two distinct targets of this functionality: standard users and the municipality. The main difference between the two is that the municipality can access information that should not be freely accessible to everyone because of security and privacy concerns. Through the application, users are capable of visualizing a city map showing where the violations happened. Furthermore, a public API is made available, facilitating data analysis and system integration.
 
 \subsection{Definitions, Acronyms, Abbreviations}
@@ -38,17 +38,11 @@ The data collected by the system in relation to reports is to be queried by its 
     \item
     Report: Information submitted by a user to notify the system and, by extension, authorities of a traffic violation.
     \item
-    Compromised report: A report that has been modified by an unauthorized agent outside the system boundaries.
-    \item
     Authority: A local agency whose purpose is, as indicated by the current law, to enforce traffic rules. For example: the police.
     \item
     Ticketing system: A government database containing information about issued traffic tickets.
     \item
     License plate registry: A government database connecting a license plate with the car registered to it and information about it such as the make, model and color.
-    \item
-    False-positive report: An invalid report that is considered valid by the system.
-    \item
-    False-negative report: A valid report that is considered invalid by the system.
 \end{itemize}
 
 
@@ -58,6 +52,28 @@ The data collected by the system in relation to reports is to be queried by its 
     GPS: Global Positioning System
     \item
     API: Application Programming Interface
+    \item
+    RASD: Requirement Analysis and Specification Document
+    \item
+    REST: REpresentational State Transfer
+    \item
+    UI: User Interface
+    \item
+    GUI: Graphical User Interface
+    \item
+    DB: DataBase
+    \item
+    DBMS: DataBase Management System
+    \item
+    OS: Operating System
+    \item
+    E2E: End to end
+    \item
+    HTTP: HyperText Transfer Protocol
+    \item
+    HTTPS: HyperText Transfer Protocol Secure
+    \item
+    JSON: JavaScript Object Notation
 \end{itemize}
 
 
@@ -65,15 +81,34 @@ The data collected by the system in relation to reports is to be queried by its 
 
 \begin{itemize}
     \item
-    [Gn]: n-th goal
+    {[Gn]}: n-th goal
     \item
-    [Dn]: n-th domain assumption 
+    {[FRn]}: n-th functional requirement
     \item
-    [FRn]: n-th functional requirement
-    \item
-    [SRn]: n-th security requirement
+    {[SRn]}: n-th security requirement
 \end{itemize}
 
 \subsection{Revision history}
-\subsection{Reference Documents}
+
+\begin{itemize}
+    \item 
+    Version 1.0: First release
+\end{itemize}
+
+
 \subsection{Document Structure}
+The Design Document is composed of 7 chapters:
+
+\paragraph{Chapter 1} An introduction to the document and its content is given, along with a description of the purpose, scope and terminology utilized in it.
+
+\paragraph{Chapter 2} The second chapter talks about architectural design. Here it is thoroughly explained, along with the decisions made and the reasoning behind them. The system components and their interactions are specified.
+
+\paragraph{Chapter 3} User interface design. Mockups for the final look of the application and its flow are presented. The functionality of each screen is also briefly explained.
+
+\paragraph{Chapter 4} This chapter shows how the goals and requirements specified in the RASD are achieved by the proposed architecture.
+
+\paragraph{Chapter 5} Technologies to be used, and an explanation of how the implementation, integration and test plan are going to be carried out by the development team is given.
+
+\paragraph{Chapter 6} Shows the effort spent by each member of the group in the development of the document.
+
+\paragraph{Chapter 7} The references utilized while writing this document are listed.
