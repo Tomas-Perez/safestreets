@@ -1,7 +1,6 @@
 \subsection{Overview}
 
 The SafeStreets system is structured in a three tier architecture. As shown in [Figure x], these are the presentation, business and persistence tiers. This architecture allows for modularization by splitting the system into multiple parts. Because of this, the scalability and flexibility of the system is highly increased.
-Note that although third party systems are included in the presentation tier, they are not strictly part of the SafeStreets system and the development team has no control over them.
 
 \begin{figure}[H]
 \centering
@@ -9,9 +8,11 @@ Note that although third party systems are included in the presentation tier, th
 \caption{\label{fig:3-tiers}Three tier architecture diagram.}
 \end{figure}
 
-The presentation tier is the only part of the system the user interacts with. This interaction is done through either a third-party system capable of communicating with the business logic via REST api calls, or by using the mobile application developed by the SafeStreets team. The later provides a GUI for every user to interact with.
+The presentation tier is the only part of the system the user interacts with. Here is where the SafeStreets mobile application is located. The app provides a GUI for every user to interact with.
+An alternative is for users to interact with the SafeStreets system through a third-party system, not developed by the team, which is capable of communicating with the application server via REST api calls.
 Next is the business logic tier, where the core functionality of the system is provided. The backend presents a RESTful API, through which the presentation tier can communicate by making requests. This tier depends on external services that help in providing different functionalities, like the image analysis.
 Last but not least, the persistence tier focuses on saving and managing the information gathered by the business logic. For this, a database management system is utilized. The only tier capable of accessing the persistence tier is the business logic, providing higher security for any sensitive data.
+
 
 \subsection{Component view} \label{sub-sect:component-view}
 The following diagrams describe the internal structure of the application server, which contains the business logic of the system. Users will communicate with it via its exposed interfaces, either with the mobile application or any system capable of performing HTTP requests.
