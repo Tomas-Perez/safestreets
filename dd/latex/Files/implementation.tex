@@ -25,7 +25,7 @@ Integration with external services and libraries will take maximum priority, as 
 
 In terms of the interaction between the backend and the DBMS, this integration will be made from the beginning. Spring boot makes this extremely easy and integration with MongoDB is fully supported.\\
 
-Here the implementation and integration order for the application server is listed along with diagrams showing the dependencies between components:\\
+Here the implementation and integration order for the application server is listed in a bottom-up fashion, along with diagrams showing the dependencies between components:\\
 
 The ReportAnalyzer is prioritized because of its core importance. The ReviewRecruiter is integrated later.
 \begin{itemize}
@@ -160,9 +160,10 @@ As in the application server, the core of the application is given priority. In 
 Here screen names are utilized for easy understanding, but note that the screens themselves are not considered components.
 
 \subsection{Testing}
-A component is only considered ready for production after its fully tested. There is no established order of testing, this is, the component is continually unit tested while being developed. 
-Integration testing will mainly take place in the mobile application, since the external services used in the backend are already tested by their organizations. 
-Once a feature is finished in both the mobile app and the backend, e2e tests will be performed to ensure all parts are in working order.
+A component is only considered ready for production after its fully tested. 
+There is no established order of testing, this is, the component is continually unit tested while being developed.
+Since a bottom-up strategy is used for implementation, integration tests take place (if required) once the component is sucessfully unit tested with mocked dependencies.
+Once a feature is finished in both the mobile app and the backend, E2E tests are performed to ensure all parts are in working order.
 
 The following technologies will be used for testing:
 \begin{itemize}
