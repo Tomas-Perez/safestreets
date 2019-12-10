@@ -10,6 +10,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        textTheme: TextTheme(
+          button: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          )
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue,
+          textTheme: ButtonTextTheme.primary,
+        ),
         primarySwatch: Colors.blue,
       ),
       home: ReportViolationScreen(),

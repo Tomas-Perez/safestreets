@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/widgets/image_carousel.dart';
 
 class ReportViolationScreen extends StatelessWidget {
   @override
@@ -14,6 +15,10 @@ class ReportViolationScreen extends StatelessWidget {
           children: <Widget>[
             _title(),
             ReportForm(),
+            SizedBox(height: 30),
+            _photosSection(),
+            SizedBox(height: 10),
+            _confirmButton(),
           ],
         ),
       ),
@@ -31,10 +36,68 @@ class ReportViolationScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _takePhotoButton() {
+    return Container(
+      width: 100,
+      height: 25,
+      child: RaisedButton(
+        padding: EdgeInsets.all(0),
+        child: Text(
+          'Take a photo',
+        ),
+        onPressed: () {
+          print('take photo');
+        },
+      ),
+    );
+  }
+
+  Widget _photosSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _takePhotoButton(),
+          SizedBox(height: 10),
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Placeholder(
+              fallbackHeight: 180,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: ImageCarousel(
+              itemBuilder: (BuildContext context, int index) => Placeholder(),
+              itemCount: 3,
+              onIndexChanged: print,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _confirmButton() {
+    return Center(
+      child: Container(
+        width: 130,
+        child: RaisedButton(
+          child: Text(
+            'Confirm',
+          ),
+          onPressed: () {
+            print('Confirm');
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class ReportForm extends StatefulWidget {
-
   @override
   State createState() {
     return ReportFormState();
@@ -46,7 +109,6 @@ class ReportFormState extends State<ReportForm> {
   final _licensePlateFocus = FocusNode();
   final _descriptionFocus = FocusNode();
   final _reportInfo = ReportInfo.empty();
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +132,8 @@ class ReportFormState extends State<ReportForm> {
       decoration: InputDecoration(
         labelText: 'Violation type',
       ),
-      items: ViolationType.values.map((t) => DropdownMenuItem(child: Text("$t"),value: t))
+      items: ViolationType.values
+          .map((t) => DropdownMenuItem(child: Text("$t"), value: t))
           .toList(),
       onChanged: (violationType) {
         print("Changed violation type to $violationType");
