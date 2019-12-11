@@ -1,27 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 import 'package:mobile/date_helpers.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
+import 'package:mobile/widgets/reports_map.dart';
 
-class ReportsMapScreen extends StatelessWidget {
+class ReportsMapScreen extends StatefulWidget {
+  @override
+  _ReportsMapScreenState createState() => _ReportsMapScreenState();
+}
+
+class _ReportsMapScreenState extends State<ReportsMapScreen> {
+  LatLng _center = LatLng(45.505621, 9.246872);
+  MapController _mapController = MapController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 30.0,
-        ),
-        child: ListView(
-          children: <Widget>[
-            _title(),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: FilterForm(),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16.0,
+              horizontal: 30.0,
             ),
-          ],
-        ),
+            child: Column(
+              children: <Widget>[
+                _title(),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: FilterForm(),
+                ),
+                _locationSearch(),
+              ],
+            ),
+          ),
+          Container(
+            height: 300,
+            child: ReportsMap(
+              center: _center,
+              zoom: 13.0,
+              controller: _mapController,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -37,16 +61,42 @@ class ReportsMapScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _locationSearch() {
+    return TextFormField(
+      decoration: InputDecoration(
+        hintText: "Search",
+        icon: Icon(Icons.search),
+      ),
+      onFieldSubmitted: (search) {
+        final location = parseLatLng(search);
+        if (location != null) {
+          setState(() {
+            _center = location;
+            _mapController.move(_center, 13.0);
+          });
+        }
+        else print('Invalid location');
+      },
+    );
+  }
+}
+
+LatLng parseLatLng(String str) {
+  final parts = str.split(",").map((p) => num.tryParse(p.trim())).toList();
+  if (parts.length != 2 || parts[0] == null || parts[1] == null) return null;
+  final location = LatLng(parts[0], parts[1]);
+  return location;
 }
 
 class FilterForm extends StatefulWidget {
   @override
   State createState() {
-    return FilterFormState();
+    return _FilterFormState();
   }
 }
 
-class FilterFormState extends State<FilterForm> {
+class _FilterFormState extends State<FilterForm> {
   final _formKey = GlobalKey<FormState>();
   final _filterInfo = FilterInfo.empty();
   final _fromController = TextEditingController();
@@ -69,6 +119,8 @@ class FilterFormState extends State<FilterForm> {
             ),
           ),
           _violationTypeField(),
+          SizedBox(height: 15),
+          _filterButton(),
         ],
       ),
     );
@@ -195,6 +247,23 @@ class FilterFormState extends State<FilterForm> {
         _toController.text = "${date.day}/${date.month}/${date.year}";
       });
     }
+  }
+
+  Widget _filterButton() {
+    return Container(
+      width: 140,
+      child: RaisedButton(
+        child: Text(
+          'Filter',
+          style: TextStyle(
+            fontSize: 16.0,
+          ),
+        ),
+        onPressed: () {
+          print('filter');
+        },
+      ),
+    );
   }
 }
 

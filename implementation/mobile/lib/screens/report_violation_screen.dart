@@ -99,11 +99,11 @@ class ReportViolationScreen extends StatelessWidget {
 class ReportForm extends StatefulWidget {
   @override
   State createState() {
-    return ReportFormState();
+    return _ReportFormState();
   }
 }
 
-class ReportFormState extends State<ReportForm> {
+class _ReportFormState extends State<ReportForm> {
   final _formKey = GlobalKey<FormState>();
   final _licensePlateFocus = FocusNode();
   final _descriptionFocus = FocusNode();
