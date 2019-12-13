@@ -1,0 +1,1 @@
+Add the included "resources/openalpr/lib" directory to your path
