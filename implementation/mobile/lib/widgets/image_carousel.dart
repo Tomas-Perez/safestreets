@@ -11,11 +11,11 @@ class ImageCarousel extends StatefulWidget {
 
   @override
   State createState() {
-    return ImageCarouselState();
+    return _ImageCarouselState();
   }
 }
 
-class ImageCarouselState extends State<ImageCarousel> {
+class _ImageCarouselState extends State<ImageCarousel> {
   final SwiperController _controller = SwiperController();
   int _index = 0;
 

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:mobile/date_helpers.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
@@ -13,12 +12,12 @@ class ReportsMapScreen extends StatefulWidget {
 
 class _ReportsMapScreenState extends State<ReportsMapScreen> {
   LatLng _center = LatLng(45.505621, 9.246872);
-  MapController _mapController = MapController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
+        primary: false,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -31,7 +30,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: FilterForm(),
+                  child: _FilterForm(),
                 ),
                 _locationSearch(),
               ],
@@ -42,7 +41,23 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
             child: ReportsMap(
               center: _center,
               zoom: 13.0,
-              controller: _mapController,
+              markers: [
+                ReportMarkerInfo(
+                  location: LatLng(45.505621, 9.246872),
+                  violationType: ViolationType.BAD_CONDITION,
+                  dateTime: DateTime.now(),
+                ),
+                ReportMarkerInfo(
+                  location: LatLng(45.5, 9.25),
+                  violationType: ViolationType.BAD_CONDITION,
+                  dateTime: DateTime.now().subtract(Duration(hours: 2)),
+                ),
+                ReportMarkerInfo(
+                  location: LatLng(45.509, 9.242),
+                  violationType: ViolationType.BAD_CONDITION,
+                  dateTime: DateTime.now().subtract(Duration(minutes: 32)),
+                ),
+              ],
             ),
           ),
         ],
@@ -73,10 +88,9 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
         if (location != null) {
           setState(() {
             _center = location;
-            _mapController.move(_center, 13.0);
           });
-        }
-        else print('Invalid location');
+        } else
+          print('Invalid location');
       },
     );
   }
@@ -89,16 +103,16 @@ LatLng parseLatLng(String str) {
   return location;
 }
 
-class FilterForm extends StatefulWidget {
+class _FilterForm extends StatefulWidget {
   @override
   State createState() {
     return _FilterFormState();
   }
 }
 
-class _FilterFormState extends State<FilterForm> {
+class _FilterFormState extends State<_FilterForm> {
   final _formKey = GlobalKey<FormState>();
-  final _filterInfo = FilterInfo.empty();
+  final _filterInfo = _FilterInfo.empty();
   final _fromController = TextEditingController();
   final _toController = TextEditingController();
 
@@ -267,11 +281,11 @@ class _FilterFormState extends State<FilterForm> {
   }
 }
 
-class FilterInfo {
+class _FilterInfo {
   DateTime to, from;
   ViolationType violationType;
 
-  FilterInfo(this.to, this.from, this.violationType);
+  _FilterInfo(this.to, this.from, this.violationType);
 
-  FilterInfo.empty();
+  _FilterInfo.empty();
 }
