@@ -11,4 +11,5 @@ class ArticleController {
     @GetMapping("/test")
     fun getTest(): List<String> =
             listOf("hello", "there")
+
 }
