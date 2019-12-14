@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:mobile/date_helpers.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
+import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/reports_map.dart';
+import 'package:mobile/widgets/safestreets_appbar.dart';
 
 class ReportsMapScreen extends StatefulWidget {
   @override
@@ -16,12 +18,13 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: SafeStreetsAppBar(),
       body: ListView(
         primary: false,
         children: <Widget>[
+          BackButtonSection(),
           Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: 16.0,
               horizontal: 30.0,
             ),
             child: Column(
@@ -36,8 +39,9 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
               ],
             ),
           ),
+          SizedBox(height: 6.0),
           Container(
-            height: 300,
+            height: 295,
             child: ReportsMap(
               center: _center,
               zoom: 13.0,
