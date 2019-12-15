@@ -12,6 +12,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         textTheme: TextTheme(
+          title: TextStyle(
+            color: Colors.blue,
+          ),
           button: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -20,6 +23,19 @@ class MyApp extends StatelessWidget {
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.blue,
           textTheme: ButtonTextTheme.primary,
+        ),
+        appBarTheme: AppBarTheme(
+          color: Colors.white,
+          iconTheme: IconThemeData(
+            color: Colors.blue
+          ),
+          textTheme: TextTheme(
+            title: TextStyle(
+              fontFamily: "ComicSans",
+              color: Colors.blue,
+              fontSize: 20.0
+            ),
+          )
         ),
         primarySwatch: Colors.blue,
       ),
