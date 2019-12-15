@@ -1,1 +1,4 @@
-Add the included "resources/openalpr/lib" directory to your path
+- Add the included "resources/openalpr/lib" directory to your path
+- mongo
+    - database: safestreets
+    - port: 27017
