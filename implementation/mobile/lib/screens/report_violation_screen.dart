@@ -3,7 +3,16 @@ import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 
-class ReportViolationScreen extends StatelessWidget {
+class ReportViolationScreen extends StatefulWidget {
+  @override
+  _ReportViolationScreenState createState() => _ReportViolationScreenState();
+}
+
+class _ReportViolationScreenState extends State<ReportViolationScreen> {
+  final List<int> _items = [0, 1, 2];
+  int _selectedIndex = 0;
+  int _itemsGenerated = 3;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +62,9 @@ class ReportViolationScreen extends StatelessWidget {
           'Take a photo',
         ),
         onPressed: () {
-          print('take photo');
+          setState(() {
+            _items.add(_itemsGenerated++);
+          });
         },
       ),
     );
@@ -69,19 +80,33 @@ class ReportViolationScreen extends StatelessWidget {
           SizedBox(height: 10),
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: Placeholder(
-              fallbackHeight: 180,
+            child: Container(
+              height: 180,
+              child: _buildItem(_items[_selectedIndex]),
             ),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: ImageCarousel(
-              itemBuilder: (BuildContext context, int index) => Placeholder(),
-              itemCount: 3,
-              onIndexChanged: print,
+              itemBuilder: (BuildContext context, int index) => _buildItem(_items[index]),
+              itemCount: _items.length,
+              onIndexChanged: (idx) {
+                setState(() {
+                  _selectedIndex = idx;
+                });
+              },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildItem(int item) {
+    return Container(
+      color: Colors.red,
+      child: Center(
+        child: Text("$item"),
       ),
     );
   }
