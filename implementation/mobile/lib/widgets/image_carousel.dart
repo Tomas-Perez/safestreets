@@ -16,8 +16,8 @@ class ImageCarousel extends StatefulWidget {
 }
 
 class _ImageCarouselState extends State<ImageCarousel> {
-  final SwiperController _controller = SwiperController();
-  int _index = 0;
+  final _controller = SwiperController();
+  var _index = 0;
 
   @override
   Widget build(BuildContext context) {

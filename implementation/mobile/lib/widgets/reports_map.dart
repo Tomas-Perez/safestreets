@@ -17,7 +17,7 @@ class ReportsMap extends StatefulWidget {
 }
 
 class _ReportsMapState extends State<ReportsMap> {
-  final MapController _controller = MapController();
+  final _controller = MapController();
 
   @override
   Widget build(BuildContext context) {

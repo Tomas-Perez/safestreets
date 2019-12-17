@@ -9,10 +9,16 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: _buildCard("Card 1"),
+            child: _buildCard(
+              title: "Report a violation",
+              onPressed: () => Navigator.pushNamed(context, '/report'),
+            ),
           ),
           Expanded(
-            child: _buildCard("Card 2"),
+            child: _buildCard(
+              title: "Reports map",
+              onPressed: () => Navigator.pushNamed(context, '/map'),
+            ),
           ),
           Expanded(
             child: Container(),
@@ -22,7 +28,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Card _buildCard(String title) {
+  Card _buildCard({String title, VoidCallback onPressed}) {
     return Card(
       child: InkWell(
         child: Stack(
@@ -46,9 +52,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        onTap: () {
-          print('pressed');
-        },
+        onTap: onPressed,
       ),
     );
   }
