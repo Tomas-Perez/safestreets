@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
+import 'package:mobile/widgets/safestreets_appbar.dart';
 
 class ReportViolationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 30.0,
-        ),
-        child: ListView(
-          children: <Widget>[
-            _title(),
-            ReportForm(),
-            SizedBox(height: 30),
-            _photosSection(),
-            SizedBox(height: 10),
-            _confirmButton(),
-          ],
-        ),
+      appBar: SafeStreetsAppBar(),
+      body: ListView(
+        children: <Widget>[
+          BackButtonSection(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+            ),
+            child: Column(
+              children: <Widget>[
+                _title(),
+                ReportForm(),
+                SizedBox(height: 30),
+                _photosSection(),
+                SizedBox(height: 10),
+                _confirmButton(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

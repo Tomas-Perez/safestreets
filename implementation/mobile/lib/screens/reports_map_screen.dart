@@ -278,7 +278,10 @@ class _FilterFormState extends State<_FilterForm> {
           ),
         ),
         onPressed: () {
-          print('filter');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (ctx) => ReportViolationScreen()),
+          );
         },
       ),
     );
