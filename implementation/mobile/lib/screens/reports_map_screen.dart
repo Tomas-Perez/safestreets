@@ -19,8 +19,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SafeStreetsAppBar(),
-      body: ListView(
-        primary: false,
+      body: Column(
         children: <Widget>[
           BackButtonSection(),
           Padding(
@@ -40,8 +39,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
             ),
           ),
           SizedBox(height: 6.0),
-          Container(
-            height: 295,
+          Expanded(
             child: ReportsMap(
               center: _center,
               zoom: 13.0,
@@ -137,7 +135,7 @@ class _FilterFormState extends State<_FilterForm> {
             ),
           ),
           _violationTypeField(),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           _filterButton(),
         ],
       ),
