@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -27,9 +28,9 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
             child: Column(
               children: <Widget>[
                 _title(),
-                ReportForm(),
+                _ReportForm(),
                 SizedBox(height: 30),
-                _photosSection(),
+                _photosSection(context),
                 SizedBox(height: 10),
                 _confirmButton(),
               ],
@@ -57,12 +58,11 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       width: 100,
       height: 25,
       child: RaisedButton(
-        padding: EdgeInsets.all(0),
-        child: Text(
-          'Take a photo',
-        ),
+        padding: const EdgeInsets.all(0),
+        child: Text('Take a photo'),
         onPressed: () {
           setState(() {
+            if (_items.isEmpty) _selectedIndex = 0;
             _items.add(_itemsGenerated++);
           });
         },
@@ -70,34 +70,60 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     );
   }
 
-  Widget _photosSection() {
+  Widget _photosSection(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30.0),
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _takePhotoButton(),
           SizedBox(height: 10),
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Container(
-              height: 180,
-              child: _buildItem(_items[_selectedIndex]),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: ImageCarousel(
-              itemBuilder: (BuildContext context, int index) => _buildItem(_items[index]),
-              itemCount: _items.length,
-              onIndexChanged: (idx) {
+          _buildCurrentImageView(),
+          _buildCarousel(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCurrentImageView() {
+    final height = 180.0;
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: _items.isEmpty
+          ? Container(height: height, child: _noItemsPlaceholder())
+          : _MainImageOverlay(
+              child: Container(
+                height: height,
+                child: _buildItem(_items[_selectedIndex]),
+              ),
+              onEliminate: () {
                 setState(() {
-                  _selectedIndex = idx;
+                  if (_items.isEmpty) return;
+                  _items.removeAt(_selectedIndex);
+                  if (_selectedIndex >= _items.length) {
+                    _selectedIndex = _items.length - 1;
+                  }
                 });
               },
             ),
+    );
+  }
+
+  Widget _buildCarousel(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: IgnorePointer(
+        ignoring: _items.isEmpty,
+        child: Opacity(
+          opacity: _items.isEmpty ? 0 : 1,
+          child: ImageCarousel(
+            itemBuilder: (_, idx) => _buildItem(_items[idx]),
+            itemCount: _items.length,
+            onIndexChanged: (idx) {
+              setState(() => _selectedIndex = idx);
+            },
           ),
-        ],
+        ),
       ),
     );
   }
@@ -126,16 +152,63 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       ),
     );
   }
+
+  Widget _noItemsPlaceholder() {
+    return Center(
+      child: Text(
+        "Please upload a picture of the scene",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 20.0),
+      ),
+    );
+  }
 }
 
-class ReportForm extends StatefulWidget {
+class _MainImageOverlay extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onEliminate;
+
+  _MainImageOverlay({this.child, this.onEliminate});
+
+  @override
+  Widget build(BuildContext context) {
+    final iconSize = 24.0;
+    return Stack(
+      children: <Widget>[
+        child,
+        Positioned(
+          top: iconSize / 2,
+          right: iconSize / 2,
+          child: SizedBox(
+            height: iconSize,
+            width: iconSize,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: IconButton(
+                iconSize: iconSize,
+                padding: const EdgeInsets.all(0),
+                icon: Icon(Icons.close),
+                onPressed: onEliminate,
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _ReportForm extends StatefulWidget {
   @override
   State createState() {
     return _ReportFormState();
   }
 }
 
-class _ReportFormState extends State<ReportForm> {
+class _ReportFormState extends State<_ReportForm> {
   final _formKey = GlobalKey<FormState>();
   final _licensePlateFocus = FocusNode();
   final _descriptionFocus = FocusNode();
