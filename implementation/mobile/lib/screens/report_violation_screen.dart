@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
+import 'package:provider/provider.dart';
 
 class ReportViolationScreen extends StatefulWidget {
   @override
@@ -60,11 +62,10 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       child: RaisedButton(
         padding: const EdgeInsets.all(0),
         child: Text('Take a photo'),
-        onPressed: () {
-          setState(() {
-            if (_items.isEmpty) _selectedIndex = 0;
-            _items.add(_itemsGenerated++);
-          });
+        onPressed: () async {
+          final service = Provider.of<CameraService>(context);
+          final imagePath = await service.openViewfinder(context);
+          print(imagePath);
         },
       ),
     );
