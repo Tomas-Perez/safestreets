@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile/services/camera_service.dart';
@@ -12,9 +14,8 @@ class ReportViolationScreen extends StatefulWidget {
 }
 
 class _ReportViolationScreenState extends State<ReportViolationScreen> {
-  final List<int> _items = [0, 1, 2];
-  int _selectedIndex = 0;
-  int _itemsGenerated = 3;
+  final List<String> _images = [];
+  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,12 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         onPressed: () async {
           final service = Provider.of<CameraService>(context);
           final imagePath = await service.openViewfinder(context);
-          print(imagePath);
+          if (imagePath != null) {
+            setState(() {
+              _images.add(imagePath);
+              if (_images.length == 1) _selectedIndex = 0;
+            });
+          }
         },
       ),
     );
@@ -90,19 +96,19 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     final height = 180.0;
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: _items.isEmpty
+      child: _images.isEmpty
           ? Container(height: height, child: _noItemsPlaceholder())
           : _MainImageOverlay(
               child: Container(
                 height: height,
-                child: _buildItem(_items[_selectedIndex]),
+                child: _buildItem(_images[_selectedIndex]),
               ),
               onEliminate: () {
                 setState(() {
-                  if (_items.isEmpty) return;
-                  _items.removeAt(_selectedIndex);
-                  if (_selectedIndex >= _items.length) {
-                    _selectedIndex = _items.length - 1;
+                  if (_images.isEmpty) return;
+                  _images.removeAt(_selectedIndex);
+                  if (_selectedIndex >= _images.length) {
+                    _selectedIndex = _images.length - 1;
                   }
                 });
               },
@@ -114,12 +120,12 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: IgnorePointer(
-        ignoring: _items.isEmpty,
+        ignoring: _images.isEmpty,
         child: Opacity(
-          opacity: _items.isEmpty ? 0 : 1,
+          opacity: _images.isEmpty ? 0 : 1,
           child: ImageCarousel(
-            itemBuilder: (_, idx) => _buildItem(_items[idx]),
-            itemCount: _items.length,
+            itemBuilder: (_, idx) => _buildItem(_images[idx]),
+            itemCount: _images.length,
             onIndexChanged: (idx) {
               setState(() => _selectedIndex = idx);
             },
@@ -129,12 +135,11 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     );
   }
 
-  Widget _buildItem(int item) {
+  Widget _buildItem(String path) {
     return Container(
-      color: Colors.red,
-      child: Center(
-        child: Text("$item"),
-      ),
+      color: Colors.black,
+      alignment: Alignment.center,
+      child: Image.file(File(path)),
     );
   }
 
@@ -169,7 +174,7 @@ class _MainImageOverlay extends StatelessWidget {
   final Widget child;
   final VoidCallback onEliminate;
 
-  _MainImageOverlay({this.child, this.onEliminate});
+  _MainImageOverlay({@required this.child, @required this.onEliminate});
 
   @override
   Widget build(BuildContext context) {
@@ -189,9 +194,9 @@ class _MainImageOverlay extends StatelessWidget {
                 color: Colors.white,
               ),
               child: IconButton(
+                icon: Icon(Icons.close),
                 iconSize: iconSize,
                 padding: const EdgeInsets.all(0),
-                icon: Icon(Icons.close),
                 onPressed: onEliminate,
               ),
             ),
