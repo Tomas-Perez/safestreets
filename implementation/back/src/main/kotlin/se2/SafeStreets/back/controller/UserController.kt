@@ -12,7 +12,7 @@ import javax.validation.Valid
 @RequestMapping("user")
 class UserController(private val userService: UserService) {
 
-    @GetMapping()
+    @GetMapping
     fun getAllUsers(): List<User> {
         return userService.findAll()
     }
@@ -20,7 +20,7 @@ class UserController(private val userService: UserService) {
     @GetMapping("/{id}")
     fun getUserById(@PathVariable("id") id:ObjectId): ResponseEntity<User> {
         val user = userService.findById(id)
-        return user.map { ResponseEntity.ok(it) }.orElse(ResponseEntity.notFound().build())
+        return user?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
     }
 
     @PostMapping
@@ -30,4 +30,14 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.created(components.toUri()).build<Any>()
     }
 
+    @GetMapping("/me")
+    fun getCurrentUser(): ResponseEntity<User> {
+        return userService.findCurrent()?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/me")
+    fun modifyCurrentUser(@Valid @RequestBody user: User): ResponseEntity<Any> {
+        val result: User? = userService.updateCurrent(user)
+        return result?.let { ResponseEntity.noContent().build<Any>() } ?: ResponseEntity.notFound().build()
+    }
 }

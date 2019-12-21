@@ -5,6 +5,7 @@ import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
@@ -31,5 +32,14 @@ class ExceptionMapper: ResponseEntityExceptionHandler() {
         errorAttributes["message"] = duplicateKey
         errorAttributes["error"] = HttpStatus.CONFLICT.reasonPhrase
         return handleExceptionInternal(ex, errorAttributes, HttpHeaders(), HttpStatus.CONFLICT, request)
+    }
+
+    @ExceptionHandler(value = [BadCredentialsException::class])
+    protected fun handleException(ex: BadCredentialsException, request: WebRequest?): ResponseEntity<Any?>? {
+        val errorAttributes = DefaultErrorAttributes().getErrorAttributes(request, false)
+        errorAttributes["status"] = HttpStatus.UNAUTHORIZED.value()
+        errorAttributes["message"] = ex.message
+        errorAttributes["error"] = HttpStatus.UNAUTHORIZED.reasonPhrase
+        return handleExceptionInternal(ex, errorAttributes, HttpHeaders(), HttpStatus.UNAUTHORIZED, request!!)
     }
 }

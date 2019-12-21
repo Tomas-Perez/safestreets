@@ -114,9 +114,9 @@ manufacturers:
       - "http://[username]:[password]@[ip_address]/cgi-bin/sf.cgi"
   Linksys: 
     mjpeg: 
-      - "http://[username]:[password]@[ip_address]/img/video.mjpeg"
-      - "http://[username]:[password]@[ip_address]/img/mjpeg.cgi"
-      - "http://[username]:[password]@[ip_address]/img/snapshot.cgi?size=2"
+      - "http://[username]:[password]@[ip_address]/images/video.mjpeg"
+      - "http://[username]:[password]@[ip_address]/images/mjpeg.cgi"
+      - "http://[username]:[password]@[ip_address]/images/snapshot.cgi?size=2"
       - "http://[username]:[password]@[ip_address]/adm/file.cgi?h_videotype=mjpeg&todo=save"
   Linudix: 
     mjpeg: 

@@ -1,12 +1,13 @@
 package se2.SafeStreets.back.service
 
 import org.bson.types.ObjectId
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
 import se2.SafeStreets.back.repository.UserRepository
-import java.util.*
 
 @Service
 class UserService(private val userRepository: UserRepository) {
@@ -15,12 +16,34 @@ class UserService(private val userRepository: UserRepository) {
         return userRepository.findAllByActiveIsTrue()
     }
 
-    fun findById(id: ObjectId): Optional<User> = userRepository.findById(id)
+    fun findById(id: ObjectId): User? = userRepository.findByIdOrNull(id)
 
     fun save(user: User): ObjectId {
         user.type = UserType.USER
         user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
         userRepository.save(user)
         return user.id!!
+    }
+
+    fun findCurrent(): User? {
+        val username = (SecurityContextHolder.getContext().authentication.principal as org.springframework.security.core.userdetails.User).username
+        return userRepository.findFirstByUsernameAndActiveIsTrue(username)
+    }
+
+    fun findCurrentOrException(): User {
+        return findCurrent()?.let { it } ?: throw NoSuchElementException("User does not exist.")
+    }
+
+    fun updateCurrent(userForm: User): User? {
+        val optUser = findCurrent()
+        optUser?.let { user ->
+            user.name = userForm.name
+            user.lastName = userForm.lastName
+            user.username = userForm.username
+            user.password = BCrypt.hashpw(userForm.password, BCrypt.gensalt())
+            userRepository.save(user)
+            return user
+        }
+        return null
     }
 }
