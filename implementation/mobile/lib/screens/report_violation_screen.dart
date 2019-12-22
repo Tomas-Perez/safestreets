@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile/services/camera_service.dart';
@@ -9,8 +10,10 @@ import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:provider/provider.dart';
 
 class ReportViolationScreen extends StatefulWidget {
+  const ReportViolationScreen({Key key}) : super(key: key);
+
   @override
-  _ReportViolationScreenState createState() => _ReportViolationScreenState();
+  State createState() => _ReportViolationScreenState();
 }
 
 class _ReportViolationScreenState extends State<ReportViolationScreen> {
@@ -35,7 +38,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
                 SizedBox(height: 30),
                 _photosSection(context),
                 SizedBox(height: 10),
-                _confirmButton(),
+                _confirmButton(context),
               ],
             ),
           ),
@@ -129,6 +132,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
             onIndexChanged: (idx) {
               setState(() => _selectedIndex = idx);
             },
+            viewportFraction: 0.33,
           ),
         ),
       ),
@@ -136,14 +140,10 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
   }
 
   Widget _buildItem(String path) {
-    return Container(
-      color: Colors.black,
-      alignment: Alignment.center,
-      child: Image.file(File(path)),
-    );
+    return _ReportImage(path: path);
   }
 
-  Widget _confirmButton() {
+  Widget _confirmButton(BuildContext context) {
     return Center(
       child: Container(
         width: 130,
@@ -151,9 +151,18 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           child: Text(
             'Confirm',
           ),
-          onPressed: () {
-            print('Confirm');
-          },
+          onPressed: _images.isEmpty
+              ? null
+              : () async {
+                  final selectedIndex = await showDialog(
+                    context: context,
+                    builder: (ctx) => _LicensePlateAlert(images: _images),
+                  );
+                  if (selectedIndex != null)
+                    print("$selectedIndex");
+                  else
+                    print("cancelled");
+                },
         ),
       ),
     );
@@ -162,7 +171,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
   Widget _noItemsPlaceholder() {
     return Center(
       child: Text(
-        "Please upload a picture of the scene",
+        "Please upload a photo of the scene",
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 20.0),
       ),
@@ -203,6 +212,21 @@ class _MainImageOverlay extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class _ReportImage extends StatelessWidget {
+  final String path;
+
+  _ReportImage({Key key, @required this.path}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black,
+      alignment: Alignment.center,
+      child: Image.file(File(path)),
     );
   }
 }
@@ -284,6 +308,62 @@ class _ReportFormState extends State<_ReportForm> {
       onSaved: (description) {
         _reportInfo.description = description;
       },
+    );
+  }
+}
+
+class _LicensePlateAlert extends StatefulWidget {
+  final List<String> images;
+
+  _LicensePlateAlert({
+    Key key,
+    @required this.images,
+  })  : assert(images.isNotEmpty, "Alert needs at least one image to select"),
+        super(key: key);
+
+  @override
+  State createState() => _LicensePlateAlertState();
+}
+
+class _LicensePlateAlertState extends State<_LicensePlateAlert> {
+  var _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("License plate photo"),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text(
+              widget.images.length == 1
+                  ? "Please ensure that the picture clearly shows the license plate, then press OK."
+                  : "Please select a picture which clearly shows the license plate, then press OK.",
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: 1,
+              height: 100,
+              child: ImageCarousel(
+                itemBuilder: (_, idx) => _ReportImage(path: widget.images[idx]),
+                itemCount: widget.images.length,
+                onIndexChanged: (idx) => _selectedIndex = idx,
+                viewportFraction: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Cancel"),
+          onPressed: () => Navigator.pop(context, null),
+        ),
+        FlatButton(
+          child: Text("OK"),
+          onPressed: () => Navigator.pop(context, _selectedIndex),
+        ),
+      ],
     );
   }
 }

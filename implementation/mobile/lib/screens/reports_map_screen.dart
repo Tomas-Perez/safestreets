@@ -8,8 +8,10 @@ import 'package:mobile/widgets/reports_map.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 
 class ReportsMapScreen extends StatefulWidget {
+  const ReportsMapScreen({Key key}): super(key: key);
+
   @override
-  _ReportsMapScreenState createState() => _ReportsMapScreenState();
+  State createState() => _ReportsMapScreenState();
 }
 
 class _ReportsMapScreenState extends State<ReportsMapScreen> {

@@ -10,10 +10,15 @@ class ReportsMap extends StatefulWidget {
   final double zoom;
   final List<ReportMarkerInfo> markers;
 
-  ReportsMap({this.center, this.zoom, this.markers});
+  ReportsMap({
+    Key key,
+    this.center,
+    this.zoom,
+    this.markers,
+  }) : super(key: key);
 
   @override
-  _ReportsMapState createState() => _ReportsMapState();
+  State createState() => _ReportsMapState();
 }
 
 class _ReportsMapState extends State<ReportsMap> {
@@ -67,7 +72,11 @@ class _ReportMarker extends StatelessWidget {
   final DateTime dateTime;
   final ViolationType violationType;
 
-  _ReportMarker({@required this.dateTime, @required this.violationType});
+  _ReportMarker({
+    Key key,
+    @required this.dateTime,
+    @required this.violationType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

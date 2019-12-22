@@ -6,13 +6,18 @@ class ImageCarousel extends StatefulWidget {
   final IndexedWidgetBuilder itemBuilder;
   final int itemCount;
   final ValueChanged<int> onIndexChanged;
+  final double viewportFraction;
 
-  ImageCarousel({@required this.itemBuilder, @required this.itemCount, this.onIndexChanged});
+  ImageCarousel({
+    Key key,
+    @required this.itemBuilder,
+    @required this.itemCount,
+    this.onIndexChanged,
+    this.viewportFraction,
+  }) : super(key: key);
 
   @override
-  State createState() {
-    return _ImageCarouselState();
-  }
+  State createState() => _ImageCarouselState();
 }
 
 class _ImageCarouselState extends State<ImageCarousel> {
@@ -28,7 +33,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
           child: IconButton(
             padding: const EdgeInsets.all(0),
             icon: Icon(Icons.arrow_back),
-            onPressed: _controller.previous,
+            onPressed: _index == 0 ? null : _controller.previous,
           ),
         ),
         Expanded(
@@ -60,7 +65,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                   ),
                 );
               },
-              viewportFraction: 0.33,
+              viewportFraction: widget.viewportFraction,
               itemCount: widget.itemCount,
               loop: false,
             ),
@@ -71,7 +76,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
           child: IconButton(
             padding: const EdgeInsets.all(0),
             icon: Icon(Icons.arrow_forward),
-            onPressed: _controller.next,
+            onPressed: _index == widget.itemCount - 1 ? null : _controller.next,
           ),
         ),
       ],
