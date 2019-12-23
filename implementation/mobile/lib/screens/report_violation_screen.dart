@@ -88,14 +88,14 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         children: <Widget>[
           _takePhotoButton(),
           SizedBox(height: 10),
-          _buildCurrentImageView(),
+          _buildCurrentImageView(context),
           _buildCarousel(context),
         ],
       ),
     );
   }
 
-  Widget _buildCurrentImageView() {
+  Widget _buildCurrentImageView(BuildContext context) {
     final height = 180.0;
     return AspectRatio(
       aspectRatio: 16 / 9,
@@ -139,9 +139,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     );
   }
 
-  Widget _buildItem(String path) {
-    return _ReportImage(path: path);
-  }
+  Widget _buildItem(String path) => _ReportImage(path: path);
 
   Widget _confirmButton(BuildContext context) {
     return Center(
@@ -183,7 +181,11 @@ class _MainImageOverlay extends StatelessWidget {
   final Widget child;
   final VoidCallback onEliminate;
 
-  _MainImageOverlay({@required this.child, @required this.onEliminate});
+  _MainImageOverlay({
+    Key key,
+    @required this.child,
+    @required this.onEliminate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -206,13 +208,35 @@ class _MainImageOverlay extends StatelessWidget {
                 icon: Icon(Icons.close),
                 iconSize: iconSize,
                 padding: const EdgeInsets.all(0),
-                onPressed: onEliminate,
+                onPressed: () => _onEliminatePress(context),
               ),
             ),
           ),
         )
       ],
     );
+  }
+
+  Future<void> _onEliminatePress(BuildContext context) async {
+    final delete = await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Delete photo"),
+        content: Text("Are you sure you want to delete this photo?"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("No"),
+            onPressed: () => Navigator.pop(ctx, null),
+          ),
+          FlatButton(
+            child: Text("Yes"),
+            onPressed: () => Navigator.pop(ctx, true),
+          )
+        ],
+      ),
+    );
+    if (delete == null) return;
+    onEliminate();
   }
 }
 
@@ -232,10 +256,10 @@ class _ReportImage extends StatelessWidget {
 }
 
 class _ReportForm extends StatefulWidget {
+  _ReportForm({Key key}) : super(key: key);
+
   @override
-  State createState() {
-    return _ReportFormState();
-  }
+  State createState() => _ReportFormState();
 }
 
 class _ReportFormState extends State<_ReportForm> {
