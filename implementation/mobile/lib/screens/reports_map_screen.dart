@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
-import 'package:mobile/date_helpers.dart';
+import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/reports_map.dart';
@@ -15,7 +15,7 @@ class ReportsMapScreen extends StatefulWidget {
 }
 
 class _ReportsMapScreenState extends State<ReportsMapScreen> {
-  LatLng _center = LatLng(45.505621, 9.246872);
+  var _center = LatLng(45.505621, 9.246872);
 
   @override
   Widget build(BuildContext context) {

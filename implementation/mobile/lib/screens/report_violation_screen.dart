@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile/services/camera_service.dart';
+import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -17,8 +18,9 @@ class ReportViolationScreen extends StatefulWidget {
 }
 
 class _ReportViolationScreenState extends State<ReportViolationScreen> {
-  final List<String> _images = [];
-  int _selectedIndex = -1;
+  final _controller = _ReportFormController();
+  final _images = <String>[];
+  var _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +36,12 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
             child: Column(
               children: <Widget>[
                 _title(),
-                _ReportForm(),
-                SizedBox(height: 30),
+                _ReportForm(controller: _controller),
+                const SizedBox(height: 30),
                 _photosSection(context),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _confirmButton(context),
+                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -149,21 +152,23 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           child: Text(
             'Confirm',
           ),
-          onPressed: _images.isEmpty
-              ? null
-              : () async {
-                  final selectedIndex = await showDialog(
-                    context: context,
-                    builder: (ctx) => _LicensePlateAlert(images: _images),
-                  );
-                  if (selectedIndex != null)
-                    print("$selectedIndex");
-                  else
-                    print("cancelled");
-                },
+          onPressed: _images.isEmpty ? null : _submitForm,
         ),
       ),
     );
+  }
+
+  Future<void> _submitForm() async {
+    final reportInfo = _controller.submit();
+    if (reportInfo == null) return;
+    final selectedIndex = await showDialog(
+      context: context,
+      builder: (ctx) => _LicensePlateAlert(images: _images),
+    );
+    if (selectedIndex != null)
+      print("$selectedIndex");
+    else
+      print("cancelled");
   }
 
   Widget _noItemsPlaceholder() {
@@ -255,8 +260,31 @@ class _ReportImage extends StatelessWidget {
   }
 }
 
+typedef _ReportFormSubmitCallback = _ReportFormInfo Function();
+
+class _ReportFormController {
+  _ReportFormSubmitCallback _onSubmit;
+
+  void register(_ReportFormSubmitCallback onSubmit) {
+    assert(_onSubmit == null,
+        "Another callback is registered on this controller, deregister it first");
+    _onSubmit = onSubmit;
+  }
+
+  void deregister() {
+    _onSubmit = null;
+  }
+
+  _ReportFormInfo submit() {
+    assert(_onSubmit != null, "No callback registered for this controller");
+    return _onSubmit();
+  }
+}
+
 class _ReportForm extends StatefulWidget {
-  _ReportForm({Key key}) : super(key: key);
+  final _ReportFormController controller;
+
+  _ReportForm({Key key, this.controller}) : super(key: key);
 
   @override
   State createState() => _ReportFormState();
@@ -266,7 +294,13 @@ class _ReportFormState extends State<_ReportForm> {
   final _formKey = GlobalKey<FormState>();
   final _licensePlateFocus = FocusNode();
   final _descriptionFocus = FocusNode();
-  final _reportInfo = ReportInfo.empty();
+  final _reportInfo = _ReportFormInfo.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller != null) widget.controller.register(_submit);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -288,16 +322,24 @@ class _ReportFormState extends State<_ReportForm> {
     return DropdownButtonFormField(
       value: _reportInfo.violationType,
       decoration: InputDecoration(
-        labelText: 'Violation type',
+        labelText: 'Violation type *',
+        helperText: ' ', // spacing for error message
       ),
       items: ViolationType.values
-          .map((t) => DropdownMenuItem(child: Text("$t"), value: t))
+          .map(
+            (t) => DropdownMenuItem(
+              child: Text("${violationTypeToString(t)}"),
+              value: t,
+            ),
+          )
           .toList(),
+      validator: (value) {
+        if (value == null) return "Violation type missing";
+        return null;
+      },
       onChanged: (violationType) {
         print("Changed violation type to $violationType");
-        setState(() {
-          _reportInfo.violationType = violationType;
-        });
+        setState(() => _reportInfo.violationType = violationType);
       },
     );
   }
@@ -307,32 +349,48 @@ class _ReportFormState extends State<_ReportForm> {
       textInputAction: TextInputAction.next,
       focusNode: _licensePlateFocus,
       decoration: InputDecoration(
-        labelText: 'License plate',
+        labelText: 'License plate *',
+        helperText: ' ', // spacing for error message
       ),
+      validator: (value) {
+        if (value.isEmpty) return "License plate missing";
+        if (!isItalianLicensePlate(value))
+          return "Please enter an italian license plate";
+        return null;
+      },
       onFieldSubmitted: (term) {
         _licensePlateFocus.unfocus();
         FocusScope.of(context).requestFocus(_descriptionFocus);
       },
-      onSaved: (licensePlate) {
-        _reportInfo.licensePlate = licensePlate;
-      },
+      onSaved: (licensePlate) => _reportInfo.licensePlate = licensePlate,
     );
   }
 
   Widget _descriptionField() {
     return TextFormField(
+      maxLengthEnforced: true,
+      maxLength: 150,
+      minLines: 2,
+      maxLines: 4,
       textInputAction: TextInputAction.done,
       focusNode: _descriptionFocus,
       decoration: InputDecoration(
         labelText: 'Description',
       ),
-      onFieldSubmitted: (term) {
-        _descriptionFocus.unfocus();
-      },
-      onSaved: (description) {
-        _reportInfo.description = description;
-      },
+      onFieldSubmitted: (term) => _descriptionFocus.unfocus(),
+      onSaved: (description) => _reportInfo.description = description,
     );
+  }
+
+  _ReportFormInfo _submit() {
+    if (_formKey.currentState.validate()) {
+      _licensePlateFocus.unfocus();
+      _descriptionFocus.unfocus();
+      _formKey.currentState.save();
+      return _reportInfo;
+    } else {
+      return null;
+    }
   }
 }
 
@@ -394,13 +452,24 @@ class _LicensePlateAlertState extends State<_LicensePlateAlert> {
 
 enum ViolationType { PARKING, BAD_CONDITION }
 
-class ReportInfo {
+String violationTypeToString(ViolationType type) {
+  switch (type) {
+    case ViolationType.PARKING:
+      return "Parking";
+    case ViolationType.BAD_CONDITION:
+      return "Bad condition";
+    default:
+      throw Exception("$type is not a ViolationType");
+  }
+}
+
+class _ReportFormInfo {
   ViolationType violationType;
   String licensePlate, description;
 
-  ReportInfo({this.violationType, this.licensePlate, this.description});
+  _ReportFormInfo({this.violationType, this.licensePlate, this.description});
 
-  ReportInfo.empty();
+  _ReportFormInfo.empty();
 
   @override
   String toString() {
