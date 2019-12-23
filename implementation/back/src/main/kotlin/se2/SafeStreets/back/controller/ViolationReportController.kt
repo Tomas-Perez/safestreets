@@ -1,11 +1,14 @@
 package se2.SafeStreets.back.controller
 
 import org.bson.types.ObjectId
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.util.UriComponentsBuilder
 import se2.SafeStreets.back.model.ViolationReport
+import se2.SafeStreets.back.model.ViolationReportStatus
 import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.service.ViolationService
 import javax.validation.Valid
@@ -19,9 +22,10 @@ class ViolationReportController(val violationService: ViolationService) {
     fun getAllReports(): List<ViolationReport> = violationService.findAll()
 
     @PostMapping
-    fun submitViolationReport(@Valid @RequestBody violationReportForm: ViolationReportForm): ResponseEntity<String> {
+    fun submitViolationReport(@Valid @RequestBody violationReportForm: ViolationReportForm, b: UriComponentsBuilder): ResponseEntity<Any> {
         val id = violationService.save(violationReportForm)
-        return ResponseEntity.ok(id.toHexString())
+        val components = b.path("/violation/{id}").buildAndExpand(id)
+        return ResponseEntity.created(components.toUri()).body(id.toHexString())
     }
 
     @PostMapping("/{id}/image")
@@ -39,6 +43,21 @@ class ViolationReportController(val violationService: ViolationService) {
         return report?.let {
             violationService.saveImage(it, file, true)
             return ResponseEntity.noContent().build<Any>()
+        } ?: ResponseEntity.notFound().build()
+    }
+
+    @PostMapping("/{id}/done")
+    fun endReport(@PathVariable("id") id: ObjectId): ResponseEntity<Any> {
+        val report = violationService.findById(id)
+        return report?.let {
+            if(it.status != ViolationReportStatus.INCOMPLETE)
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Report already completed.")
+
+            val result = violationService.endReport(it)
+            return if (result)
+                ResponseEntity.noContent().build<Any>()
+            else
+                ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("No license plate image present.")
         } ?: ResponseEntity.notFound().build()
     }
 }

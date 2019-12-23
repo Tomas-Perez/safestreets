@@ -22,6 +22,8 @@ class ViolationReport() {
     lateinit var dateTime: LocalDateTime
     lateinit var type: ViolationType
 
+    var status: ViolationReportStatus = ViolationReportStatus.INCOMPLETE
+
     var licenseImage: Image? = null
     var images: ArrayList<Image> = ArrayList()
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import java.util.*
 import java.util.regex.Pattern
 
 @RestControllerAdvice
@@ -41,5 +42,14 @@ class ExceptionMapper: ResponseEntityExceptionHandler() {
         errorAttributes["message"] = ex.message
         errorAttributes["error"] = HttpStatus.UNAUTHORIZED.reasonPhrase
         return handleExceptionInternal(ex, errorAttributes, HttpHeaders(), HttpStatus.UNAUTHORIZED, request!!)
+    }
+
+    @ExceptionHandler(value = [NoSuchElementException::class])
+    protected fun handleException(ex: NoSuchElementException, request: WebRequest?): ResponseEntity<Any?>? {
+        val errorAttributes = DefaultErrorAttributes().getErrorAttributes(request, false)
+        errorAttributes["status"] = HttpStatus.NOT_FOUND.value()
+        errorAttributes["message"] = ex.message
+        errorAttributes["error"] = HttpStatus.NOT_FOUND.reasonPhrase
+        return handleExceptionInternal(ex, errorAttributes, HttpHeaders(), HttpStatus.NOT_FOUND, request!!)
     }
 }

@@ -1,6 +1,7 @@
 package se2.SafeStreets.back.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
@@ -26,6 +27,9 @@ class User() {
     lateinit var lastName: String
     lateinit var type: UserType
 
+    @JsonIgnore
+    var pendingReviews: Int = 0
+
     constructor(username:String, password:String, name:String, lastName:String, type:UserType) : this() {
         this.username = username
         this.password = password
@@ -33,4 +37,7 @@ class User() {
         this.lastName = lastName
         this.type = type
     }
+
+    @JsonProperty("pendingReviews")
+    fun jsonGetPendingReviews(): Int = pendingReviews
 }
