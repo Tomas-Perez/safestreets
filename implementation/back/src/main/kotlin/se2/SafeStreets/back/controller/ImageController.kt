@@ -1,6 +1,5 @@
 package se2.SafeStreets.back.controller
 
-import org.apache.commons.io.IOUtils
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

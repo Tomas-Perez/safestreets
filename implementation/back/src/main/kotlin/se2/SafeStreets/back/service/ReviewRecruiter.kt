@@ -38,7 +38,7 @@ class ReviewRecruiter(
         val reviews: List<Review> = reviewRepository.findAllByUserIdAndStatus(user.id!!, ReviewStatus.PENDING)
         return reviews.map {
             val report = violationRepository.findByIdOrNull(it.reportId)
-            report?.let { r -> ReviewDto(r.licenseImage!!.name, it.id) } ?: throw NoSuchElementException("Report not found")
+            report?.let { r -> ReviewDto(it.id, r.licenseImage!!.name) } ?: throw NoSuchElementException("Report not found")
         }
     }
 

@@ -15,13 +15,7 @@ class ImageAnalyser {
         path = path.replace("%20", " ")
 
         alpr = Alpr("us", "$path/runtime_data/config/default.conf", "$path/runtime_data")
-        // Set top N candidates returned to 20
         alpr.setTopN(9)
-        // Set pattern to Maryland
-        //alpr.setDefaultRegion("md")
-
-        // Release memory
-        //alpr.unload()
     }
 
     fun analyse(imagePath: String): List<RecognisedLicense> {

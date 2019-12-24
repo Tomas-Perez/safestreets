@@ -31,8 +31,6 @@ class ReviewController(
             reviewRecruiter.submitReview(it, id, reviewForm.licensePlate)
             return ResponseEntity.noContent().build()
         } ?: ResponseEntity.notFound().build()
-
-
     }
 
 }

@@ -1,5 +1,6 @@
 package se2.SafeStreets.back.controller
 
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -7,14 +8,20 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.crypto.bcrypt.BCrypt
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import se2.SafeStreets.back.AbstractTest
-import se2.SafeStreets.back.model.User
-import se2.SafeStreets.back.model.UserType
+import se2.SafeStreets.back.model.*
+import se2.SafeStreets.back.repository.ReviewRepository
 import se2.SafeStreets.back.repository.UserRepository
+import se2.SafeStreets.back.repository.ViolationRepository
+import java.time.LocalDateTime
 
-class UserControllerTest(
-        @Autowired val userRepository: UserRepository
+internal class ReviewControllerTest(
+        @Autowired val userRepository: UserRepository,
+        @Autowired val violationRepository: ViolationRepository,
+        @Autowired val reviewRepository: ReviewRepository
 ) : AbstractTest() {
 
     val data: Data = Data()
@@ -28,10 +35,13 @@ class UserControllerTest(
         lateinit var user4: User
         lateinit var user5: User
         lateinit var user6: User
+        lateinit var report1: ViolationReport
+        lateinit var review1: Review
 
         fun setup() {
             admin1 = User("admin1", BCrypt.hashpw("pass", BCrypt.gensalt()), "Admin", "last", UserType.ADMIN)
             user1 = User("username1", BCrypt.hashpw("pass1", BCrypt.gensalt()), "User1", "last1", UserType.USER)
+            user1.pendingReviews = 1
             user2 = User("username2", BCrypt.hashpw("pass2", BCrypt.gensalt()), "User2", "last2", UserType.USER)
             user3 = User("username3", BCrypt.hashpw("pass3", BCrypt.gensalt()), "User3", "last3", UserType.USER)
             user4 = User("username4", BCrypt.hashpw("pass4", BCrypt.gensalt()), "User4", "last4", UserType.USER)
@@ -44,10 +54,19 @@ class UserControllerTest(
             userRepository.save(user4)
             userRepository.save(user5)
             userRepository.save(user6)
+
+            report1 = ViolationReport(user2.id!!,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+            val image1Id = ObjectId.get()
+            report1.licenseImage = Image(image1Id, image1Id.toHexString())
+            violationRepository.save(report1)
+            review1 = Review(user1.id!!, report1.id!!, ReviewStatus.PENDING)
+            reviewRepository.save(review1)
         }
 
         fun rollback(){
             userRepository.deleteAll()
+            violationRepository.deleteAll()
+            reviewRepository.deleteAll()
         }
     }
 
@@ -62,37 +81,16 @@ class UserControllerTest(
     }
 
     @Test
-    fun getUserByIdShouldReturnUser() {
-        val uri = "/user"
-        val user = data.user1
-        val getUserResult = mvc.perform(MockMvcRequestBuilders.get("$uri/${user.id}")
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val getUserContent = getUserResult.response.contentAsString
-        val gottenUser = super.mapFromJson(getUserContent, User::class.java)
-        assertEquals(gottenUser.id, user.id)
-    }
-
-    @Test
-    fun getNonexistentUserByIdShouldReturnNotFound() {
-        val uri = "/user"
-        val user = data.user1
-        userRepository.delete(user)
-        val getUserResult = mvc.perform(MockMvcRequestBuilders.get("$uri/${user.id}")
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val status = getUserResult.response.status
-        assertEquals(404, status)
-    }
-
-    @Test
-    fun createUserShouldReturnCreated() {
-        val uri = "/user"
-        val user = User("testusername", "pass", "test1", "testlast1", UserType.USER)
-        val mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(user))).andReturn()
-        val status = mvcResult.response.status
-        assertEquals(201, status)
+    @WithMockUser(username = "username1")
+    fun getCurrentPendingReviewsShouldReturnReviews() {
+        val uri = "/review/pending/me"
+        val getPendingResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk)
+                .andReturn()
+        val getPendingContent = getPendingResult.response.contentAsString
+        val gottenPending = super.mapFromJson(getPendingContent, Array<ReviewDto>::class.java)
+        assertEquals(data.review1.id, gottenPending[0].id)
     }
 
 }
-

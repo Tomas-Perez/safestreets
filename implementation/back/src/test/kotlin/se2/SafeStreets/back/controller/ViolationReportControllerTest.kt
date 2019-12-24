@@ -1,24 +1,32 @@
 package se2.SafeStreets.back.controller
 
+import org.apache.tomcat.util.http.fileupload.FileUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.ResourceUtils
 import se2.SafeStreets.back.AbstractTest
-import se2.SafeStreets.back.model.User
-import se2.SafeStreets.back.model.UserType
-import se2.SafeStreets.back.model.ViolationType
+import se2.SafeStreets.back.model.*
 import se2.SafeStreets.back.model.form.ViolationReportForm
+import se2.SafeStreets.back.repository.ReviewRepository
 import se2.SafeStreets.back.repository.UserRepository
+import se2.SafeStreets.back.repository.ViolationRepository
 import java.time.LocalDateTime
 
 class ViolationReportControllerTest(
-        @Autowired val userRepository: UserRepository
+        @Autowired val userRepository: UserRepository,
+        @Autowired val violationRepository: ViolationRepository,
+        @Autowired val reviewRepository: ReviewRepository
 ) : AbstractTest() {
 
     val data: Data = Data()
@@ -52,6 +60,14 @@ class ViolationReportControllerTest(
 
         fun rollback(){
             userRepository.deleteAll()
+            violationRepository.deleteAll()
+            reviewRepository.deleteAll()
+            // Clean image temporal dir
+            val path = (this::class).java.classLoader.getResource("images")!!.path
+                    .replaceFirst("/", "")
+                    .replace("%20", " ")
+            val dir = ResourceUtils.getFile(path)
+            FileUtils.cleanDirectory(dir)
         }
     }
 
@@ -70,11 +86,46 @@ class ViolationReportControllerTest(
     fun submitReportShouldReturnCreated() {
         val uri = "/violation"
         val report = ViolationReportForm("EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
-        val mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+        mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(report))).andReturn()
-        val status = mvcResult.response.status
-        assertEquals(201, status)
+                .content(mapToJson(report)))
+                .andExpect(status().`is`(201))
+    }
+
+    @Test
+    @WithMockUser(username = "username1")
+    fun uploadImageShouldSaveImage() {
+        val uri = "/violation"
+        val report = ViolationReport(data.user1.id!! ,"EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+        violationRepository.save(report)
+        val image = ResourceUtils.getFile("classpath:../resources/test.jpg")
+        val multipartFile = MockMultipartFile("file", "test.jpg", "image/jpg", image.readBytes())
+        mvc.perform(MockMvcRequestBuilders.multipart("$uri/${report.id!!.toHexString()}/image")
+                .file(multipartFile))
+                .andExpect(status().`is`(204))
+        val updatedReport = violationRepository.findByIdOrNull(report.id!!)!!
+        assertEquals(1, updatedReport.images.size)
+    }
+
+    @Test
+    @WithMockUser(username = "username1")
+    fun endReportShouldAnalyseIt() {
+        val uri = "/violation"
+        val report = ViolationReport(data.user1.id!! ,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+        violationRepository.save(report)
+
+        val image = ResourceUtils.getFile("classpath:../resources/test.jpg")
+        val multipartFile = MockMultipartFile("file", "test.jpg", "image/jpg", image.readBytes())
+        mvc.perform(MockMvcRequestBuilders.multipart("$uri/${report.id!!.toHexString()}/license-image")
+                .file(multipartFile))
+                .andExpect(status().`is`(204))
+
+        mvc.perform(MockMvcRequestBuilders.post("$uri/${report.id!!}/done"))
+                .andExpect(status().`is`(204))
+
+        val updatedReport = violationRepository.findByIdOrNull(report.id!!)!!
+        assertNotNull(updatedReport.licenseImage)
+        assertEquals(ViolationReportStatus.HIGH_CONFIDENCE, updatedReport.status)
     }
 
 }
