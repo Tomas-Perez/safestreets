@@ -22,7 +22,7 @@ class _TakePictureScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TakePictureScreenState createState() => _TakePictureScreenState();
+  State createState() => _TakePictureScreenState();
 }
 
 class _TakePictureScreenState extends State<_TakePictureScreen> {

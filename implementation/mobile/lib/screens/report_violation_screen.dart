@@ -8,6 +8,7 @@ import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
+import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
 class ReportViolationScreen extends StatefulWidget {
@@ -22,6 +23,13 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
   final _images = <String>[];
   var _selectedIndex = -1;
 
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +43,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
             ),
             child: Column(
               children: <Widget>[
-                _title(),
+                SafeStreetsScreenTitle("Report a violation"),
                 _ReportForm(controller: _controller),
                 const SizedBox(height: 30),
                 _photosSection(context),
@@ -46,18 +54,6 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _title() {
-    return Center(
-      child: Text(
-        "Report a violation",
-        style: TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-        ),
       ),
     );
   }
@@ -279,6 +275,10 @@ class _ReportFormController {
     assert(_onSubmit != null, "No callback registered for this controller");
     return _onSubmit();
   }
+
+  dispose() {
+    _onSubmit = null;
+  }
 }
 
 class _ReportForm extends StatefulWidget {
@@ -295,6 +295,7 @@ class _ReportFormState extends State<_ReportForm> {
   final _licensePlateFocus = FocusNode();
   final _descriptionFocus = FocusNode();
   final _reportInfo = _ReportFormInfo.empty();
+  var _autovalidate = false;
 
   @override
   void initState() {
@@ -306,7 +307,7 @@ class _ReportFormState extends State<_ReportForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      autovalidate: true,
+      autovalidate: _autovalidate,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -383,12 +384,16 @@ class _ReportFormState extends State<_ReportForm> {
   }
 
   _ReportFormInfo _submit() {
-    if (_formKey.currentState.validate()) {
+    final form = _formKey.currentState;
+    if (form.validate()) {
       _licensePlateFocus.unfocus();
       _descriptionFocus.unfocus();
-      _formKey.currentState.save();
+      form.save();
       return _reportInfo;
     } else {
+      setState(() {
+        _autovalidate = true;
+      });
       return null;
     }
   }

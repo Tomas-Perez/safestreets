@@ -6,6 +6,7 @@ import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/reports_map.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
+import 'package:mobile/widgets/safestreets_screen_title.dart';
 
 class ReportsMapScreen extends StatefulWidget {
   const ReportsMapScreen({Key key}) : super(key: key);
@@ -32,7 +33,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    _title(),
+                    SafeStreetsScreenTitle("Reports map"),
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -69,18 +70,6 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _title() {
-    return Center(
-      child: Text(
-        "Reports map",
-        style: const TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-        ),
       ),
     );
   }
@@ -123,6 +112,13 @@ class _FilterFormState extends State<_FilterForm> {
   final _filterInfo = _FilterInfo.empty();
   final _fromController = TextEditingController();
   final _toController = TextEditingController();
+
+  @override
+  void dispose() {
+    _fromController.dispose();
+    _toController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
