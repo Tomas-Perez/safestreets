@@ -13,13 +13,13 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: _buildCard(
               title: "Report a violation",
-              onPressed: () => Navigator.pushNamed(context, '/report'),
+              onPressed: () => Navigator.pushNamed(context, '/home/report'),
             ),
           ),
           Expanded(
             child: _buildCard(
               title: "Reports map",
-              onPressed: () => Navigator.pushNamed(context, '/map'),
+              onPressed: () => Navigator.pushNamed(context, '/home/map'),
             ),
           ),
           Expanded(child: Container()),

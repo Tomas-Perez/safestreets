@@ -9,6 +9,7 @@ import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 class ReportViolationScreen extends StatefulWidget {
@@ -22,7 +23,6 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
   final _controller = _ReportFormController();
   final _images = <String>[];
   var _selectedIndex = -1;
-
 
   @override
   void dispose() {
@@ -103,7 +103,10 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           : _MainImageOverlay(
               child: Container(
                 height: height,
-                child: _buildItem(_images[_selectedIndex]),
+                child: _ReportImage(
+                  _images[_selectedIndex],
+                  enableZoom: true,
+                ),
               ),
               onEliminate: () {
                 setState(() {
@@ -126,7 +129,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         child: Opacity(
           opacity: _images.isEmpty ? 0 : 1,
           child: ImageCarousel(
-            itemBuilder: (_, idx) => _buildItem(_images[idx]),
+            itemBuilder: (_, idx) => _ReportImage(_images[idx]),
             itemCount: _images.length,
             onIndexChanged: (idx) {
               setState(() => _selectedIndex = idx);
@@ -137,8 +140,6 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       ),
     );
   }
-
-  Widget _buildItem(String path) => _ReportImage(path: path);
 
   Widget _confirmButton(BuildContext context) {
     return Center(
@@ -243,15 +244,30 @@ class _MainImageOverlay extends StatelessWidget {
 
 class _ReportImage extends StatelessWidget {
   final String path;
+  final bool enableZoom;
 
-  _ReportImage({Key key, @required this.path}) : super(key: key);
+  _ReportImage(this.path, {Key key, this.enableZoom = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      alignment: Alignment.center,
-      child: Image.file(File(path)),
+    return GestureDetector(
+      onTap: enableZoom
+          ? () => showDialog(
+              context: context,
+              builder: (ctx) {
+                return Container(
+                  child: PhotoView(
+                    minScale: 1.0,
+                    imageProvider: FileImage(File(path)),
+                  ),
+                );
+              })
+          : null,
+      child: Container(
+        color: Colors.black,
+        alignment: Alignment.center,
+        child: Image.file(File(path)),
+      ),
     );
   }
 }
@@ -432,7 +448,8 @@ class _LicensePlateAlertState extends State<_LicensePlateAlert> {
               width: 1,
               height: 100,
               child: ImageCarousel(
-                itemBuilder: (_, idx) => _ReportImage(path: widget.images[idx]),
+                itemBuilder: (_, idx) =>
+                    _ReportImage(widget.images[idx], enableZoom: true),
                 itemCount: widget.images.length,
                 onIndexChanged: (idx) => _selectedIndex = idx,
                 viewportFraction: 1,
