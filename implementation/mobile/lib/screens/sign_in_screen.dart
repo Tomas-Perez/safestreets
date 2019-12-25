@@ -3,6 +3,7 @@ import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
+import 'package:mobile/widgets/secondary_button.dart';
 
 class SignInScreen extends StatelessWidget {
   @override
@@ -17,19 +18,21 @@ class SignInScreen extends StatelessWidget {
           BackButtonSection(),
           SafeStreetsScreenTitle("Sign in"),
           _SignInForm(submitListener: (info) => _onSubmit(context, info)),
-          _signUpButton(context),
+          Center(
+            child: Container(
+              width: 120,
+              child: _signUpButton(context),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _signUpButton(BuildContext context) {
-    return Center(
-      child: OutlineButton(
-        child: Text("Sign up"),
-        onPressed: () => Navigator.pushNamed(context, "/sign-in/sign-up"),
-        borderSide: BorderSide(color: Colors.blue, width: 2),
-      ),
+    return SecondaryButton(
+      child: Text("Sign up"),
+      onPressed: () => Navigator.pushNamed(context, "/sign-in/sign-up"),
     );
   }
 
@@ -66,7 +69,10 @@ class _SignInFormState extends State<_SignInForm> {
         children: <Widget>[
           _emailField(),
           _passwordField(),
-          _submitButton(),
+          Container(
+            width: 120,
+            child: _submitButton(),
+          ),
         ],
       ),
     );

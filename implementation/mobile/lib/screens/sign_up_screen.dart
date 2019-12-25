@@ -59,7 +59,10 @@ class _SignUpFormState extends State<_SignUpForm> {
           _emailField(),
           _passwordField(),
           _repeatPasswordField(),
-          _submitButton(),
+          Container(
+            width: 120,
+            child: _submitButton(),
+          ),
         ],
       ),
     );

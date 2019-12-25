@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/screens/profile_screen.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/screens/reports_map_screen.dart';
 import 'package:mobile/screens/sign_in_screen.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           '/home': (ctx) => HomeScreen(),
           '/home/map': (ctx) => ReportsMapScreen(),
           '/home/report': (ctx) => ReportViolationScreen(),
+          '/profile': (ctx) => ProfileScreen(),
           '/sign-in': (ctx) => SignInScreen(),
           '/sign-in/sign-up': (ctx) => SignUpScreen(),
         },

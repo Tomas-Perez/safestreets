@@ -489,7 +489,11 @@ class _ReportFormInfo {
   ViolationType violationType;
   String licensePlate, description;
 
-  _ReportFormInfo({this.violationType, this.licensePlate, this.description});
+  _ReportFormInfo({
+    @required this.violationType,
+    @required this.licensePlate,
+    @required this.description,
+  });
 
   _ReportFormInfo.empty();
 
