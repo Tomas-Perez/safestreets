@@ -68,7 +68,7 @@ class UserControllerTest(
         val getUserResult = mvc.perform(MockMvcRequestBuilders.get("$uri/${user.id}")
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
         val getUserContent = getUserResult.response.contentAsString
-        val gottenUser = super.mapFromJson(getUserContent, User::class.java)
+        val gottenUser = super.fullMapFromJson(getUserContent, User::class.java)
         assertEquals(gottenUser.id, user.id)
     }
 

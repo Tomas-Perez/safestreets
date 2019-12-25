@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.security.test.context.support.WithMockUser
@@ -91,6 +92,22 @@ internal class ReviewControllerTest(
         val getPendingContent = getPendingResult.response.contentAsString
         val gottenPending = super.mapFromJson(getPendingContent, Array<ReviewDto>::class.java)
         assertEquals(data.review1.id, gottenPending[0].id)
+    }
+
+    @Test
+    @WithMockUser(username = "username1")
+    fun submitReviewShouldUpdateIt() {
+        val uri = "/review"
+        val review = data.review1
+        val reviewForm = ReviewForm(review.id.toHexString(), "EX215GC", true)
+        mvc.perform(MockMvcRequestBuilders.post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapToJson(reviewForm)))
+                .andExpect(status().`is`(204))
+        val updatedReview = reviewRepository.findByIdOrNull(review.id)!!
+        assertEquals(ReviewStatus.COMPLETED, updatedReview.status)
+        assertEquals(reviewForm.licensePlate, updatedReview.license)
+        assertEquals(reviewForm.clear, updatedReview.clear)
     }
 
 }

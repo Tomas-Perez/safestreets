@@ -14,5 +14,6 @@ class Review(
     lateinit var id: ObjectId
 
     var license: String? = null
+    var clear: Boolean? = null
 }
 

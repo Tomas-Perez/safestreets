@@ -28,7 +28,7 @@ class ReviewController(
     fun submitReview(@Valid @RequestBody reviewForm: ReviewForm): ResponseEntity<Any> {
         return userService.findCurrent()?.let {
             val id = ObjectId(reviewForm.reviewId)
-            reviewRecruiter.submitReview(it, id, reviewForm.licensePlate)
+            reviewRecruiter.submitReview(it, id, reviewForm.licensePlate, reviewForm.clear)
             return ResponseEntity.noContent().build()
         } ?: ResponseEntity.notFound().build()
     }

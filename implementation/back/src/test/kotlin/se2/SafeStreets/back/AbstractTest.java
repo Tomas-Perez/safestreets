@@ -59,6 +59,13 @@ public abstract class AbstractTest {
         return objectMapper.readValue(json, clazz);
     }
 
+    protected <T> T fullMapFromJson(String json, Class<T> clazz) throws IOException {
+        objectMapper.disable(MapperFeature.USE_ANNOTATIONS);
+        T result = objectMapper.readValue(json, clazz);
+        objectMapper.enable(MapperFeature.USE_ANNOTATIONS);
+        return result;
+    }
+
     protected void setAuthentication(String username, String password, String role) {
         Collection<? extends GrantedAuthority> authorities =
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));

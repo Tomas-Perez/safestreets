@@ -42,7 +42,7 @@ class ReviewRecruiter(
         }
     }
 
-    fun submitReview(user: User, reviewId: ObjectId, license: String) {
+    fun submitReview(user: User, reviewId: ObjectId, license: String, clear: Boolean) {
         val review = reviewRepository.findByIdOrNull(reviewId)
         return review?.let {
 
@@ -52,7 +52,10 @@ class ReviewRecruiter(
             report?.let {
                 // Update the review
                 review.status = ReviewStatus.COMPLETED
-                review.license = license.replace("\\s+", "").toUpperCase()
+                review.clear = clear
+                if (clear) {
+                    review.license = license.replace("\\s+", "").toUpperCase()
+                }
                 reviewRepository.save(review)
                 user.pendingReviews--
                 userRepository.save(user)
@@ -63,7 +66,7 @@ class ReviewRecruiter(
                     // Update confidence/validity
                     var matches = 0
                     for (completedReview in completedReviews) {
-                        if (completedReview.license == report.licensePlate)
+                        if (completedReview.clear == true && completedReview.license == report.licensePlate)
                             matches++
                     }
                     val res = matches.toFloat() / REQUIRED_REVIEWS.toFloat()
