@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
-import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
+import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/reports_map.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 
 class ReportsMapScreen extends StatefulWidget {
-  const ReportsMapScreen({Key key}): super(key: key);
+  const ReportsMapScreen({Key key}) : super(key: key);
 
   @override
   State createState() => _ReportsMapScreenState();
@@ -21,27 +21,31 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SafeStreetsAppBar(),
-      body: Column(
-        children: <Widget>[
-          BackButtonSection(),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30.0,
-            ),
-            child: Column(
-              children: <Widget>[
-                _title(),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: _FilterForm(),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate([
+              BackButtonSection(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0,
                 ),
-                _locationSearch(),
-              ],
-            ),
+                child: Column(
+                  children: <Widget>[
+                    _title(),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      child: _FilterForm(),
+                    ),
+                    _locationSearch(),
+                  ],
+                ),
+              ),
+              SizedBox(height: 6.0),
+            ]),
           ),
-          SizedBox(height: 6.0),
-          Expanded(
+          SliverFillRemaining(
             child: ReportsMap(
               center: _center,
               zoom: 13.0,
@@ -153,7 +157,7 @@ class _FilterFormState extends State<_FilterForm> {
       items: [
         DropdownMenuItem(child: Text(""), value: null),
         ...ViolationType.values
-            .map((t) => DropdownMenuItem(child: Text("$t"), value: t))
+            .map((t) => DropdownMenuItem(child: Text("${violationTypeToString(t)}"), value: t))
             .toList(),
       ],
       onChanged: (violationType) {
@@ -210,7 +214,7 @@ class _FilterFormState extends State<_FilterForm> {
     if (date != null) {
       setState(() {
         _filterInfo.from = startOfDay(date);
-        _fromController.text = "${date.day}/${date.month}/${date.year}";
+        _fromController.text = formatDate(date);
       });
     }
   }
@@ -262,7 +266,7 @@ class _FilterFormState extends State<_FilterForm> {
     if (date != null) {
       setState(() {
         _filterInfo.to = endOfDay(date);
-        _toController.text = "${date.day}/${date.month}/${date.year}";
+        _toController.text = formatDate(date);
       });
     }
   }

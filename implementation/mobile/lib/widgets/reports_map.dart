@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
+import 'package:mobile/util/date_helpers.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class ReportsMap extends StatefulWidget {
@@ -96,14 +97,52 @@ class _ReportMarker extends StatelessWidget {
       popupDirection: TooltipDirection.up,
       content: Material(
         child: Container(
-          width: 100,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text("$violationType", style: popupTextStyle),
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "Type: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: "${violationTypeToString(violationType)}"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
               SizedBox(height: 10),
-              Text("$dateTime", style: popupTextStyle),
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "Date: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: "${formatDate(dateTime)}"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 10),
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "Time: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: "${formatTime(dateTime)}"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
             ],
           ),
         ),
