@@ -7,6 +7,8 @@ import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.util.UriComponentsBuilder
+import se2.SafeStreets.back.model.Dto.ViolationReportDto
+import se2.SafeStreets.back.model.form.RadiusQueryForm
 import se2.SafeStreets.back.model.ViolationReport
 import se2.SafeStreets.back.model.ViolationReportStatus
 import se2.SafeStreets.back.model.form.ViolationReportForm
@@ -59,5 +61,15 @@ class ViolationReportController(val violationService: ViolationService) {
             else
                 ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("No license plate image present.")
         } ?: ResponseEntity.notFound().build()
+    }
+
+    @PostMapping("/radius")
+    fun getReportsInRadius(@Valid @RequestBody form: RadiusQueryForm): ResponseEntity<List<ViolationReportDto>> {
+        return if (form.location.size == 2) {
+            val result = violationService.findByRadius(form)
+            ResponseEntity.ok(result)
+        } else {
+            ResponseEntity.badRequest().build()
+        }
     }
 }

@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import se2.SafeStreets.back.model.Dto.ViolationReportDto
 import se2.SafeStreets.back.model.Image
+import se2.SafeStreets.back.model.Location
 import se2.SafeStreets.back.model.ViolationReport
 import se2.SafeStreets.back.model.ViolationReportStatus
+import se2.SafeStreets.back.model.form.RadiusQueryForm
 import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.repository.ViolationRepository
 import java.io.File
@@ -26,7 +29,7 @@ class ViolationService(
 
     fun save(violationForm: ViolationReportForm): ObjectId {
         val user = userService.findCurrentOrException()
-        val violation = ViolationReport(user.id!!, violationForm.licensePlate.toUpperCase(), violationForm.description, violationForm.dateTime, violationForm.type)
+        val violation = ViolationReport(user.id!!, violationForm.licensePlate.toUpperCase(), violationForm.description, violationForm.dateTime, violationForm.type, Location(violationForm.location))
         violationRepository.save(violation)
         return violation.id!!
     }
@@ -70,6 +73,11 @@ class ViolationService(
             violationRepository.save(report)
             return true
         } ?: return false
+    }
+
+    fun findByRadius(form: RadiusQueryForm): List<ViolationReportDto> {
+        val reports = violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.types)
+        return reports.map { ViolationReportDto.fromReport(it) }
     }
 
 }

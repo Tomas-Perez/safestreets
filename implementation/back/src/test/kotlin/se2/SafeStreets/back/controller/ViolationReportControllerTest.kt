@@ -1,6 +1,7 @@
 package se2.SafeStreets.back.controller
 
 import org.apache.tomcat.util.http.fileupload.FileUtils
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -17,6 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.*
+import se2.SafeStreets.back.model.Dto.ViolationReportDto
+import se2.SafeStreets.back.model.form.RadiusQueryForm
 import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.repository.ReviewRepository
 import se2.SafeStreets.back.repository.UserRepository
@@ -40,6 +43,8 @@ class ViolationReportControllerTest(
         lateinit var user4: User
         lateinit var user5: User
         lateinit var user6: User
+        lateinit var report1: ViolationReport
+        lateinit var report2: ViolationReport
 
         fun setup() {
             admin1 = User("admin1", BCrypt.hashpw("pass", BCrypt.gensalt()), "Admin", "last", UserType.ADMIN)
@@ -56,18 +61,24 @@ class ViolationReportControllerTest(
             userRepository.save(user4)
             userRepository.save(user5)
             userRepository.save(user6)
+
+            report1 = ViolationReport(user2.id!!,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
+            report1.status = ViolationReportStatus.REVIEW
+            val image1Id = ObjectId.get()
+            report1.licenseImage = Image(image1Id, image1Id.toHexString())
+            violationRepository.save(report1)
+
+            report2 = ViolationReport(user3.id!!,"AG310PX", "", LocalDateTime.now(), ViolationType.POOR_CONDITION, Location(arrayOf(45.5681668,9.1290574)))
+            report2.status = ViolationReportStatus.HIGH_CONFIDENCE
+            val image2Id = ObjectId.get()
+            report2.licenseImage = Image(image2Id, image2Id.toHexString())
+            violationRepository.save(report2)
         }
 
         fun rollback(){
             userRepository.deleteAll()
             violationRepository.deleteAll()
             reviewRepository.deleteAll()
-            // Clean image temporal dir
-            val path = (this::class).java.classLoader.getResource("images")!!.path
-                    .replaceFirst("/", "")
-                    .replace("%20", " ")
-            val dir = ResourceUtils.getFile(path)
-            FileUtils.cleanDirectory(dir)
         }
     }
 
@@ -85,7 +96,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "username1")
     fun submitReportShouldReturnCreated() {
         val uri = "/violation"
-        val report = ViolationReportForm("EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+        val report = ViolationReportForm("EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING, arrayOf(45.479183, 9.225708))
         mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(report)))
@@ -96,7 +107,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "username1")
     fun uploadImageShouldSaveImage() {
         val uri = "/violation"
-        val report = ViolationReport(data.user1.id!! ,"EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+        val report = ViolationReport(data.user1.id!! ,"EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
         violationRepository.save(report)
         val image = ResourceUtils.getFile("classpath:../resources/test.jpg")
         val multipartFile = MockMultipartFile("file", "test.jpg", "image/jpg", image.readBytes())
@@ -105,13 +116,20 @@ class ViolationReportControllerTest(
                 .andExpect(status().`is`(204))
         val updatedReport = violationRepository.findByIdOrNull(report.id!!)!!
         assertEquals(1, updatedReport.images.size)
+
+        // Clean image temporal dir
+        val path = (this::class).java.classLoader.getResource("images")!!.path
+                .replaceFirst("/", "")
+                .replace("%20", " ")
+        val dir = ResourceUtils.getFile(path)
+        FileUtils.cleanDirectory(dir)
     }
 
     @Test
     @WithMockUser(username = "username1")
     fun endReportShouldAnalyseIt() {
         val uri = "/violation"
-        val report = ViolationReport(data.user1.id!! ,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+        val report = ViolationReport(data.user1.id!! ,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
         violationRepository.save(report)
 
         val image = ResourceUtils.getFile("classpath:../resources/test.jpg")
@@ -126,6 +144,23 @@ class ViolationReportControllerTest(
         val updatedReport = violationRepository.findByIdOrNull(report.id!!)!!
         assertNotNull(updatedReport.licenseImage)
         assertEquals(ViolationReportStatus.HIGH_CONFIDENCE, updatedReport.status)
+    }
+
+
+    @Test
+    @WithMockUser(username = "username1")
+    fun getReportsInRadiusShouldReturnCorrectReports() {
+        val uri = "/violation/radius"
+        val radiusForm = RadiusQueryForm(arrayOf(45.463213, 9.1812342), 10.0, data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationType.PARKING))
+        val getReportsResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapToJson(radiusForm)))
+                .andExpect(status().isOk)
+                .andReturn()
+        val getReportsContent = getReportsResult.response.contentAsString
+        val gottenReports = super.mapFromJson(getReportsContent, Array<ViolationReportDto>::class.java)
+        assertEquals(1, gottenReports.size)
+        assertEquals(data.report1.dateTime, gottenReports[0].dateTime)
     }
 
 }

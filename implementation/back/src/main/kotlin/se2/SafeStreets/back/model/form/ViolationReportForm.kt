@@ -7,5 +7,6 @@ data class ViolationReportForm(
         val licensePlate:String,
         val description:String,
         val dateTime:LocalDateTime,
-        val type:ViolationType
+        val type:ViolationType,
+        val location:Array<Double>
 )

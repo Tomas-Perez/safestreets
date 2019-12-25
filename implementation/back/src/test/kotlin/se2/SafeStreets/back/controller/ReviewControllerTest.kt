@@ -56,7 +56,8 @@ internal class ReviewControllerTest(
             userRepository.save(user5)
             userRepository.save(user6)
 
-            report1 = ViolationReport(user2.id!!,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING)
+            report1 = ViolationReport(user2.id!!,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
+            report1.status = ViolationReportStatus.REVIEW
             val image1Id = ObjectId.get()
             report1.licenseImage = Image(image1Id, image1Id.toHexString())
             violationRepository.save(report1)

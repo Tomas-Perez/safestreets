@@ -8,7 +8,6 @@ import java.time.LocalDateTime
 
 @Document(collection = "violation-report")
 class ViolationReport() {
-    //TODO Add location
 
     @Id
     @JsonSerialize(using = ObjectIDSerializer::class)
@@ -21,18 +20,20 @@ class ViolationReport() {
     lateinit var description: String
     lateinit var dateTime: LocalDateTime
     lateinit var type: ViolationType
+    lateinit var location: Location
 
     var status: ViolationReportStatus = ViolationReportStatus.INCOMPLETE
 
     var licenseImage: Image? = null
     var images: ArrayList<Image> = ArrayList()
 
-    constructor(filledBy:ObjectId, licensePlate:String, description: String, dateTime:LocalDateTime, type: ViolationType) : this() {
+    constructor(filledBy:ObjectId, licensePlate:String, description: String, dateTime:LocalDateTime, type: ViolationType, location: Location) : this() {
         this.filledBy = filledBy
         this.licensePlate = licensePlate
         this.description = description
         this.dateTime = dateTime
         this.type = type
+        this.location = location
     }
 
 
