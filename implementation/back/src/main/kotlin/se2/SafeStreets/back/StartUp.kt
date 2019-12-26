@@ -25,8 +25,9 @@ class StartUp(
         val init = event.applicationContext.environment.getProperty("initdb")
         if (init != null && init == "true") {
             try {
-                userService.save(User("admin@admin.com", "admin", "pass", "Admin", "AdminLast", UserType.ADMIN))
-                userService.save(User("user1@user.com", "user1", "pass1", "User1", "last1", UserType.USER))
+                userService.save(User("admin@mail.com", "admin", "pass", "Admin", "AdminLast", UserType.ADMIN))
+                userService.save(User("user1@mail.com", "user1", "pass1", "User1", "last1", UserType.USER))
+                userService.save(User("municipality1@mail.com", "municipality1", "pass1", "Muni1", "MuniLast1", UserType.MUNICIPALITY))
             } catch (e: Exception) {
             }
         }

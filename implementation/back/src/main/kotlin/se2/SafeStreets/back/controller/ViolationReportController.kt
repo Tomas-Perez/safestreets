@@ -72,4 +72,15 @@ class ViolationReportController(val violationService: ViolationService) {
             ResponseEntity.badRequest().build()
         }
     }
+
+    @PostMapping("/query/advanced/radius")
+    @Secured("ROLE_ADMIN", "ROLE_MUNICIPALITY")
+    fun getFullReportsInRadius(@Valid @RequestBody form: RadiusQueryForm): ResponseEntity<List<ViolationReport>> {
+        return if (form.location.size == 2) {
+            val result = violationService.findFullByRadius(form)
+            ResponseEntity.ok(result)
+        } else {
+            ResponseEntity.badRequest().build()
+        }
+    }
 }

@@ -84,7 +84,7 @@ class SecurityConfiguration {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/violation/query/radius").authenticated()
+                    .antMatchers("/violation/query/**").authenticated()
                     .and()
                     .apply(jwtConfigurer)
                     .and()
