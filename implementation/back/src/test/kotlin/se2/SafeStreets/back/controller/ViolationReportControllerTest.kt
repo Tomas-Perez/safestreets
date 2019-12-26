@@ -150,7 +150,7 @@ class ViolationReportControllerTest(
     @Test
     @WithMockUser(username = "username1")
     fun getReportsInRadiusShouldReturnCorrectReports() {
-        val uri = "/violation/radius"
+        val uri = "/violation/query/radius"
         val radiusForm = RadiusQueryForm(arrayOf(45.463213, 9.1812342), 10.0, data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationType.PARKING))
         val getReportsResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

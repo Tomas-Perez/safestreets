@@ -4,6 +4,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import se2.SafeStreets.back.model.*
+import se2.SafeStreets.back.model.Dto.ReviewDto
 import se2.SafeStreets.back.repository.ReviewRepository
 import se2.SafeStreets.back.repository.UserRepository
 import se2.SafeStreets.back.repository.ViolationRepository

@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.*
+import se2.SafeStreets.back.model.Dto.ReviewDto
+import se2.SafeStreets.back.model.form.ReviewForm
 import se2.SafeStreets.back.repository.ReviewRepository
 import se2.SafeStreets.back.repository.UserRepository
 import se2.SafeStreets.back.repository.ViolationRepository

@@ -3,8 +3,8 @@ package se2.SafeStreets.back.controller
 import org.bson.types.ObjectId
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import se2.SafeStreets.back.model.ReviewDto
-import se2.SafeStreets.back.model.ReviewForm
+import se2.SafeStreets.back.model.Dto.ReviewDto
+import se2.SafeStreets.back.model.form.ReviewForm
 import se2.SafeStreets.back.service.ReviewRecruiter
 import se2.SafeStreets.back.service.UserService
 import javax.validation.Valid

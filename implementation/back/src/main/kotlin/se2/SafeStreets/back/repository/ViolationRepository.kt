@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.query.BasicQuery
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.repository.MongoRepository
 import se2.SafeStreets.back.model.ViolationReport
-import se2.SafeStreets.back.model.ViolationReportStatus
 import se2.SafeStreets.back.model.ViolationType
 import java.time.LocalDateTime
 

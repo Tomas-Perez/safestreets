@@ -19,7 +19,7 @@ import javax.validation.Valid
 @RequestMapping("/violation")
 class ViolationReportController(val violationService: ViolationService) {
 
-    @GetMapping
+    @GetMapping("/query")
     @Secured("ROLE_ADMIN")
     fun getAllReports(): List<ViolationReport> = violationService.findAll()
 
@@ -63,7 +63,7 @@ class ViolationReportController(val violationService: ViolationService) {
         } ?: ResponseEntity.notFound().build()
     }
 
-    @PostMapping("/radius")
+    @PostMapping("/query/radius")
     fun getReportsInRadius(@Valid @RequestBody form: RadiusQueryForm): ResponseEntity<List<ViolationReportDto>> {
         return if (form.location.size == 2) {
             val result = violationService.findByRadius(form)

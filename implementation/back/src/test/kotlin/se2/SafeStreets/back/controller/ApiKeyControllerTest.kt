@@ -2,6 +2,7 @@ package se2.SafeStreets.back.controller
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,10 +13,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
+import se2.SafeStreets.back.repository.ApiKeyRepository
 import se2.SafeStreets.back.repository.UserRepository
 
-class UserControllerTest(
-        @Autowired val userRepository: UserRepository
+internal class ApiKeyControllerTest(
+        @Autowired val userRepository: UserRepository,
+        @Autowired val apiKeyRepository: ApiKeyRepository
 ) : AbstractTest() {
 
     val data: Data = Data()
@@ -49,6 +52,7 @@ class UserControllerTest(
 
         fun rollback(){
             userRepository.deleteAll()
+            apiKeyRepository.deleteAll()
         }
     }
 
@@ -63,50 +67,15 @@ class UserControllerTest(
     }
 
     @Test
-    fun getUserByIdShouldReturnUser() {
-        val uri = "/user"
-        val user = data.user1
-        val getUserResult = mvc.perform(MockMvcRequestBuilders.get("$uri/${user.id}")
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val getUserContent = getUserResult.response.contentAsString
-        val gottenUser = super.fullMapFromJson(getUserContent, User::class.java)
-        assertEquals(user.id, gottenUser.id)
-    }
-
-    @Test
-    fun getNonexistentUserByIdShouldReturnNotFound() {
-        val uri = "/user"
-        val user = data.user1
-        userRepository.delete(user)
-        val getUserResult = mvc.perform(MockMvcRequestBuilders.get("$uri/${user.id}")
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val status = getUserResult.response.status
-        assertEquals(404, status)
-    }
-
-    @Test
-    fun createUserShouldReturnCreated() {
-        val uri = "/user"
-        val user = User("testusername", "pass", "test1", "testlast1", UserType.USER)
-        val mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(user))).andReturn()
-        val status = mvcResult.response.status
-        assertEquals(201, status)
-    }
-
-    @Test
     @WithMockUser(username = "username1")
-    fun getCurrentUserShouldReturnUser1() {
-        val uri = "/user/me"
-        val getCurrentResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+    fun getApiKeyShouldReturnNewApiKey() {
+        val uri = "/api-key/me"
+        val getKeyResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val status = getCurrentResult.response.status
-        val getCurrentContent = getCurrentResult.response.contentAsString
-        assertEquals(200, status)
-        val gottenUser = super.fullMapFromJson(getCurrentContent, User::class.java)
-        assertEquals(data.user1.id, gottenUser.id)
+        val status = getKeyResult.response.status
+        val gottenKey = getKeyResult.response.contentAsString
+        assertEquals(status, 200)
+        assertTrue(gottenKey.isNotEmpty())
     }
 
 }
-

@@ -1,7 +1,8 @@
-package se2.SafeStreets.back.model
+package se2.SafeStreets.back.model.Dto
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.bson.types.ObjectId
+import se2.SafeStreets.back.model.ObjectIDSerializer
 
 class ReviewDto() {
 
