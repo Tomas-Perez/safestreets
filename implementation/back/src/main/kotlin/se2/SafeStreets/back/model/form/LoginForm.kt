@@ -1,3 +1,3 @@
 package se2.SafeStreets.back.model.form
 
-data class LoginForm(val username:String, val password:String)
+data class LoginForm(val email:String, val password:String)

@@ -58,7 +58,7 @@ class TokenProvider(val authService: AuthService) {
         try {
             val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken)
             return !claims.body.expiration.before(Date()) &&
-                    authService.checkUsername(claims.body.subject)
+                    authService.checkEmail(claims.body.subject)
         } catch (e: SignatureException) {
             log?.info("Invalid JWT signature.")
             log?.trace("Invalid JWT signature trace: {}", e)

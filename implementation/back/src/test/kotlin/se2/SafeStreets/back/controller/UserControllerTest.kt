@@ -2,6 +2,7 @@ package se2.SafeStreets.back.controller
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
+import se2.SafeStreets.back.model.form.SignUpForm
 import se2.SafeStreets.back.repository.UserRepository
 
 class UserControllerTest(
@@ -31,13 +33,13 @@ class UserControllerTest(
         lateinit var user6: User
 
         fun setup() {
-            admin1 = User("admin1", BCrypt.hashpw("pass", BCrypt.gensalt()), "Admin", "last", UserType.ADMIN)
-            user1 = User("username1", BCrypt.hashpw("pass1", BCrypt.gensalt()), "User1", "last1", UserType.USER)
-            user2 = User("username2", BCrypt.hashpw("pass2", BCrypt.gensalt()), "User2", "last2", UserType.USER)
-            user3 = User("username3", BCrypt.hashpw("pass3", BCrypt.gensalt()), "User3", "last3", UserType.USER)
-            user4 = User("username4", BCrypt.hashpw("pass4", BCrypt.gensalt()), "User4", "last4", UserType.USER)
-            user5 = User("username5", BCrypt.hashpw("pass5", BCrypt.gensalt()), "User5", "last5", UserType.USER)
-            user6 = User("username6", BCrypt.hashpw("pass6", BCrypt.gensalt()), "User6", "last6", UserType.USER)
+            admin1 = User("admin1@mail.com", "admin1", BCrypt.hashpw("pass", BCrypt.gensalt()), "Admin", "last", UserType.ADMIN)
+            user1 = User("user1@mail.com", "username1", BCrypt.hashpw("pass1", BCrypt.gensalt()), "User1", "last1", UserType.USER)
+            user2 = User("user2@mail.com", "username2", BCrypt.hashpw("pass2", BCrypt.gensalt()), "User2", "last2", UserType.USER)
+            user3 = User("user3@mail.com", "username3", BCrypt.hashpw("pass3", BCrypt.gensalt()), "User3", "last3", UserType.USER)
+            user4 = User("user4@mail.com", "username4", BCrypt.hashpw("pass4", BCrypt.gensalt()), "User4", "last4", UserType.USER)
+            user5 = User("user5@mail.com", "username5", BCrypt.hashpw("pass5", BCrypt.gensalt()), "User5", "last5", UserType.USER)
+            user6 = User("user6@mail.com", "username6", BCrypt.hashpw("pass6", BCrypt.gensalt()), "User6", "last6", UserType.USER)
             userRepository.save(admin1)
             userRepository.save(user1)
             userRepository.save(user2)
@@ -85,9 +87,22 @@ class UserControllerTest(
     }
 
     @Test
+    fun signUpShouldCreateUser() {
+        val uri = "/user/sign-up"
+        val form = SignUpForm("test1", "testlast", "testusername", "test@test.com", "pass")
+        val mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapToJson(form))).andReturn()
+        val status = mvcResult.response.status
+        assertEquals(204, status)
+        assertNotNull(userRepository.findFirstByEmailAndActiveIsTrue("test@test.com"))
+    }
+
+    @Test
+    @WithMockUser(username = "admin1@mail.com", roles = ["ADMIN"])
     fun createUserShouldReturnCreated() {
         val uri = "/user"
-        val user = User("testusername", "pass", "test1", "testlast1", UserType.USER)
+        val user = User("test@mail.com", "testusername", "pass", "test1", "testlast1", UserType.USER)
         val mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(user))).andReturn()
@@ -96,7 +111,7 @@ class UserControllerTest(
     }
 
     @Test
-    @WithMockUser(username = "username1")
+    @WithMockUser(username = "user1@mail.com")
     fun getCurrentUserShouldReturnUser1() {
         val uri = "/user/me"
         val getCurrentResult = mvc.perform(MockMvcRequestBuilders.get(uri)

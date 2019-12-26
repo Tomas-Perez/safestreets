@@ -49,6 +49,7 @@ class SecurityConfiguration {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authorizeRequests()
+                    .antMatchers("/user/sign-up").permitAll()
                     .antMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
                     .and()

@@ -15,22 +15,22 @@ class AuthService(val userRepository: UserRepository): AuthenticationProvider {
 
     override fun authenticate(authentication: Authentication): Authentication {
 
-        val username = authentication.name
+        val email = authentication.name
         val password = authentication.credentials.toString()
 
-        return userRepository.findFirstByUsernameAndActiveIsTrue(username)?.let { user ->
+        return userRepository.findFirstByEmailAndActiveIsTrue(email)?.let { user ->
             if(BCrypt.checkpw(password, user.password)) {
                 val authorities: ArrayList<GrantedAuthority> = ArrayList()
                 authorities.add(SimpleGrantedAuthority(user.type.toString()))
-                return UsernamePasswordAuthenticationToken(username, password, authorities)
+                return UsernamePasswordAuthenticationToken(email, password, authorities)
             } else {
                 throw BadCredentialsException("Invalid credentials")
             }
         } ?: throw BadCredentialsException("Invalid credentials")
     }
 
-    fun checkUsername(username:String): Boolean {
-        return userRepository.findFirstByUsernameAndActiveIsTrue(username) != null
+    fun checkEmail(email:String): Boolean {
+        return userRepository.findFirstByEmailAndActiveIsTrue(email) != null
     }
 
     override fun supports(authentication: Class<*>?): Boolean {

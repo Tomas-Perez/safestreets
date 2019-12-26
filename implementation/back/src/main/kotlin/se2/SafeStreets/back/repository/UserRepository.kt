@@ -9,6 +9,6 @@ import java.util.*
 @Repository
 interface UserRepository: MongoRepository<User, ObjectId> {
     fun findAllByActiveIsTrue(): List<User>
-    fun findFirstByUsernameAndActiveIsTrue(username: String): User?
+    fun findFirstByEmailAndActiveIsTrue(email: String): User?
     fun findAllByActiveIsTrueOrderByPendingReviewsAsc(): List<User>
 }

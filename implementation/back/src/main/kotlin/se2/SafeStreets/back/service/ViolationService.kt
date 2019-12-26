@@ -80,4 +80,8 @@ class ViolationService(
         return reports.map { ViolationReportDto.fromReport(it) }
     }
 
+    fun findFullByRadius(form: RadiusQueryForm): List<ViolationReport> {
+        return violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.types)
+    }
+
 }

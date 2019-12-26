@@ -17,6 +17,9 @@ class User() {
     var id: ObjectId? = null
 
     @Indexed(unique = true)
+    lateinit var email: String
+
+    @Indexed(unique = true)
     lateinit var username: String
 
     @JsonIgnore
@@ -24,17 +27,18 @@ class User() {
 
     lateinit var password: String
     lateinit var name: String
-    lateinit var lastName: String
+    lateinit var surname: String
     lateinit var type: UserType
 
     @JsonIgnore
     var pendingReviews: Int = 0
 
-    constructor(username:String, password:String, name:String, lastName:String, type:UserType) : this() {
+    constructor(email:String, username:String, password:String, name:String, surname:String, type:UserType) : this() {
+        this.email = email
         this.username = username
         this.password = password
         this.name = name
-        this.lastName = lastName
+        this.surname = surname
         this.type = type
     }
 

@@ -42,7 +42,7 @@ class ApiKeyFilter(private val userService: UserService, private val apiKeyServi
         return apiKeyUser?.let {
             return userService.findById(apiKeyUser.userId)?.let {user ->
                 val authorities: Collection<GrantedAuthority?> = arrayListOf(SimpleGrantedAuthority("ROLE_${user.type}"))
-                val principal = User(user.username, "", authorities)
+                val principal = User(user.email, "", authorities)
                 return UsernamePasswordAuthenticationToken(principal, key, authorities)
             }
         }

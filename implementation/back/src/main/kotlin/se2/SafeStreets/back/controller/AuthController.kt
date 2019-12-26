@@ -19,7 +19,7 @@ class AuthController(val tokenProvider: TokenProvider, val authenticationProvide
 
     @PostMapping
     fun authenticate(@Valid @RequestBody loginForm: LoginForm): ResponseEntity<Any> {
-        val authenticationToken = UsernamePasswordAuthenticationToken(loginForm.username, loginForm.password)
+        val authenticationToken = UsernamePasswordAuthenticationToken(loginForm.email, loginForm.password)
         val authentication = authenticationProvider.authenticate(authenticationToken)
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = tokenProvider.createToken(authentication)
@@ -27,7 +27,6 @@ class AuthController(val tokenProvider: TokenProvider, val authenticationProvide
         headers.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer $jwt")
         return ResponseEntity(JWTToken(jwt), headers, HttpStatus.OK)
     }
-
 
     @GetMapping("/ping")
     fun ping(): String = "pong"
