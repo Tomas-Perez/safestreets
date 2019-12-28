@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -32,13 +33,13 @@ class SignInScreen extends StatelessWidget {
   Widget _signUpButton(BuildContext context) {
     return SecondaryButton(
       child: Text("Sign up"),
-      onPressed: () => Navigator.pushNamed(context, "/sign-in/sign-up"),
+      onPressed: () => Navigator.pushNamed(context, SIGN_UP),
     );
   }
 
   void _onSubmit(BuildContext context, _SignInFormInfo info) {
     print(info);
-    Navigator.pushReplacementNamed(context, "/home");
+    Navigator.pushReplacementNamed(context, HOME);
   }
 }
 

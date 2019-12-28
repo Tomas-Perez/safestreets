@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,13 +14,13 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: _buildCard(
               title: "Report a violation",
-              onPressed: () => Navigator.pushNamed(context, '/home/report'),
+              onPressed: () => Navigator.pushNamed(context, REPORT),
             ),
           ),
           Expanded(
             child: _buildCard(
               title: "Reports map",
-              onPressed: () => Navigator.pushNamed(context, '/home/map'),
+              onPressed: () => Navigator.pushNamed(context, MAP),
             ),
           ),
           Expanded(child: Container()),

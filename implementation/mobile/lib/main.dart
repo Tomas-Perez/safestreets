@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/screens/home_screen.dart';
 import 'package:mobile/screens/profile_screen.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
@@ -21,12 +22,12 @@ class MyApp extends StatelessWidget {
         theme: safeStreetsTheme,
         initialRoute: '/sign-in',
         routes: {
-          '/home': (ctx) => HomeScreen(),
-          '/home/map': (ctx) => ReportsMapScreen(),
-          '/home/report': (ctx) => ReportViolationScreen(),
-          '/profile': (ctx) => ProfileScreen(),
-          '/sign-in': (ctx) => SignInScreen(),
-          '/sign-in/sign-up': (ctx) => SignUpScreen(),
+          HOME: (ctx) => HomeScreen(),
+          MAP: (ctx) => ReportsMapScreen(),
+          REPORT: (ctx) => ReportViolationScreen(),
+          PROFILE: (ctx) => ProfileScreen(),
+          SIGN_IN: (ctx) => SignInScreen(),
+          SIGN_UP: (ctx) => SignUpScreen(),
         },
       ),
       providers: [

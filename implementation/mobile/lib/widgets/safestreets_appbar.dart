@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/routes.dart';
 
 class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SafeStreetsAppBar({
@@ -15,10 +16,10 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Text("SafeStreets"),
       actions: <Widget>[
-        if (currentRouteName(context) != '/profile')
+        if (currentRouteName(context) != PROFILE)
           IconButton(
             icon: Icon(Icons.person),
-            onPressed: () => Navigator.pushNamed(context, '/profile'),
+            onPressed: () => Navigator.pushNamed(context, PROFILE),
           )
       ],
     );
