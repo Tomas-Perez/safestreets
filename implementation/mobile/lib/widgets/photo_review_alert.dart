@@ -69,6 +69,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
 
   Widget _cancelButton() {
     return SecondaryButton(
+      width: 100,
       child: Text('Cancel'),
       onPressed: () => Navigator.pop(context, null),
     );
@@ -76,6 +77,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
 
   Widget _confirmButton() {
     return PrimaryButton(
+      width: 100,
       child: Text('Confirm'),
       onPressed: _submit,
     );
