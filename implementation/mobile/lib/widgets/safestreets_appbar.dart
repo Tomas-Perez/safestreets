@@ -15,13 +15,17 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Text("SafeStreets"),
       actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () {},
-        )
+        if (currentRouteName(context) != '/profile')
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
+          )
       ],
     );
   }
+
+  String currentRouteName(BuildContext context) =>
+      ModalRoute.of(context).settings.name;
 
   Size get preferredSize => Size.fromHeight(40.0);
 }
