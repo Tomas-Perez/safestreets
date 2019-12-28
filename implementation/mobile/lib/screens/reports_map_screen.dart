@@ -4,6 +4,7 @@ import 'package:latlong/latlong.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
+import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/reports_map.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
@@ -27,7 +28,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
           SliverList(
             delegate: SliverChildListDelegate([
               BackButtonSection(),
-              Padding(
+              Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 30.0,
                 ),
@@ -153,7 +154,8 @@ class _FilterFormState extends State<_FilterForm> {
       items: [
         DropdownMenuItem(child: Text(""), value: null),
         ...ViolationType.values
-            .map((t) => DropdownMenuItem(child: Text("${violationTypeToString(t)}"), value: t))
+            .map((t) => DropdownMenuItem(
+                child: Text("${violationTypeToString(t)}"), value: t))
             .toList(),
       ],
       onChanged: (violationType) {
@@ -268,22 +270,20 @@ class _FilterFormState extends State<_FilterForm> {
   }
 
   Widget _filterButton() {
-    return Container(
+    return PrimaryButton(
       width: 140,
-      child: RaisedButton(
-        child: Text(
-          'Filter',
-          style: TextStyle(
-            fontSize: 16.0,
-          ),
+      child: Text(
+        'Filter',
+        style: TextStyle(
+          fontSize: 16.0,
         ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (ctx) => ReportViolationScreen()),
-          );
-        },
       ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (ctx) => ReportViolationScreen()),
+        );
+      },
     );
   }
 }

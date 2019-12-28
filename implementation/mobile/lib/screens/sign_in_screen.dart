@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
+import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
@@ -12,17 +13,18 @@ class SignInScreen extends StatelessWidget {
     return Scaffold(
       appBar: SafeStreetsAppBar(),
       body: ListView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30.0,
-        ),
         children: <Widget>[
           BackButtonSection(),
-          SafeStreetsScreenTitle("Sign in"),
-          _SignInForm(submitListener: (info) => _onSubmit(context, info)),
-          Center(
-            child: Container(
-              width: 120,
-              child: _signUpButton(context),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+            ),
+            child: Column(
+              children: <Widget>[
+                SafeStreetsScreenTitle("Sign in"),
+                _SignInForm(submitListener: (info) => _onSubmit(context, info)),
+                Center(child: _signUpButton(context)),
+              ],
             ),
           ),
         ],
@@ -70,10 +72,7 @@ class _SignInFormState extends State<_SignInForm> {
         children: <Widget>[
           _emailField(),
           _passwordField(),
-          Container(
-            width: 120,
-            child: _submitButton(),
-          ),
+          _submitButton(),
         ],
       ),
     );
@@ -138,7 +137,7 @@ class _SignInFormState extends State<_SignInForm> {
   }
 
   Widget _submitButton() {
-    return RaisedButton(
+    return PrimaryButton(
       child: Text("Sign in"),
       onPressed: _submit,
     );

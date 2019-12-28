@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/util/license_plate.dart';
+import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 
 class PhotoReviewAlert extends StatefulWidget {
@@ -74,7 +75,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
   }
 
   Widget _confirmButton() {
-    return RaisedButton(
+    return PrimaryButton(
       child: Text('Confirm'),
       onPressed: _submit,
     );

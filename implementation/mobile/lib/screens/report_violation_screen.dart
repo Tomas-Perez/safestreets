@@ -7,6 +7,7 @@ import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
+import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:photo_view/photo_view.dart';
@@ -37,7 +38,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       body: ListView(
         children: <Widget>[
           BackButtonSection(),
-          Padding(
+          Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 30.0,
             ),
@@ -143,14 +144,12 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
 
   Widget _confirmButton(BuildContext context) {
     return Center(
-      child: Container(
+      child: PrimaryButton(
         width: 130,
-        child: RaisedButton(
-          child: Text(
-            'Confirm',
-          ),
-          onPressed: _images.isEmpty ? null : _submitForm,
+        child: Text(
+          'Confirm',
         ),
+        onPressed: _images.isEmpty ? null : _submitForm,
       ),
     );
   }

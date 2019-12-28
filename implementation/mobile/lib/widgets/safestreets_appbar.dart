@@ -23,7 +23,7 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Text("SafeStreets"),
       actions: <Widget>[
-        if (currentRouteName(context) != PROFILE)
+        if (!currentRouteName(context).contains('/profile'))
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () => Navigator.pushNamed(context, PROFILE),

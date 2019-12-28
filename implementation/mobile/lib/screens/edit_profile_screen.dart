@@ -4,8 +4,10 @@ import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
+import 'package:mobile/screens/profile_screen.dart';
 
-class SignUpScreen extends StatelessWidget {
+class EditProfileScreen extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,43 +16,38 @@ class SignUpScreen extends StatelessWidget {
         children: <Widget>[
           BackButtonSection(),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Column(
               children: <Widget>[
-                SafeStreetsScreenTitle("Sign up"),
-                _SignUpForm(submitListener: print),
+                SafeStreetsScreenTitle('Edit profile'),
+                _EditProfileForm(submitListener: print),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
 
-typedef _SignUpSubmitListener = void Function(_SignUpFormInfo);
+typedef _EditInfoSubmitListener = void Function(_EditProfileFormInfo);
 
-class _SignUpForm extends StatefulWidget {
-  final _SignUpSubmitListener submitListener;
+class _EditProfileForm extends StatefulWidget {
+  final _EditInfoSubmitListener submitListener;
 
-  _SignUpForm({Key key, @required this.submitListener}) : super(key: key);
+  _EditProfileForm({Key key, @required this.submitListener}) : super(key: key);
 
   @override
-  State createState() => _SignUpFormState();
+  State createState() => _EditProfileFormState();
 }
 
-class _SignUpFormState extends State<_SignUpForm> {
+class _EditProfileFormState extends State<_EditProfileForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameFocus = FocusNode();
   final _surnameFocus = FocusNode();
   final _usernameFocus = FocusNode();
   final _emailFocus = FocusNode();
-  final _passwordFocus = FocusNode();
-  final _repeatPasswordFocus = FocusNode();
-  final _signUpInfo = _SignUpFormInfo.empty();
-  var _passwordFieldValue = "";
+  final _editInfo = _EditProfileFormInfo.fromProfile(mockProfile);
   var _autovalidate = false;
 
   @override
@@ -64,8 +61,6 @@ class _SignUpFormState extends State<_SignUpForm> {
           _surnameField(),
           _usernameField(),
           _emailField(),
-          _passwordField(),
-          _repeatPasswordField(),
           _submitButton(),
         ],
       ),
@@ -74,6 +69,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _nameField() {
     return TextFormField(
+      initialValue: _editInfo.name,
       textInputAction: TextInputAction.next,
       focusNode: _nameFocus,
       decoration: InputDecoration(
@@ -88,12 +84,13 @@ class _SignUpFormState extends State<_SignUpForm> {
         _nameFocus.unfocus();
         FocusScope.of(context).requestFocus(_surnameFocus);
       },
-      onSaved: (name) => _signUpInfo.name = name,
+      onSaved: (name) => _editInfo.name = name,
     );
   }
 
   Widget _surnameField() {
     return TextFormField(
+      initialValue: _editInfo.surname,
       textInputAction: TextInputAction.next,
       focusNode: _surnameFocus,
       decoration: InputDecoration(
@@ -108,12 +105,13 @@ class _SignUpFormState extends State<_SignUpForm> {
         _surnameFocus.unfocus();
         FocusScope.of(context).requestFocus(_usernameFocus);
       },
-      onSaved: (surname) => _signUpInfo.surname = surname,
+      onSaved: (surname) => _editInfo.surname = surname,
     );
   }
 
   Widget _usernameField() {
     return TextFormField(
+      initialValue: _editInfo.username,
       textInputAction: TextInputAction.next,
       focusNode: _usernameFocus,
       decoration: InputDecoration(
@@ -128,13 +126,14 @@ class _SignUpFormState extends State<_SignUpForm> {
         _usernameFocus.unfocus();
         FocusScope.of(context).requestFocus(_emailFocus);
       },
-      onSaved: (username) => _signUpInfo.username = username,
+      onSaved: (username) => _editInfo.username = username,
     );
   }
 
   Widget _emailField() {
     return TextFormField(
-      textInputAction: TextInputAction.next,
+      initialValue: _editInfo.email,
+      textInputAction: TextInputAction.done,
       keyboardType: TextInputType.emailAddress,
       focusNode: _emailFocus,
       decoration: InputDecoration(
@@ -148,50 +147,9 @@ class _SignUpFormState extends State<_SignUpForm> {
       },
       onFieldSubmitted: (term) {
         _emailFocus.unfocus();
-        FocusScope.of(context).requestFocus(_passwordFocus);
-      },
-      onSaved: (email) => _signUpInfo.email = email,
-    );
-  }
-
-  Widget _passwordField() {
-    return TextFormField(
-      textInputAction: TextInputAction.next,
-      focusNode: _passwordFocus,
-      decoration: InputDecoration(
-        labelText: 'Password *',
-        helperText: ' ', // spacing for error message
-      ),
-      validator: (value) {
-        if (value.isEmpty) return "Password missing";
-        return null;
-      },
-      onChanged: (value) => _passwordFieldValue = value,
-      onFieldSubmitted: (term) {
-        _passwordFocus.unfocus();
-        FocusScope.of(context).requestFocus(_repeatPasswordFocus);
-      },
-      onSaved: (password) => _signUpInfo.password = password,
-    );
-  }
-
-  Widget _repeatPasswordField() {
-    return TextFormField(
-      textInputAction: TextInputAction.done,
-      focusNode: _repeatPasswordFocus,
-      decoration: InputDecoration(
-        labelText: 'Repeat password *',
-        helperText: ' ', // spacing for error message
-      ),
-      validator: (value) {
-        if (value.isEmpty) return "Enter your password again";
-        if (value != _passwordFieldValue) return "Passwords do not match";
-        return null;
-      },
-      onFieldSubmitted: (term) {
-        _repeatPasswordFocus.unfocus();
         _submit();
       },
+      onSaved: (email) => _editInfo.email = email,
     );
   }
 
@@ -202,10 +160,8 @@ class _SignUpFormState extends State<_SignUpForm> {
       _surnameFocus.unfocus();
       _usernameFocus.unfocus();
       _emailFocus.unfocus();
-      _passwordFocus.unfocus();
-      _repeatPasswordFocus.unfocus();
       form.save();
-      widget.submitListener(_signUpInfo);
+      widget.submitListener(_editInfo);
     } else {
       if (!_autovalidate) {
         setState(() {
@@ -217,22 +173,28 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _submitButton() {
     return PrimaryButton(
-      child: Text("Sign up"),
+      child: Text('Confirm'),
       onPressed: _submit,
     );
   }
 }
 
-class _SignUpFormInfo {
-  String name, surname, username, email, password;
+class _EditProfileFormInfo {
+  String name, surname, username, email;
 
-  _SignUpFormInfo({
+  _EditProfileFormInfo({
     @required this.name,
     @required this.surname,
     @required this.username,
     @required this.email,
-    @required this.password,
   });
 
-  _SignUpFormInfo.empty();
+  _EditProfileFormInfo.empty();
+
+  _EditProfileFormInfo.fromProfile(Profile profile) {
+    name = profile.name;
+    surname = profile.surname;
+    username = profile.username;
+    email = profile.email;
+  }
 }

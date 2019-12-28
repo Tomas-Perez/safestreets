@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
+import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 
 class ProfileScreen extends StatelessWidget {
+  final Profile profile = mockProfile;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,35 +16,25 @@ class ProfileScreen extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           BackButtonSection(),
-          SafeStreetsScreenTitle("Profile"),
-          SizedBox(height: 30),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 100),
             child: Column(
               children: <Widget>[
-                _buildRow("Name:", "Peter"),
+                SafeStreetsScreenTitle("Profile"),
+                SizedBox(height: 30),
+                _buildRow("Name:", profile.name),
                 SizedBox(height: 20),
-                _buildRow("Surname:", "Alfonso"),
+                _buildRow("Surname:", profile.surname),
                 SizedBox(height: 20),
-                _buildRow("Username:", "iampeter2019"),
+                _buildRow("Username:", profile.username),
                 SizedBox(height: 20),
-                _buildRow("Email:", "peter@mail.com"),
+                _buildRow("Email:", profile.email),
               ],
             ),
           ),
           SizedBox(height: 30),
-          Center(
-            child: Container(
-              width: 120,
-              child: _editButton(),
-            ),
-          ),
-          Center(
-            child: Container(
-              width: 120,
-              child: _signOutButton(),
-            ),
-          ),
+          Center(child: _editButton(context)),
+          Center(child: _signOutButton()),
         ],
       ),
     );
@@ -56,10 +50,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _editButton() {
-    return RaisedButton(
+  Widget _editButton(BuildContext context) {
+    return PrimaryButton(
       child: Text("Edit"),
-      onPressed: () => print('edit'),
+      onPressed: () => Navigator.pushNamed(context, EDIT_PROFILE),
     );
   }
 
@@ -69,4 +63,22 @@ class ProfileScreen extends StatelessWidget {
       onPressed: () => print("sign out"),
     );
   }
+}
+
+final mockProfile = Profile(
+  name: 'Pedro',
+  surname: 'Alfonso',
+  username: 'iampeter2019',
+  email: 'peter@mail.com',
+);
+
+class Profile {
+  String name, surname, username, email;
+
+  Profile({
+    @required this.name,
+    @required this.surname,
+    @required this.username,
+    @required this.email,
+  });
 }
