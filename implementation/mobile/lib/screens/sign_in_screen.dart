@@ -129,9 +129,11 @@ class _SignInFormState extends State<_SignInForm> {
       form.save();
       widget.submitListener(_signInInfo);
     } else {
-      setState(() {
-        _autovalidate = true;
-      });
+      if (!_autovalidate) {
+        setState(() {
+          _autovalidate = true;
+        });
+      }
     }
   }
 

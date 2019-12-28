@@ -5,10 +5,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:mobile/services/camera_util.dart';
 
 abstract class CameraService {
-  Future<String> openViewfinder(BuildContext context);
+  Future<ImageDescription> openViewfinder(BuildContext context);
 }
 
-class PhoneCameraService implements CameraService{
+enum ImageType { asset, file }
+
+class ImageDescription {
+  final String path;
+  final ImageType type;
+
+  ImageDescription.file(this.path) : type = ImageType.file;
+
+  ImageDescription.asset(this.path) : type = ImageType.asset;
+}
+
+class PhoneCameraService implements CameraService {
   CameraDescription _camera;
   final _initializationCompleter = Completer<void>();
 
@@ -22,8 +33,8 @@ class PhoneCameraService implements CameraService{
     );
   }
 
-  Future<String> openViewfinder(BuildContext context) async {
+  Future<ImageDescription> openViewfinder(BuildContext context) async {
     await _initializationCompleter.future;
-    return takePicture(context, _camera);
+    return ImageDescription.file(await takePicture(context, _camera));
   }
 }

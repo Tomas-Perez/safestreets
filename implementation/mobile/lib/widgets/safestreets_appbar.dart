@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/widgets/photo_review_alert.dart';
 
 class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SafeStreetsAppBar({
@@ -12,7 +13,13 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: IconButton(
         icon: Icon(Icons.error),
-        onPressed: () {},
+        onPressed: () async {
+          final res = await showDialog<ReviewResponse>(
+            context: context,
+            builder: (_) => PhotoReviewAlert(),
+          );
+          print(res);
+        },
       ),
       title: Text("SafeStreets"),
       actions: <Widget>[

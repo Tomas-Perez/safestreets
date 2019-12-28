@@ -21,7 +21,7 @@ class ReportViolationScreen extends StatefulWidget {
 
 class _ReportViolationScreenState extends State<ReportViolationScreen> {
   final _controller = _ReportFormController();
-  final _images = <String>[];
+  final _images = <ImageDescription>[];
   var _selectedIndex = -1;
 
   @override
@@ -103,7 +103,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           : _MainImageOverlay(
               child: Container(
                 height: height,
-                child: _ReportImage(
+                child: ReportImage(
                   _images[_selectedIndex],
                   enableZoom: true,
                 ),
@@ -129,7 +129,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         child: Opacity(
           opacity: _images.isEmpty ? 0 : 1,
           child: ImageCarousel(
-            itemBuilder: (_, idx) => _ReportImage(_images[idx]),
+            itemBuilder: (_, idx) => ReportImage(_images[idx]),
             itemCount: _images.length,
             onIndexChanged: (idx) {
               setState(() => _selectedIndex = idx);
@@ -242,11 +242,11 @@ class _MainImageOverlay extends StatelessWidget {
   }
 }
 
-class _ReportImage extends StatelessWidget {
-  final String path;
+class ReportImage extends StatelessWidget {
+  final ImageDescription image;
   final bool enableZoom;
 
-  _ReportImage(this.path, {Key key, this.enableZoom = false}) : super(key: key);
+  ReportImage(this.image, {Key key, this.enableZoom = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +258,9 @@ class _ReportImage extends StatelessWidget {
                 return Container(
                   child: PhotoView(
                     minScale: 1.0,
-                    imageProvider: FileImage(File(path)),
+                    imageProvider: image.type == ImageType.asset
+                        ? AssetImage(image.path)
+                        : FileImage(File(image.path)),
                   ),
                 );
               })
@@ -266,7 +268,12 @@ class _ReportImage extends StatelessWidget {
       child: Container(
         color: Colors.black,
         alignment: Alignment.center,
-        child: Image.file(File(path)),
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: image.type == ImageType.asset
+              ? Image.asset(image.path)
+              : Image.file(File(image.path)),
+        ),
       ),
     );
   }
@@ -372,7 +379,7 @@ class _ReportFormState extends State<_ReportForm> {
       validator: (value) {
         if (value.isEmpty) return "License plate missing";
         if (!isItalianLicensePlate(value))
-          return "Please enter an italian license plate";
+          return "Please enter an italian license plate (AA000AA)";
         return null;
       },
       onFieldSubmitted: (term) {
@@ -407,16 +414,18 @@ class _ReportFormState extends State<_ReportForm> {
       form.save();
       return _reportInfo;
     } else {
-      setState(() {
-        _autovalidate = true;
-      });
+      if (!_autovalidate) {
+        setState(() {
+          _autovalidate = true;
+        });
+      }
       return null;
     }
   }
 }
 
 class _LicensePlateAlert extends StatefulWidget {
-  final List<String> images;
+  final List<ImageDescription> images;
 
   _LicensePlateAlert({
     Key key,
@@ -449,7 +458,7 @@ class _LicensePlateAlertState extends State<_LicensePlateAlert> {
               height: 100,
               child: ImageCarousel(
                 itemBuilder: (_, idx) =>
-                    _ReportImage(widget.images[idx], enableZoom: true),
+                    ReportImage(widget.images[idx], enableZoom: true),
                 itemCount: widget.images.length,
                 onIndexChanged: (idx) => _selectedIndex = idx,
                 viewportFraction: 1,

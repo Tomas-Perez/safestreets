@@ -203,9 +203,11 @@ class _SignUpFormState extends State<_SignUpForm> {
       form.save();
       widget.submitListener(_signUpInfo);
     } else {
-      setState(() {
-        _autovalidate = true;
-      });
+      if (!_autovalidate) {
+        setState(() {
+          _autovalidate = true;
+        });
+      }
     }
   }
 
