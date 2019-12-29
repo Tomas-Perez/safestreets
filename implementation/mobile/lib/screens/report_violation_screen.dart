@@ -1,16 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
+import 'package:mobile/widgets/license_plate_photo_alert.dart';
 import 'package:mobile/widgets/primary_button.dart';
+import 'package:mobile/widgets/report_image.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 class ReportViolationScreen extends StatefulWidget {
@@ -159,7 +159,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     if (reportInfo == null) return;
     final selectedIndex = await showDialog(
       context: context,
-      builder: (ctx) => _LicensePlateAlert(images: _images),
+      builder: (ctx) => LicensePlateAlert(images: _images),
     );
     if (selectedIndex != null)
       print("$selectedIndex");
@@ -238,43 +238,6 @@ class _MainImageOverlay extends StatelessWidget {
     );
     if (delete == null) return;
     onEliminate();
-  }
-}
-
-class ReportImage extends StatelessWidget {
-  final ImageDescription image;
-  final bool enableZoom;
-
-  ReportImage(this.image, {Key key, this.enableZoom = false}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: enableZoom
-          ? () => showDialog(
-              context: context,
-              builder: (ctx) {
-                return Container(
-                  child: PhotoView(
-                    minScale: 1.0,
-                    imageProvider: image.type == ImageType.asset
-                        ? AssetImage(image.path)
-                        : FileImage(File(image.path)),
-                  ),
-                );
-              })
-          : null,
-      child: Container(
-        color: Colors.black,
-        alignment: Alignment.center,
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: image.type == ImageType.asset
-              ? Image.asset(image.path)
-              : Image.file(File(image.path)),
-        ),
-      ),
-    );
   }
 }
 
@@ -420,76 +383,6 @@ class _ReportFormState extends State<_ReportForm> {
       }
       return null;
     }
-  }
-}
-
-class _LicensePlateAlert extends StatefulWidget {
-  final List<ImageDescription> images;
-
-  _LicensePlateAlert({
-    Key key,
-    @required this.images,
-  })  : assert(images.isNotEmpty, "Alert needs at least one image to select"),
-        super(key: key);
-
-  @override
-  State createState() => _LicensePlateAlertState();
-}
-
-class _LicensePlateAlertState extends State<_LicensePlateAlert> {
-  var _selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("License plate photo"),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            Text(
-              widget.images.length == 1
-                  ? "Please ensure that the picture clearly shows the license plate, then press OK."
-                  : "Please select a picture which clearly shows the license plate, then press OK.",
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: 1,
-              height: 100,
-              child: ImageCarousel(
-                itemBuilder: (_, idx) =>
-                    ReportImage(widget.images[idx], enableZoom: true),
-                itemCount: widget.images.length,
-                onIndexChanged: (idx) => _selectedIndex = idx,
-                viewportFraction: 1,
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text("Cancel"),
-          onPressed: () => Navigator.pop(context, null),
-        ),
-        FlatButton(
-          child: Text("OK"),
-          onPressed: () => Navigator.pop(context, _selectedIndex),
-        ),
-      ],
-    );
-  }
-}
-
-enum ViolationType { PARKING, BAD_CONDITION }
-
-String violationTypeToString(ViolationType type) {
-  switch (type) {
-    case ViolationType.PARKING:
-      return "Parking";
-    case ViolationType.BAD_CONDITION:
-      return "Bad condition";
-    default:
-      throw Exception("$type is not a ViolationType");
   }
 }
 

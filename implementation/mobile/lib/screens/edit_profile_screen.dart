@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/profile.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
-import 'package:mobile/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatelessWidget {
 
@@ -47,8 +48,16 @@ class _EditProfileFormState extends State<_EditProfileForm> {
   final _surnameFocus = FocusNode();
   final _usernameFocus = FocusNode();
   final _emailFocus = FocusNode();
-  final _editInfo = _EditProfileFormInfo.fromProfile(mockProfile);
+  var _editInfo;
   var _autovalidate = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    final profile = Provider.of<Profile>(context, listen: false);
+    _editInfo = _EditProfileFormInfo.fromProfile(profile);
+  }
 
   @override
   Widget build(BuildContext context) {

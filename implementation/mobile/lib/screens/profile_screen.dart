@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/profile.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final Profile profile = mockProfile;
-
   @override
   Widget build(BuildContext context) {
+    final profile = Provider.of<Profile>(context);
     return Scaffold(
       appBar: SafeStreetsAppBar(),
       body: ListView(
@@ -63,22 +64,4 @@ class ProfileScreen extends StatelessWidget {
       onPressed: () => print("sign out"),
     );
   }
-}
-
-final mockProfile = Profile(
-  name: 'Pedro',
-  surname: 'Alfonso',
-  username: 'iampeter2019',
-  email: 'peter@mail.com',
-);
-
-class Profile {
-  String name, surname, username, email;
-
-  Profile({
-    @required this.name,
-    @required this.surname,
-    @required this.username,
-    @required this.email,
-  });
 }

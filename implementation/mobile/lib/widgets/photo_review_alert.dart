@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/primary_button.dart';
+import 'package:mobile/widgets/report_image.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 
 class PhotoReviewAlert extends StatefulWidget {

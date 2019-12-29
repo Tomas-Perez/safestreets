@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:mobile/screens/report_violation_screen.dart';
+import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/util/date_helpers.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 

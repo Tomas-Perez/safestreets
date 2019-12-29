@@ -12,6 +12,8 @@ import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/theme.dart';
 import 'package:provider/provider.dart';
 
+import 'data/profile.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -33,8 +35,16 @@ class MyApp extends StatelessWidget {
         },
       ),
       providers: [
-        Provider<CameraService>.value(value: PhoneCameraService()),
+        Provider<CameraService>(create: (_) => PhoneCameraService()),
+        Provider<Profile>.value(value: mockProfile),
       ],
     );
   }
 }
+
+final mockProfile = Profile(
+  name: 'Pedro',
+  surname: 'Alfonso',
+  username: 'iampeter2019',
+  email: 'peter@mail.com',
+);
