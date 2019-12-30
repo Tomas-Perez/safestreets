@@ -84,7 +84,7 @@ class _ReportMarker extends StatelessWidget {
     return IconButton(
       padding: EdgeInsets.all(0),
       iconSize: 30,
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).primaryColor,
       icon: Icon(Icons.location_on),
       onPressed: () => _showTooltip(context),
     );

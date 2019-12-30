@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -35,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           SizedBox(height: 30),
           Center(child: _editButton(context)),
-          Center(child: _signOutButton()),
+          Center(child: _signOutButton(context)),
         ],
       ),
     );
@@ -58,10 +59,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _signOutButton() {
+  Widget _signOutButton(BuildContext context) {
     return SecondaryButton(
       child: Text("Sign out"),
-      onPressed: () => print("sign out"),
+      onPressed: () async {
+        await Provider.of<AuthService>(context).logout();
+        await Navigator.pushNamedAndRemoveUntil(context, SIGN_IN, (_) => false);
+      },
     );
   }
 }

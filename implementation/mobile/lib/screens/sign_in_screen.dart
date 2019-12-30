@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
+import 'package:provider/provider.dart';
 
 class SignInScreen extends StatelessWidget {
   @override
@@ -39,9 +41,9 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  void _onSubmit(BuildContext context, _SignInFormInfo info) {
-    print(info);
-    Navigator.pushReplacementNamed(context, HOME);
+  Future<void> _onSubmit(BuildContext context, _SignInFormInfo info) async {
+    await Provider.of<AuthService>(context).login(info.email, info.password);
+    await Navigator.pushReplacementNamed(context, HOME);
   }
 }
 

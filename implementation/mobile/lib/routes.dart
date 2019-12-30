@@ -5,3 +5,4 @@ const PROFILE = '/profile';
 const EDIT_PROFILE = '$PROFILE/edit';
 const SIGN_IN = '/sign-in';
 const SIGN_UP = '$SIGN_IN/sign-up';
+const LOADING = '/loading';

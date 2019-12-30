@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/screens/edit_profile_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/screens/loading_screen.dart';
 import 'package:mobile/screens/profile_screen.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/screens/reports_map_screen.dart';
 import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/screens/sign_up_screen.dart';
+import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/theme.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +25,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: safeStreetsTheme,
-        initialRoute: '/sign-in',
+        initialRoute: LOADING,
         routes: {
+          LOADING: (_) => LoadingScreen(),
           HOME: (_) => HomeScreen(),
           MAP: (_) => ReportsMapScreen(),
           REPORT: (_) => ReportViolationScreen(),
@@ -37,6 +40,11 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider<CameraService>(create: (_) => PhoneCameraService()),
         Provider<Profile>.value(value: mockProfile),
+        ChangeNotifierProvider<AuthService>(
+          create: (_) => MockAuthService({
+            'asd@mail.com': '1234',
+          }),
+        ),
       ],
     );
   }
