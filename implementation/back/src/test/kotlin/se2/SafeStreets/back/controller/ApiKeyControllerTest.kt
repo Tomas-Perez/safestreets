@@ -1,7 +1,6 @@
 package se2.SafeStreets.back.controller
 
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,6 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
@@ -71,10 +71,10 @@ internal class ApiKeyControllerTest(
     fun getApiKeyShouldReturnNewApiKey() {
         val uri = "/api-key/me"
         val getKeyResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val status = getKeyResult.response.status
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk)
+                .andReturn()
         val gottenKey = getKeyResult.response.contentAsString
-        assertEquals(status, 200)
         assertTrue(gottenKey.isNotEmpty())
     }
 

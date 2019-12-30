@@ -11,6 +11,7 @@ import se2.SafeStreets.back.model.Dto.ViolationReportDto
 import se2.SafeStreets.back.model.form.RadiusQueryForm
 import se2.SafeStreets.back.model.ViolationReport
 import se2.SafeStreets.back.model.ViolationReportStatus
+import se2.SafeStreets.back.model.form.BoundsQueryForm
 import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.service.ViolationService
 import javax.validation.Valid
@@ -78,6 +79,27 @@ class ViolationReportController(val violationService: ViolationService) {
     fun getFullReportsInRadius(@Valid @RequestBody form: RadiusQueryForm): ResponseEntity<List<ViolationReport>> {
         return if (form.location.size == 2) {
             val result = violationService.findFullByRadius(form)
+            ResponseEntity.ok(result)
+        } else {
+            ResponseEntity.badRequest().build()
+        }
+    }
+
+    @PostMapping("/query/bounds")
+    fun getReportsInBounds(@Valid @RequestBody form: BoundsQueryForm): ResponseEntity<List<ViolationReportDto>> {
+        return if (form.bottomLeft.size == 2 && form.upperRight.size == 2) {
+            val result = violationService.findByBounds(form)
+            ResponseEntity.ok(result)
+        } else {
+            ResponseEntity.badRequest().build()
+        }
+    }
+
+    @PostMapping("/query/advanced/bounds")
+    @Secured("ROLE_ADMIN", "ROLE_MUNICIPALITY")
+    fun getFullReportsInBounds(@Valid @RequestBody form: BoundsQueryForm): ResponseEntity<List<ViolationReport>> {
+        return if (form.bottomLeft.size == 2 && form.upperRight.size == 2) {
+            val result = violationService.findFullByBounds(form)
             ResponseEntity.ok(result)
         } else {
             ResponseEntity.badRequest().build()

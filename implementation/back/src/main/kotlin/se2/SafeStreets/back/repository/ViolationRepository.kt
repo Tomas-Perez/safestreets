@@ -13,11 +13,19 @@ interface ViolationRepository: MongoRepository<ViolationReport, ObjectId>, Viola
 
 interface ViolationCustomRepository {
     fun findAllInRadius(lon: Double, lat: Double, radius: Double, from: LocalDateTime, to: LocalDateTime, types: List<ViolationType>): List<ViolationReport>
+    fun findAllInBounds(bllon: Double, bllat: Double, urlon: Double, urlat: Double, from: LocalDateTime, to: LocalDateTime, types: List<ViolationType>): List<ViolationReport>
 }
 
 class ViolationRepositoryImpl(private val mongoOperations: MongoOperations): ViolationCustomRepository {
     override fun findAllInRadius(lon: Double, lat: Double, radius: Double, from: LocalDateTime, to: LocalDateTime, types: List<ViolationType>): List<ViolationReport> {
         val q = BasicQuery("{'status': {\$nin: [\"INCOMPLETE\", \"INVALID\"]}, 'location': {\$geoWithin: { \$centerSphere: [[$lon, $lat], ${radius/6378.1}]}}}")
+        q.addCriteria(Criteria.where("type").`in`(types))
+        q.addCriteria(Criteria.where("dateTime").gte(from).lte(to))
+        return mongoOperations.find(q, ViolationReport::class.java)
+    }
+
+    override fun findAllInBounds(bllon: Double, bllat: Double, urlon: Double, urlat: Double, from: LocalDateTime, to: LocalDateTime, types: List<ViolationType>): List<ViolationReport> {
+        val q = BasicQuery("{'status': {\$nin: [\"INCOMPLETE\", \"INVALID\"]}, 'location': {\$geoWithin: { \$box: [[$bllon, $bllat], [$urlon, $urlat]]}}}")
         q.addCriteria(Criteria.where("type").`in`(types))
         q.addCriteria(Criteria.where("dateTime").gte(from).lte(to))
         return mongoOperations.find(q, ViolationReport::class.java)

@@ -10,6 +10,7 @@ import se2.SafeStreets.back.model.Image
 import se2.SafeStreets.back.model.Location
 import se2.SafeStreets.back.model.ViolationReport
 import se2.SafeStreets.back.model.ViolationReportStatus
+import se2.SafeStreets.back.model.form.BoundsQueryForm
 import se2.SafeStreets.back.model.form.RadiusQueryForm
 import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.repository.ViolationRepository
@@ -82,6 +83,15 @@ class ViolationService(
 
     fun findFullByRadius(form: RadiusQueryForm): List<ViolationReport> {
         return violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.types)
+    }
+
+    fun findByBounds(form: BoundsQueryForm): List<ViolationReportDto> {
+        val reports = violationRepository.findAllInBounds(form.bottomLeft[0], form.bottomLeft[1], form.upperRight[0], form.upperRight[1], form.from, form.to, form.types)
+        return reports.map { ViolationReportDto.fromReport(it) }
+    }
+
+    fun findFullByBounds(form: BoundsQueryForm): List<ViolationReport> {
+        return violationRepository.findAllInBounds(form.bottomLeft[0], form.bottomLeft[1], form.upperRight[0], form.upperRight[1], form.from, form.to, form.types)
     }
 
 }

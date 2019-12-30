@@ -19,6 +19,7 @@ import org.springframework.util.ResourceUtils
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.*
 import se2.SafeStreets.back.model.Dto.ViolationReportDto
+import se2.SafeStreets.back.model.form.BoundsQueryForm
 import se2.SafeStreets.back.model.form.RadiusQueryForm
 import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.repository.ReviewRepository
@@ -68,7 +69,7 @@ class ViolationReportControllerTest(
             report1.licenseImage = Image(image1Id, image1Id.toHexString())
             violationRepository.save(report1)
 
-            report2 = ViolationReport(user3.id!!,"AG310PX", "", LocalDateTime.now(), ViolationType.POOR_CONDITION, Location(arrayOf(45.5681668,9.1290574)))
+            report2 = ViolationReport(user3.id!!,"AG310PX", "", LocalDateTime.now(), ViolationType.POOR_CONDITION, Location(arrayOf(47.5681668,10.1290574)))
             report2.status = ViolationReportStatus.HIGH_CONFIDENCE
             val image2Id = ObjectId.get()
             report2.licenseImage = Image(image2Id, image2Id.toHexString())
@@ -100,7 +101,7 @@ class ViolationReportControllerTest(
         mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(report)))
-                .andExpect(status().`is`(201))
+                .andExpect(status().isCreated)
     }
 
     @Test
@@ -113,7 +114,7 @@ class ViolationReportControllerTest(
         val multipartFile = MockMultipartFile("file", "test.jpg", "image/jpg", image.readBytes())
         mvc.perform(MockMvcRequestBuilders.multipart("$uri/${report.id!!.toHexString()}/image")
                 .file(multipartFile))
-                .andExpect(status().`is`(204))
+                .andExpect(status().isNoContent)
         val updatedReport = violationRepository.findByIdOrNull(report.id!!)!!
         assertEquals(1, updatedReport.images.size)
 
@@ -136,10 +137,10 @@ class ViolationReportControllerTest(
         val multipartFile = MockMultipartFile("file", "test.jpg", "image/jpg", image.readBytes())
         mvc.perform(MockMvcRequestBuilders.multipart("$uri/${report.id!!.toHexString()}/license-image")
                 .file(multipartFile))
-                .andExpect(status().`is`(204))
+                .andExpect(status().isNoContent)
 
         mvc.perform(MockMvcRequestBuilders.post("$uri/${report.id!!}/done"))
-                .andExpect(status().`is`(204))
+                .andExpect(status().isNoContent)
 
         val updatedReport = violationRepository.findByIdOrNull(report.id!!)!!
         assertNotNull(updatedReport.licenseImage)
@@ -155,6 +156,22 @@ class ViolationReportControllerTest(
         val getReportsResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(radiusForm)))
+                .andExpect(status().isOk)
+                .andReturn()
+        val getReportsContent = getReportsResult.response.contentAsString
+        val gottenReports = super.mapFromJson(getReportsContent, Array<ViolationReportDto>::class.java)
+        assertEquals(1, gottenReports.size)
+        assertEquals(data.report1.dateTime, gottenReports[0].dateTime)
+    }
+
+    @Test
+    @WithMockUser(username = "user1@mail.com")
+    fun getReportsInBoundsShouldReturnCorrectReports() {
+        val uri = "/violation/query/bounds"
+        val boundsForm = BoundsQueryForm(arrayOf(43.0, 8.0), arrayOf(45.5, 10.0), data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationType.PARKING))
+        val getReportsResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapToJson(boundsForm)))
                 .andExpect(status().isOk)
                 .andReturn()
         val getReportsContent = getReportsResult.response.contentAsString

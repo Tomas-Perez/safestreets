@@ -1,6 +1,10 @@
-- Add the included "resources/openalpr/lib" directory to your path
-- Pass imgpath=<PATH> environmental variable where images are stored
-    - default path is out/resources/images (temporal)
-- mongo
+- Add the included "resources/openalpr/lib" directory to your path.
+- Environmental variables:
+    - imgpath=<PATH>
+        - Path where images are stored.
+        - Default path is out/resources/images (temporal).
+    - initdb=true
+        - Initialize database with basic data.
+- Mongodb
     - database: safestreets
     - port: 27017

@@ -106,7 +106,7 @@ internal class ReviewControllerTest(
         mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(reviewForm)))
-                .andExpect(status().`is`(204))
+                .andExpect(status().isNoContent)
         val updatedReview = reviewRepository.findByIdOrNull(review.id)!!
         assertEquals(ReviewStatus.COMPLETED, updatedReview.status)
         assertEquals(reviewForm.licensePlate, updatedReview.license)

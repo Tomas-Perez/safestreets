@@ -2,7 +2,6 @@ package se2.SafeStreets.back.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
@@ -71,9 +71,9 @@ internal class AuthControllerTest(
         val loginResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(loginForm))).andReturn()
-        val status = loginResult.response.status
-        assertEquals(status, 200)
+                .content(mapToJson(loginForm)))
+                .andExpect(status().isOk)
+                .andReturn()
 
         val mapper = ObjectMapper()
         val loginContent = loginResult.response.contentAsString
@@ -86,23 +86,21 @@ internal class AuthControllerTest(
     fun logInWithIncorrectPasswordShouldReturnUnauthorized() {
         val uri = "/auth"
         val loginForm = LoginForm("user1@test.com", "wrongPassword")
-        val loginResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+        mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(loginForm))).andReturn()
-        val status = loginResult.response.status
-        assertEquals(401, status)
+                .content(mapToJson(loginForm)))
+                .andExpect(status().isUnauthorized)
     }
 
     @Test
     fun logInWithIncorrectUsernameShouldReturnUnauthorized() {
         val uri = "/auth"
         val loginForm = LoginForm("wrong@test.com", "pass1")
-        val loginResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+        mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(loginForm))).andReturn()
-        val status = loginResult.response.status
-        assertEquals(401, status)
+                .content(mapToJson(loginForm)))
+                .andExpect(status().isUnauthorized)
     }
 }

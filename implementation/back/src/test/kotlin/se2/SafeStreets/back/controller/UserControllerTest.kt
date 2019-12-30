@@ -10,6 +10,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import se2.SafeStreets.back.AbstractTest
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
@@ -100,14 +101,14 @@ class UserControllerTest(
 
     @Test
     @WithMockUser(username = "admin1@mail.com", roles = ["ADMIN"])
-    fun createUserShouldReturnCreated() {
+    fun createUserShouldBeCreated() {
         val uri = "/user"
         val user = User("test@mail.com", "testusername", "pass", "test1", "testlast1", UserType.USER)
-        val mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+        mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapToJson(user))).andReturn()
-        val status = mvcResult.response.status
-        assertEquals(201, status)
+                .content(mapToJson(user)))
+                .andExpect(status().isCreated)
+        assertNotNull(userRepository.findFirstByEmailAndActiveIsTrue("test@mail.com"))
     }
 
     @Test
@@ -115,10 +116,10 @@ class UserControllerTest(
     fun getCurrentUserShouldReturnUser1() {
         val uri = "/user/me"
         val getCurrentResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn()
-        val status = getCurrentResult.response.status
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk)
+                .andReturn()
         val getCurrentContent = getCurrentResult.response.contentAsString
-        assertEquals(200, status)
         val gottenUser = super.fullMapFromJson(getCurrentContent, User::class.java)
         assertEquals(data.user1.id, gottenUser.id)
     }
