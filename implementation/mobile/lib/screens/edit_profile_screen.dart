@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
+import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
+import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
+  @override
+  State createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final _controller = SingleListenerController<void>();
+  bool _submitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +30,11 @@ class EditProfileScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SafeStreetsScreenTitle('Edit profile'),
-                _EditProfileForm(submitListener: print),
+                _EditProfileForm(
+                  controller: _controller,
+                  submitListener: _onSubmit,
+                ),
+                _submitButton(),
               ],
             ),
           ),
@@ -29,14 +42,39 @@ class EditProfileScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _submitButton() {
+    return PrimaryButton(
+      child: Text('Confirm'),
+      submitting: _submitting,
+      onPressed: () => _controller.submit(),
+    );
+  }
+
+  void _onSubmit(EditProfile edit) async {
+    final service = Provider.of<UserService>(context);
+    setState(() {
+      _submitting = true;
+    });
+    await service.editProfile(edit);
+    setState(() {
+      _submitting = false;
+    });
+    Navigator.pop(context);
+  }
 }
 
-typedef _EditInfoSubmitListener = void Function(_EditProfileFormInfo);
+typedef _EditInfoSubmitListener = void Function(EditProfile);
 
 class _EditProfileForm extends StatefulWidget {
   final _EditInfoSubmitListener submitListener;
+  final SubmitController<void> controller;
 
-  _EditProfileForm({Key key, @required this.submitListener}) : super(key: key);
+  _EditProfileForm({
+    Key key,
+    @required this.submitListener,
+    @required this.controller,
+  }) : super(key: key);
 
   @override
   State createState() => _EditProfileFormState();
@@ -51,12 +89,16 @@ class _EditProfileFormState extends State<_EditProfileForm> {
   var _editInfo;
   var _autovalidate = false;
 
-
   @override
   void initState() {
     super.initState();
-    final profile = Provider.of<Profile>(context, listen: false);
-    _editInfo = _EditProfileFormInfo.fromProfile(profile);
+    if (widget.controller != null) {
+      widget.controller.register(_submit);
+    }
+    final profileSnapshot =
+        Provider.of<UserService>(context, listen: false).currentProfile;
+    if (profileSnapshot.hasData)
+      _editInfo = EditProfile.fromProfile(profileSnapshot.data);
   }
 
   @override
@@ -64,15 +106,16 @@ class _EditProfileFormState extends State<_EditProfileForm> {
     return Form(
       key: _formKey,
       autovalidate: _autovalidate,
-      child: Column(
-        children: <Widget>[
-          _nameField(),
-          _surnameField(),
-          _usernameField(),
-          _emailField(),
-          _submitButton(),
-        ],
-      ),
+      child: _editInfo != null
+          ? Column(
+              children: <Widget>[
+                _nameField(),
+                _surnameField(),
+                _usernameField(),
+                _emailField(),
+              ],
+            )
+          : Text('Not logged in'),
     );
   }
 
@@ -162,7 +205,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
     );
   }
 
-  _submit() {
+  void _submit() {
     final form = _formKey.currentState;
     if (form.validate()) {
       _nameFocus.unfocus();
@@ -178,32 +221,5 @@ class _EditProfileFormState extends State<_EditProfileForm> {
         });
       }
     }
-  }
-
-  Widget _submitButton() {
-    return PrimaryButton(
-      child: Text('Confirm'),
-      onPressed: _submit,
-    );
-  }
-}
-
-class _EditProfileFormInfo {
-  String name, surname, username, email;
-
-  _EditProfileFormInfo({
-    @required this.name,
-    @required this.surname,
-    @required this.username,
-    @required this.email,
-  });
-
-  _EditProfileFormInfo.empty();
-
-  _EditProfileFormInfo.fromProfile(Profile profile) {
-    name = profile.name;
-    surname = profile.surname;
-    username = profile.username;
-    email = profile.email;
   }
 }

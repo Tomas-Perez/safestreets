@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/util/license_plate.dart';
+import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
 import 'package:mobile/widgets/license_plate_photo_alert.dart';
@@ -21,7 +22,7 @@ class ReportViolationScreen extends StatefulWidget {
 }
 
 class _ReportViolationScreenState extends State<ReportViolationScreen> {
-  final _controller = _ReportFormController();
+  final _controller = SingleListenerController<_ReportFormInfo>();
   final _images = <ImageDescription>[];
   var _selectedIndex = -1;
 
@@ -241,33 +242,8 @@ class _MainImageOverlay extends StatelessWidget {
   }
 }
 
-typedef _ReportFormSubmitCallback = _ReportFormInfo Function();
-
-class _ReportFormController {
-  _ReportFormSubmitCallback _onSubmit;
-
-  void register(_ReportFormSubmitCallback onSubmit) {
-    assert(_onSubmit == null,
-        "Another callback is registered on this controller, deregister it first");
-    _onSubmit = onSubmit;
-  }
-
-  void deregister() {
-    _onSubmit = null;
-  }
-
-  _ReportFormInfo submit() {
-    assert(_onSubmit != null, "No callback registered for this controller");
-    return _onSubmit();
-  }
-
-  dispose() {
-    _onSubmit = null;
-  }
-}
-
 class _ReportForm extends StatefulWidget {
-  final _ReportFormController controller;
+  final SubmitController<_ReportFormInfo> controller;
 
   _ReportForm({Key key, this.controller}) : super(key: key);
 

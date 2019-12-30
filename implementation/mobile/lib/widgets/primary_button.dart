@@ -4,11 +4,13 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
   final double width;
+  final bool submitting;
 
   PrimaryButton({
     Key key,
     @required this.onPressed,
     @required this.child,
+    this.submitting = false,
     this.width = 120,
   }) : super(key: key);
 
@@ -17,7 +19,16 @@ class PrimaryButton extends StatelessWidget {
     return Container(
       width: width,
       child: RaisedButton(
-        child: child,
+        child: submitting
+            ? Container(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : child,
         onPressed: onPressed,
       ),
     );

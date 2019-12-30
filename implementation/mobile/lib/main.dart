@@ -11,10 +11,11 @@ import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
+import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
 import 'package:provider/provider.dart';
 
-import 'data/profile.dart';
+import 'data/mocks.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,20 +40,17 @@ class MyApp extends StatelessWidget {
       ),
       providers: [
         Provider<CameraService>(create: (_) => PhoneCameraService()),
-        Provider<Profile>.value(value: mockProfile),
         ChangeNotifierProvider<AuthService>(
-          create: (_) => MockAuthService({
-            'asd@mail.com': '1234',
-          }),
+          create: (_) => MockAuthService(mockRegisteredUsers),
+        ),
+        ChangeNotifierProxyProvider<AuthService, UserService>(
+          create: (_) => MockUserService(mockProfileByToken, null),
+          update: (_, authService, __) => MockUserService(
+            mockProfileByToken,
+            authService.token,
+          ),
         ),
       ],
     );
   }
 }
-
-final mockProfile = Profile(
-  name: 'Pedro',
-  surname: 'Alfonso',
-  username: 'iampeter2019',
-  email: 'peter@mail.com',
-);

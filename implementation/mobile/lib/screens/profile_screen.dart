@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/data/profile.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/services/user_service.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final profile = Provider.of<Profile>(context);
     return Scaffold(
       appBar: SafeStreetsAppBar(),
       body: ListView(
@@ -20,25 +19,41 @@ class ProfileScreen extends StatelessWidget {
           BackButtonSection(),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 100),
-            child: Column(
-              children: <Widget>[
-                SafeStreetsScreenTitle("Profile"),
-                SizedBox(height: 30),
-                _buildRow("Name:", profile.name),
-                SizedBox(height: 20),
-                _buildRow("Surname:", profile.surname),
-                SizedBox(height: 20),
-                _buildRow("Username:", profile.username),
-                SizedBox(height: 20),
-                _buildRow("Email:", profile.email),
-              ],
-            ),
+            child: _buildProfileData(context),
           ),
           SizedBox(height: 30),
           Center(child: _editButton(context)),
           Center(child: _signOutButton(context)),
         ],
       ),
+    );
+  }
+
+  Widget _buildProfileData(BuildContext context) {
+    final profileSnapshot = Provider.of<UserService>(context).currentProfile;
+    if (profileSnapshot.connectionState == ConnectionState.waiting) {
+      return Container(
+        width: 50,
+        height: 50,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (profileSnapshot.hasError) {
+      return Text('${profileSnapshot.error}');
+    }
+    final profile = profileSnapshot.data;
+    return Column(
+      children: <Widget>[
+        SafeStreetsScreenTitle("Profile"),
+        SizedBox(height: 30),
+        _buildRow("Name:", profile.name),
+        SizedBox(height: 20),
+        _buildRow("Surname:", profile.surname),
+        SizedBox(height: 20),
+        _buildRow("Username:", profile.username),
+        SizedBox(height: 20),
+        _buildRow("Email:", profile.email),
+      ],
     );
   }
 
@@ -63,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
     return SecondaryButton(
       child: Text("Sign out"),
       onPressed: () async {
-        await Provider.of<AuthService>(context).logout();
+        Provider.of<AuthService>(context).logout();
         await Navigator.pushNamedAndRemoveUntil(context, SIGN_IN, (_) => false);
       },
     );
