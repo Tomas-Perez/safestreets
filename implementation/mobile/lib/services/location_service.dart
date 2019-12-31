@@ -39,7 +39,7 @@ class MockLocationService with ChangeNotifier implements LocationService {
 class GeolocatorLocationService with ChangeNotifier implements LocationService {
   final int distanceFilter;
   var __currentLocation;
-  var __permissionGranted = false;
+  var __permissionGranted;
   StreamSubscription _subscription;
 
   GeolocatorLocationService(this.distanceFilter);

@@ -9,39 +9,48 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final permissionGranted =
-        Provider.of<LocationService>(context).permissionGranted;
     return Scaffold(
       appBar: SafeStreetsAppBar(),
-      body: permissionGranted
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                  child: _buildCard(
-                    title: 'Report a violation',
-                    asset: 'images/traffic-violation-card.jpg',
-                    onPressed: () => Navigator.pushNamed(context, REPORT),
-                  ),
-                ),
-                Expanded(
-                  child: _buildCard(
-                    title: 'Reports map',
-                    asset: 'images/reports-map-card.jpg',
-                    onPressed: () => Navigator.pushNamed(context, MAP),
-                  ),
-                ),
-                Expanded(child: Container()),
-              ],
-            )
-          : Center(
-              child: Text(
-                "It looks like the application does not have access to the phone's location. \n\n" +
-                    "Please grant the permission in order to use SafeStreets",
-                style: TextStyle(color: Colors.red, fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-            ),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    final permissionGranted =
+        Provider.of<LocationService>(context).permissionGranted;
+    if (permissionGranted == null)
+      return Center(child: CircularProgressIndicator());
+
+    if (!permissionGranted) {
+      return Center(
+        child: Text(
+          "It looks like the application does not have access to the phone's location. \n\n" +
+              "Please grant the permission in order to use SafeStreets",
+          style: TextStyle(color: Colors.red, fontSize: 20),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(
+          child: _buildCard(
+            title: 'Report a violation',
+            asset: 'images/traffic-violation-card.jpg',
+            onPressed: () => Navigator.pushNamed(context, REPORT),
+          ),
+        ),
+        Expanded(
+          child: _buildCard(
+            title: 'Reports map',
+            asset: 'images/reports-map-card.jpg',
+            onPressed: () => Navigator.pushNamed(context, MAP),
+          ),
+        ),
+        Expanded(child: Container()),
+      ],
     );
   }
 
