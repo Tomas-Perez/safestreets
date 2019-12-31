@@ -18,6 +18,4 @@ class PictureInfo {
   String toString() {
     return 'PictureInfo{imageDataSize: ${imageData.length}b, location: $location, time: $time}';
   }
-
-
 }
