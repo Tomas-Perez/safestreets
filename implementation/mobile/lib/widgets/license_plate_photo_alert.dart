@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/widgets/report_image.dart';
 
 import 'image_carousel.dart';
 
 class LicensePlateAlert extends StatefulWidget {
-  final List<ImageDescription> images;
+  final List<ImageProvider> images;
 
   LicensePlateAlert({
     Key key,

@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:latlong/latlong.dart';
+import 'package:mobile/data/picture_info.dart';
+import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/camera_service.dart';
+import 'package:mobile/services/report_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
@@ -23,8 +27,9 @@ class ReportViolationScreen extends StatefulWidget {
 
 class _ReportViolationScreenState extends State<ReportViolationScreen> {
   final _controller = SingleListenerController<_ReportFormInfo>();
-  final _images = <ImageDescription>[];
+  final _images = <PictureInfo>[];
   var _selectedIndex = -1;
+  var _submitting = false;
 
   @override
   void dispose() {
@@ -69,10 +74,15 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         child: Text('Take a photo'),
         onPressed: () async {
           final service = Provider.of<CameraService>(context);
-          final imagePath = await service.openViewfinder(context);
-          if (imagePath != null) {
+          final imageData = await service.openViewfinder(context);
+          if (imageData != null) {
+            final pictureInfo = PictureInfo(
+              imageData: imageData,
+              location: LatLng(0, 0),
+              time: DateTime.now(),
+            );
             setState(() {
-              _images.add(imagePath);
+              _images.add(pictureInfo);
               if (_images.length == 1) _selectedIndex = 0;
             });
           }
@@ -106,7 +116,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
               child: Container(
                 height: height,
                 child: ReportImage(
-                  _images[_selectedIndex],
+                  MemoryImage(_images[_selectedIndex].imageData),
                   enableZoom: true,
                 ),
               ),
@@ -131,7 +141,8 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         child: Opacity(
           opacity: _images.isEmpty ? 0 : 1,
           child: ImageCarousel(
-            itemBuilder: (_, idx) => ReportImage(_images[idx]),
+            itemBuilder: (_, idx) =>
+                ReportImage(MemoryImage(_images[idx].imageData)),
             itemCount: _images.length,
             onIndexChanged: (idx) {
               setState(() => _selectedIndex = idx);
@@ -146,6 +157,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
   Widget _confirmButton(BuildContext context) {
     return Center(
       child: PrimaryButton(
+        submitting: _submitting,
         width: 130,
         child: Text(
           'Confirm',
@@ -160,12 +172,27 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     if (reportInfo == null) return;
     final selectedIndex = await showDialog(
       context: context,
-      builder: (ctx) => LicensePlateAlert(images: _images),
+      builder: (ctx) => LicensePlateAlert(
+        images: _images.map((i) => MemoryImage(i.imageData)).toList(),
+      ),
     );
-    if (selectedIndex != null)
-      print("$selectedIndex");
-    else
-      print("cancelled");
+    if (selectedIndex == null) return;
+    setState(() {
+      _submitting = true;
+    });
+    final reportService = Provider.of<ReportService>(context);
+    await reportService.submit(
+      ReportForm(
+        violationType: reportInfo.violationType,
+        licensePlate: reportInfo.licensePlate,
+        description: reportInfo.description,
+        images: _images,
+        licensePlateImgIndex: selectedIndex,
+      ),
+    );
+    setState(() {
+      _submitting = false;
+    });
   }
 
   Widget _noItemsPlaceholder() {

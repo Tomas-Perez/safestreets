@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/report_image.dart';
@@ -27,7 +26,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
       content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            ReportImage(ImageDescription.asset('mocks/mock-image.jpg')),
+            ReportImage(AssetImage('mocks/mock-image.jpg')),
             _licensePlateField(),
             SizedBox(height: 5),
             Row(

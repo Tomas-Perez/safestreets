@@ -1,22 +1,28 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/services/camera_util.dart';
 
 abstract class CameraService {
-  Future<ImageDescription> openViewfinder(BuildContext context);
+  Future<Uint8List> openViewfinder(BuildContext context);
 }
 
-enum ImageType { asset, file }
+class MockCameraService implements CameraService {
+  final _imageDataCompleter = Completer<Uint8List>();
 
-class ImageDescription {
-  final String path;
-  final ImageType type;
+  MockCameraService(String asset) {
+    _imageDataCompleter.complete(
+      rootBundle.load(asset).then((bd) => bd.buffer.asUint8List()),
+    );
+  }
 
-  ImageDescription.file(this.path) : type = ImageType.file;
-
-  ImageDescription.asset(this.path) : type = ImageType.asset;
+  @override
+  Future<Uint8List> openViewfinder(BuildContext context) =>
+      _imageDataCompleter.future;
 }
 
 class PhoneCameraService implements CameraService {
@@ -33,8 +39,10 @@ class PhoneCameraService implements CameraService {
     );
   }
 
-  Future<ImageDescription> openViewfinder(BuildContext context) async {
+  Future<Uint8List> openViewfinder(BuildContext context) async {
     await _initializationCompleter.future;
-    return ImageDescription.file(await takePicture(context, _camera));
+    final imagePath = await takePicture(context, _camera);
+    if (imagePath == null) return null;
+    return File(imagePath).readAsBytes();
   }
 }

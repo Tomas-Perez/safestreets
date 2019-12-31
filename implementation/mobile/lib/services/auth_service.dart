@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-abstract class AuthService with ChangeNotifier{
+abstract class AuthService with ChangeNotifier {
   String get token;
   Future<void> silentLogin();
   Future<void> login(String email, String password);

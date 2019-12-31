@@ -11,6 +11,7 @@ import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
+import 'package:mobile/services/report_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,9 @@ class MyApp extends StatelessWidget {
         },
       ),
       providers: [
-        Provider<CameraService>(create: (_) => PhoneCameraService()),
+        Provider<CameraService>(
+          create: (_) => MockCameraService('mocks/mock-image.jpg'),
+        ),
         ChangeNotifierProvider<AuthService>(
           create: (_) => MockAuthService(mockRegisteredUsers),
         ),
@@ -50,6 +53,10 @@ class MyApp extends StatelessWidget {
             authService.token,
           ),
         ),
+        ChangeNotifierProxyProvider<AuthService, ReportService>(
+          create: (_) => MockReportService(),
+          update: (_, authService, reportService) => reportService,
+        )
       ],
     );
   }

@@ -9,23 +9,23 @@ import 'package:path_provider/path_provider.dart';
 Future<String> takePicture(BuildContext context, CameraDescription camera) {
   return Navigator.push(
     context,
-    MaterialPageRoute(builder: (ctx) => _TakePictureScreen(camera: camera)),
+    MaterialPageRoute(builder: (ctx) => _CameraViewfinder(camera: camera)),
   );
 }
 
-class _TakePictureScreen extends StatefulWidget {
+class _CameraViewfinder extends StatefulWidget {
   final CameraDescription camera;
 
-  const _TakePictureScreen({
+  const _CameraViewfinder({
     Key key,
     @required this.camera,
   }) : super(key: key);
 
   @override
-  State createState() => _TakePictureScreenState();
+  State createState() => _CameraViewfinderState();
 }
 
-class _TakePictureScreenState extends State<_TakePictureScreen> {
+class _CameraViewfinderState extends State<_CameraViewfinder> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
 
