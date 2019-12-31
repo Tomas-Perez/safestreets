@@ -7,15 +7,19 @@ import 'package:mobile/util/date_helpers.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class ReportsMap extends StatefulWidget {
-  final LatLng center;
-  final double zoom;
+  final MapController mapController;
+  final LatLng initialCenter;
+  final double initialZoom;
   final List<ReportMarkerInfo> markers;
+  final LatLng currentPosition;
 
   ReportsMap({
     Key key,
-    this.center,
-    this.zoom,
-    this.markers,
+    @required this.mapController,
+    @required this.initialCenter,
+    @required this.initialZoom,
+    @required this.markers,
+    @required this.currentPosition,
   }) : super(key: key);
 
   @override
@@ -23,27 +27,57 @@ class ReportsMap extends StatefulWidget {
 }
 
 class _ReportsMapState extends State<ReportsMap> {
-  final _controller = MapController();
-
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: _controller,
+      mapController: widget.mapController,
       options: MapOptions(
-        center: widget.center,
-        zoom: widget.zoom,
+        center: widget.initialCenter,
+        zoom: widget.initialZoom,
       ),
       layers: [
         TileLayerOptions(
           urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           subdomains: ['a', 'b', 'c'],
         ),
-        MarkerLayerOptions(markers: widget.markers.map(_marker).toList()),
+        MarkerLayerOptions(markers: [
+          _currentLocationMarker(),
+        ]),
+        MarkerLayerOptions(markers: widget.markers.map(_reportMarker).toList()),
       ],
     );
   }
 
-  Marker _marker(ReportMarkerInfo reportMarkerInfo) {
+  Marker _currentLocationMarker() {
+    final size = 22.0;
+    final mainColor = Theme.of(context).primaryColor;
+    final borderColor = mainColor.withOpacity(0.5);
+    return Marker(
+      width: size,
+      height: size,
+      point: widget.currentPosition,
+      builder: (_) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: borderColor,
+        ),
+        child: Center(
+          child: Container(
+            width: size * 0.6,
+            height: size * 0.6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: mainColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Marker _reportMarker(ReportMarkerInfo reportMarkerInfo) {
     return Marker(
       width: 30,
       height: 27,
@@ -56,16 +90,6 @@ class _ReportsMapState extends State<ReportsMap> {
         ),
       ),
     );
-  }
-
-  @override
-  void didUpdateWidget(ReportsMap oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    setState(() {
-      _controller.onReady.then((_) {
-        _controller.move(widget.center, widget.zoom);
-      });
-    });
   }
 }
 

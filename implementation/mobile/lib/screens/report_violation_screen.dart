@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/report.dart';
@@ -53,7 +54,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
                 SafeStreetsScreenTitle("Report a violation"),
                 _ReportForm(controller: _controller),
                 const SizedBox(height: 30),
-                _photosSection(context),
+                Builder(builder: (ctx) => _photosSection(ctx)),
                 const SizedBox(height: 10),
                 _confirmButton(context),
                 const SizedBox(height: 10),
@@ -65,7 +66,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     );
   }
 
-  Widget _takePhotoButton() {
+  Widget _takePhotoButton(BuildContext context) {
     return Container(
       width: 100,
       height: 25,
@@ -76,9 +77,10 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           final service = Provider.of<CameraService>(context);
           final imageData = await service.openViewfinder(context);
           if (imageData != null) {
+            Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
             final pictureInfo = PictureInfo(
               imageData: imageData,
-              location: LatLng(0, 0),
+              location: LatLng(position.latitude, position.longitude),
               time: DateTime.now(),
             );
             setState(() {
@@ -97,7 +99,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _takePhotoButton(),
+          _takePhotoButton(context),
           SizedBox(height: 10),
           _buildCurrentImageView(context),
           _buildCarousel(context),

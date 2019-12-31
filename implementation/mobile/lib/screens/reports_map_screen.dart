@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/screens/report_violation_screen.dart';
+import 'package:mobile/services/location_service.dart';
 import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/reports_map.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
+import 'package:provider/provider.dart';
 
 class ReportsMapScreen extends StatefulWidget {
   const ReportsMapScreen({Key key}) : super(key: key);
@@ -18,7 +21,15 @@ class ReportsMapScreen extends StatefulWidget {
 }
 
 class _ReportsMapScreenState extends State<ReportsMapScreen> {
-  var _center = LatLng(45.505621, 9.246872);
+  var _center;
+  final _mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    _center =
+        Provider.of<LocationService>(context, listen: false).currentLocation;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +61,11 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
           ),
           SliverFillRemaining(
             child: ReportsMap(
-              center: _center,
-              zoom: 13.0,
+              mapController: _mapController,
+              initialCenter: _center,
+              currentPosition:
+                  Provider.of<LocationService>(context).currentLocation,
+              initialZoom: 13.0,
               markers: [
                 ReportMarkerInfo(
                   location: LatLng(45.505621, 9.246872),
@@ -87,6 +101,9 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
         if (location != null) {
           setState(() {
             _center = location;
+            _mapController.onReady.then((_) {
+              _mapController.move(location, 13.0);
+            });
           });
         } else
           print('Invalid location');

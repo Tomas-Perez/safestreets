@@ -11,6 +11,7 @@ import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
+import 'package:mobile/services/location_service.dart';
 import 'package:mobile/services/report_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
@@ -41,10 +42,21 @@ class MyApp extends StatelessWidget {
       ),
       providers: [
         Provider<CameraService>(
-          create: (_) => MockCameraService('mocks/mock-image.jpg'),
+          create: (_) => PhoneCameraService(),
         ),
         ChangeNotifierProvider<AuthService>(
           create: (_) => MockAuthService(mockRegisteredUsers),
+        ),
+        ChangeNotifierProxyProvider<AuthService, LocationService>(
+          create: (_) => GeolocatorLocationService(10),
+          update: (_, authService, locationService) {
+            final geolocatorService =
+            locationService as GeolocatorLocationService;
+            if (authService.isAuthenticated())
+              return geolocatorService..start();
+            else
+              return geolocatorService..stop();
+          },
         ),
         ChangeNotifierProxyProvider<AuthService, UserService>(
           create: (_) => MockUserService(mockProfileByToken, null),

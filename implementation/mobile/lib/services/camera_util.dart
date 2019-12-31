@@ -6,11 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
-Future<String> takePicture(BuildContext context, CameraDescription camera) {
-  return Navigator.push(
+Future<String> takePicture(
+    BuildContext context, CameraDescription camera) async {
+  final result = await Navigator.push<_PictureResult>(
     context,
     MaterialPageRoute(builder: (ctx) => _CameraViewfinder(camera: camera)),
   );
+  if (result == null) return null;
+  if (result.hasError) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+            'Please grant the application camera permissions to sumbit a report'),
+      ),
+    );
+    return null;
+  }
+  else return result.path;
 }
 
 class _CameraViewfinder extends StatefulWidget {
@@ -95,9 +107,26 @@ class _CameraViewfinderState extends State<_CameraViewfinder> {
         '${DateTime.now()}.png',
       );
       await _controller.takePicture(path);
-      Navigator.pop(context, path);
-    } catch (e) {
-      print(e);
+      Navigator.pop(context, _PictureResult.success(path));
+    } on CameraException catch (e) {
+      if (e.code == 'cameraPermission') {
+        Navigator.pop(context, _PictureResult.error(e.code));
+      } else {
+        print(e);
+        Navigator.pop(context);
+      }
     }
   }
+}
+
+class _PictureResult {
+  final String path, error;
+
+  _PictureResult.success(this.path) : error = null;
+
+  _PictureResult.error(this.error) : path = null;
+
+  bool get hasError => error != null;
+
+  bool get hasData => path != null;
 }
