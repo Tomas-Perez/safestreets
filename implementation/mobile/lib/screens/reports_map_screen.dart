@@ -1,10 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+import 'package:mobile/data/filter_info.dart';
 import 'package:mobile/data/violation_type.dart';
-import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/services/location_service.dart';
+import 'package:mobile/services/report_map_service.dart';
 import 'package:mobile/util/date_helpers.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
@@ -23,16 +26,27 @@ class ReportsMapScreen extends StatefulWidget {
 class _ReportsMapScreenState extends State<ReportsMapScreen> {
   var _center;
   final _mapController = MapController();
+  final initialFilter = FilterInfo(
+    startOfDay(DateTime.now().subtract(Duration(hours: 1))),
+    endOfDay(DateTime.now().add(Duration(hours: 1))),
+    null,
+  );
+  Timer _debounce;
 
   @override
   void initState() {
     super.initState();
     _center =
         Provider.of<LocationService>(context, listen: false).currentLocation;
+    final service = Provider.of<ReportMapService>(context, listen: false);
+    _mapController.onReady.then((_) {
+      service.initialize(initialFilter, _mapController.bounds);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final service = Provider.of<ReportMapService>(context);
     return Scaffold(
       appBar: SafeStreetsAppBar(),
       body: CustomScrollView(
@@ -50,7 +64,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                      child: _FilterForm(),
+                      child: _FilterForm(initialValue: initialFilter),
                     ),
                     _locationSearch(),
                   ],
@@ -60,28 +74,36 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
             ]),
           ),
           SliverFillRemaining(
-            child: ReportsMap(
-              mapController: _mapController,
-              initialCenter: _center,
-              currentPosition:
-                  Provider.of<LocationService>(context).currentLocation,
-              initialZoom: 13.0,
-              markers: [
-                ReportMarkerInfo(
-                  location: LatLng(45.505621, 9.246872),
-                  violationType: ViolationType.BAD_CONDITION,
-                  dateTime: DateTime.now(),
+            child: Stack(
+              children: <Widget>[
+                ReportsMap(
+                  mapController: _mapController,
+                  initialCenter: _center,
+                  currentPosition:
+                      Provider.of<LocationService>(context).currentLocation,
+                  initialZoom: 13.0,
+                  indicators: service.reports,
+                  onPositionChange: (mapPosition) {
+                    if (service.ready) {
+                      if (_debounce?.isActive ?? false) _debounce.cancel();
+                      _debounce = Timer(const Duration(milliseconds: 500), () {
+                        service.setBounds(mapPosition.bounds);
+                      });
+                    }
+                  },
                 ),
-                ReportMarkerInfo(
-                  location: LatLng(45.5, 9.25),
-                  violationType: ViolationType.BAD_CONDITION,
-                  dateTime: DateTime.now().subtract(Duration(hours: 2)),
-                ),
-                ReportMarkerInfo(
-                  location: LatLng(45.509, 9.242),
-                  violationType: ViolationType.BAD_CONDITION,
-                  dateTime: DateTime.now().subtract(Duration(minutes: 32)),
-                ),
+                if (service.fetching)
+                  Positioned(
+                    right: 5,
+                    bottom: 5,
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(15),
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -96,17 +118,23 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
         hintText: "Search",
         icon: Icon(Icons.search),
       ),
+      validator: (search) {
+        final location = parseLatLng(search);
+        if (location == null) return "Invalid coordinates";
+        return null;
+      },
       onFieldSubmitted: (search) {
         final location = parseLatLng(search);
         if (location != null) {
+          final service = Provider.of<ReportMapService>(context);
           setState(() {
             _center = location;
             _mapController.onReady.then((_) {
               _mapController.move(location, 13.0);
             });
+            service.setBounds(_mapController.bounds);
           });
-        } else
-          print('Invalid location');
+        }
       },
     );
   }
@@ -120,17 +148,34 @@ LatLng parseLatLng(String str) {
 }
 
 class _FilterForm extends StatefulWidget {
+  final FilterInfo initialValue;
+
+  _FilterForm({Key key, this.initialValue}) : super(key: key);
+
   @override
-  State createState() {
-    return _FilterFormState();
-  }
+  State createState() => _FilterFormState();
 }
 
 class _FilterFormState extends State<_FilterForm> {
   final _formKey = GlobalKey<FormState>();
-  final _filterInfo = _FilterInfo.empty();
+  final _filterInfo = FilterInfo.empty();
   final _fromController = TextEditingController();
   final _toController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      _filterInfo.from = widget.initialValue.from;
+      _filterInfo.to = widget.initialValue.to;
+      _filterInfo.violationType = widget.initialValue.violationType;
+
+      if (_filterInfo.from != null)
+        _fromController.text = formatDate(_filterInfo.from);
+      if (_filterInfo.to != null)
+        _toController.text = formatDate(_filterInfo.to);
+    }
+  }
 
   @override
   void dispose() {
@@ -297,20 +342,9 @@ class _FilterFormState extends State<_FilterForm> {
         ),
       ),
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (ctx) => ReportViolationScreen()),
-        );
+        final service = Provider.of<ReportMapService>(context);
+        service.filter(_filterInfo);
       },
     );
   }
-}
-
-class _FilterInfo {
-  DateTime to, from;
-  ViolationType violationType;
-
-  _FilterInfo(this.to, this.from, this.violationType);
-
-  _FilterInfo.empty();
 }

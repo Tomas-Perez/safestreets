@@ -7,7 +7,7 @@ import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/camera_service.dart';
-import 'package:mobile/services/report_service.dart';
+import 'package:mobile/services/report_submission_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
@@ -182,7 +182,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     setState(() {
       _submitting = true;
     });
-    final reportService = Provider.of<ReportService>(context);
+    final reportService = Provider.of<ReportSubmissionService>(context);
     await reportService.submit(
       ReportForm(
         violationType: reportInfo.violationType,

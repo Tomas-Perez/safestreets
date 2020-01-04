@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/util/date_helpers.dart';
 import 'package:super_tooltip/super_tooltip.dart';
@@ -10,16 +11,18 @@ class ReportsMap extends StatefulWidget {
   final MapController mapController;
   final LatLng initialCenter;
   final double initialZoom;
-  final List<ReportMarkerInfo> markers;
+  final List<ReportIndicator> indicators;
   final LatLng currentPosition;
+  final void Function(MapPosition) onPositionChange;
 
   ReportsMap({
     Key key,
     @required this.mapController,
     @required this.initialCenter,
     @required this.initialZoom,
-    @required this.markers,
+    @required this.indicators,
     @required this.currentPosition,
+    @required this.onPositionChange,
   }) : super(key: key);
 
   @override
@@ -34,6 +37,10 @@ class _ReportsMapState extends State<ReportsMap> {
       options: MapOptions(
         center: widget.initialCenter,
         zoom: widget.initialZoom,
+        onPositionChanged: (mapPosition, _) {
+          if (widget.onPositionChange != null)
+            widget.onPositionChange(mapPosition);
+        }
       ),
       layers: [
         TileLayerOptions(
@@ -43,7 +50,7 @@ class _ReportsMapState extends State<ReportsMap> {
         MarkerLayerOptions(markers: [
           _currentLocationMarker(),
         ]),
-        MarkerLayerOptions(markers: widget.markers.map(_reportMarker).toList()),
+        MarkerLayerOptions(markers: widget.indicators.map(_reportMarker).toList()),
       ],
     );
   }
@@ -77,15 +84,15 @@ class _ReportsMapState extends State<ReportsMap> {
     );
   }
 
-  Marker _reportMarker(ReportMarkerInfo reportMarkerInfo) {
+  Marker _reportMarker(ReportIndicator reportMarkerInfo) {
     return Marker(
       width: 30,
       height: 27,
-      point: reportMarkerInfo.location,
+      point: reportMarkerInfo.position,
       anchorPos: AnchorPos.align(AnchorAlign.top),
       builder: (ctx) => Container(
         child: _ReportMarker(
-          dateTime: reportMarkerInfo.dateTime,
+          dateTime: reportMarkerInfo.time,
           violationType: reportMarkerInfo.violationType,
         ),
       ),
@@ -173,12 +180,4 @@ class _ReportMarker extends StatelessWidget {
       ),
     ).show(context);
   }
-}
-
-class ReportMarkerInfo {
-  LatLng location;
-  DateTime dateTime;
-  ViolationType violationType;
-
-  ReportMarkerInfo({this.location, this.dateTime, this.violationType});
 }

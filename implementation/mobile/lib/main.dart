@@ -12,7 +12,8 @@ import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/location_service.dart';
-import 'package:mobile/services/report_service.dart';
+import 'package:mobile/services/report_map_service.dart';
+import 'package:mobile/services/report_submission_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
 import 'package:provider/provider.dart';
@@ -65,8 +66,12 @@ class MyApp extends StatelessWidget {
             authService.token,
           ),
         ),
-        ChangeNotifierProxyProvider<AuthService, ReportService>(
-          create: (_) => MockReportService(),
+        ProxyProvider<AuthService, ReportSubmissionService>(
+          create: (_) => MockReportSubmissionService(),
+          update: (_, authService, reportService) => reportService,
+        ),
+        ChangeNotifierProxyProvider<AuthService, ReportMapService>(
+          create: (_) => MockReportMapService(),
           update: (_, authService, reportService) => reportService,
         )
       ],

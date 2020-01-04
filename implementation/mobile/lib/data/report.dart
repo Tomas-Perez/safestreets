@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:latlong/latlong.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/violation_type.dart';
 
@@ -20,6 +21,16 @@ class ReportForm {
   String toString() {
     return 'ReportForm{violationType: $violationType, licensePlate: $licensePlate, description: $description, images: $images, licensePlateImgIndex: $licensePlateImgIndex}';
   }
+}
 
+class ReportIndicator {
+  final ViolationType violationType;
+  final DateTime time;
+  final LatLng position;
 
+  ReportIndicator({
+    @required this.violationType,
+    @required this.time,
+    @required this.position,
+  });
 }
