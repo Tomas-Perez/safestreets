@@ -4,8 +4,8 @@ import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobile/services/camera_util.dart';
+import 'package:mobile/util/image_helpers.dart';
 
 abstract class CameraService {
   Future<Uint8List> openViewfinder(BuildContext context);
@@ -15,9 +15,7 @@ class MockCameraService implements CameraService {
   final _imageDataCompleter = Completer<Uint8List>();
 
   MockCameraService(String asset) {
-    _imageDataCompleter.complete(
-      rootBundle.load(asset).then((bd) => bd.buffer.asUint8List()),
-    );
+    _imageDataCompleter.complete(loadAssetImage(asset));
   }
 
   @override

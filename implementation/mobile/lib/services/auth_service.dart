@@ -5,7 +5,7 @@ abstract class AuthService with ChangeNotifier {
   Future<void> silentLogin();
   Future<void> login(String email, String password);
   Future<void> logout();
-  bool isAuthenticated();
+  bool get authenticated;
 }
 
 class NoUserForEmailException implements Exception {
@@ -55,7 +55,7 @@ class MockAuthService with ChangeNotifier implements AuthService{
   }
 
   @override
-  bool isAuthenticated() => token != null;
+  bool get authenticated => token != null;
 
   @override
   Future<void> silentLogin() async {

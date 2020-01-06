@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/data/report_review.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/screens/edit_profile_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
@@ -14,8 +15,10 @@ import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/location_service.dart';
 import 'package:mobile/services/report_map_service.dart';
 import 'package:mobile/services/report_submission_service.dart';
+import 'package:mobile/services/review_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
+import 'package:mobile/util/image_helpers.dart';
 import 'package:provider/provider.dart';
 
 import 'data/mocks.dart';
@@ -52,8 +55,8 @@ class MyApp extends StatelessWidget {
           create: (_) => GeolocatorLocationService(10),
           update: (_, authService, locationService) {
             final geolocatorService =
-            locationService as GeolocatorLocationService;
-            if (authService.isAuthenticated())
+                locationService as GeolocatorLocationService;
+            if (authService.authenticated)
               return geolocatorService..start();
             else
               return geolocatorService..stop();
@@ -73,6 +76,19 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthService, ReportMapService>(
           create: (_) => MockReportMapService(),
           update: (_, authService, reportService) => reportService,
+        ),
+        ChangeNotifierProxyProvider<AuthService, ReviewService>(
+          create: (_) => MockReviewService(
+              loadAssetImage('mocks/mock-image.jpg').then((img) => [
+                    [ReviewRequest('1', img), ReviewRequest('2', img)],
+                    [ReviewRequest('3', img)],
+                  ])),
+          update: (_, authService, reviewService) {
+            if (authService.authenticated)
+              return reviewService..fetchRequests();
+            else
+              return reviewService..clearRequests();
+          },
         )
       ],
     );

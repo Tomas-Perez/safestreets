@@ -7,7 +7,9 @@ import 'package:mobile/widgets/report_image.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 
 class PhotoReviewAlert extends StatefulWidget {
-  PhotoReviewAlert({Key key}) : super(key: key);
+  final ImageProvider imageProvider;
+
+  PhotoReviewAlert({Key key, @required this.imageProvider}) : super(key: key);
 
   @override
   State createState() => _PhotoReviewAlertState();
@@ -26,7 +28,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
       content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            ReportImage(AssetImage('mocks/mock-image.jpg')),
+            ReportImage(widget.imageProvider),
             _licensePlateField(),
             SizedBox(height: 5),
             Row(
