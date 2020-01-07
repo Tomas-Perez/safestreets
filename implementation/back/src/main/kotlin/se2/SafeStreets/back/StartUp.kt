@@ -1,9 +1,14 @@
 package se2.SafeStreets.back
 
+import org.apache.tomcat.util.http.fileupload.FileUtils
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import org.springframework.util.ResourceUtils
 import se2.SafeStreets.back.model.*
+import se2.SafeStreets.back.repository.ApiKeyRepository
+import se2.SafeStreets.back.repository.ReviewRepository
+import se2.SafeStreets.back.repository.UserRepository
 import se2.SafeStreets.back.repository.ViolationRepository
 import se2.SafeStreets.back.service.ImageAnalyser
 import se2.SafeStreets.back.service.ReviewRecruiter
@@ -18,8 +23,13 @@ class StartUp(
         val violationService: ViolationService,
         val reviewRecruiter: ReviewRecruiter,
         val imageAnalyser: ImageAnalyser,
-        val userService: UserService
+        val userService: UserService,
+        val apiKeyRepository: ApiKeyRepository,
+        val reviewRepository: ReviewRepository,
+        val userRepository: UserRepository
 ) {
+
+    var initImgPath: String? = null
 
     @EventListener
     fun appReady(event: ApplicationReadyEvent) {
@@ -35,9 +45,10 @@ class StartUp(
         } else throw RuntimeException("openalpr path not present in environment variables.")
 
         val init = event.applicationContext.environment.getProperty("initdb")
-        val initImgPath = event.applicationContext.environment.getProperty("initImgPath")
-        if (init != null && init == "true") {
-            initdb(initImgPath)
+        initImgPath = event.applicationContext.environment.getProperty("initImgPath")
+        if (init != null) {
+            if(init == "true") initdb()
+            else if(init == "reinit") reinitializedb()
         }
     }
 
@@ -47,7 +58,7 @@ class StartUp(
         return user
     }
 
-    fun initdb(initImgPath: String?) {
+    fun initdb() {
         try {
             userService.save(User("admin@mail.com", "admin", "pass", "Admin", "AdminLast", UserType.ADMIN))
             userService.save(User("user0@mail.com", "user1", "pass1", "User1", "last1", UserType.USER))
@@ -111,6 +122,15 @@ class StartUp(
 
         } catch (e: Exception) {
         }
+    }
+
+    fun reinitializedb() {
+        userRepository.deleteAll()
+        reviewRepository.deleteAll()
+        apiKeyRepository.deleteAll()
+        violationRepository.deleteAll()
+        FileUtils.cleanDirectory(ResourceUtils.getFile(violationService.imgDirPath))
+        initdb()
     }
 
 }
