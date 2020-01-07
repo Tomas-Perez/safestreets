@@ -10,8 +10,6 @@ import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
 class SignInScreen extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +24,11 @@ class SignInScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SafeStreetsScreenTitle("Sign in"),
-                _SignInForm(submitListener: (info) => _onSubmit(context, info)),
+                Builder(
+                  builder: (ctx) => _SignInForm(
+                    submitListener: (info) => _onSubmit(ctx, info)
+                  ),
+                ),
                 Center(child: _signUpButton(context)),
               ],
             ),
@@ -44,11 +46,25 @@ class SignInScreen extends StatelessWidget {
   }
 
   Future<void> _onSubmit(BuildContext context, _SignInFormInfo info) async {
-    await Provider.of<AuthService>(context).login(info.email, info.password);
-    await Navigator.pushReplacementNamed(context, HOME);
+    try {
+      await Provider.of<AuthService>(context).login(info.email, info.password);
+      //await Navigator.pushReplacementNamed(context, HOME);
+    } on InvalidCredentialsException {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Invalid credentials"),
+        backgroundColor: Theme.of(context).errorColor,
+        duration: Duration(seconds: 1),
+      ));
+    } catch (_) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("There was a problem performing the sign-in"),
+        backgroundColor: Theme.of(context).errorColor,
+        duration: Duration(seconds: 1),
+      ));
+    }
   }
 
-  SignInScreen({Key key}): super(key: key);
+  SignInScreen({Key key}) : super(key: key);
 }
 
 typedef _SignInSubmitListener = void Function(_SignInFormInfo);

@@ -31,7 +31,7 @@ void main() => runApp(
             create: (_) => PhoneCameraService(),
           ),
           ChangeNotifierProvider<AuthService>(
-            create: (_) => MockAuthService(mockRegisteredUsers),
+            create: (_) => HttpAuthService(),
           ),
           ChangeNotifierProxyProvider<AuthService, LocationService>(
             create: (_) => GeolocatorLocationService(10),
