@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/services/camera_util.dart';
+import 'package:mobile/util/camera.dart';
 import 'package:mobile/util/image_helpers.dart';
 
 abstract class CameraService {

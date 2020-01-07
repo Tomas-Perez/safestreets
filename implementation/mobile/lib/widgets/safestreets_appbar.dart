@@ -3,6 +3,7 @@ import 'package:mobile/data/report_review.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/review_service.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/widgets/photo_review_alert.dart';
 import 'package:mobile/widgets/review_notification_icon.dart';
 import 'package:provider/provider.dart';
@@ -52,30 +53,18 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
     if (res == null) return;
-    const SNACKBAR_DURATION = Duration(seconds: 1);
-    final submittingSnackbar = Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("Submitting review..."),
-      duration: SNACKBAR_DURATION,
-    ));
+    final submittingSnackbar =
+        showSimpleSnackbar(context, "Submitting review...");
     final review = res.clear
         ? ReportReview.clear(request.id, res.licensePlate)
         : ReportReview.notClear(request.id);
     try {
       await reviewService.submitReview(review);
       submittingSnackbar.close();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Review submitted!"),
-        duration: SNACKBAR_DURATION,
-      ));
+      showSimpleSnackbar(context, "Review submitted!");
     } catch (_) {
       submittingSnackbar.close();
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text("There was a problem submitting the review"),
-          backgroundColor: Colors.red,
-          duration: SNACKBAR_DURATION,
-        ),
-      );
+      showErrorSnackbar(context, "There was a problem submitting the review");
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/util/email_validation.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -48,19 +49,11 @@ class SignInScreen extends StatelessWidget {
   Future<void> _onSubmit(BuildContext context, _SignInFormInfo info) async {
     try {
       await Provider.of<AuthService>(context).login(info.email, info.password);
-      //await Navigator.pushReplacementNamed(context, HOME);
+      await Navigator.pushReplacementNamed(context, HOME);
     } on InvalidCredentialsException {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Invalid credentials"),
-        backgroundColor: Theme.of(context).errorColor,
-        duration: Duration(seconds: 1),
-      ));
+      showErrorSnackbar(context, "Invalid credentials");
     } catch (_) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("There was a problem performing the sign-in"),
-        backgroundColor: Theme.of(context).errorColor,
-        duration: Duration(seconds: 1),
-      ));
+      showErrorSnackbar(context, "There was a problem performing the sign-in");
     }
   }
 
@@ -125,6 +118,7 @@ class _SignInFormState extends State<_SignInForm> {
   Widget _passwordField() {
     return TextFormField(
       textInputAction: TextInputAction.done,
+      obscureText: true,
       focusNode: _passwordFocus,
       decoration: InputDecoration(
         labelText: 'Password *',

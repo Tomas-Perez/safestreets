@@ -162,6 +162,7 @@ class _SignUpFormState extends State<_SignUpForm> {
     return TextFormField(
       textInputAction: TextInputAction.next,
       focusNode: _passwordFocus,
+      obscureText: true,
       decoration: InputDecoration(
         labelText: 'Password *',
         helperText: ' ', // spacing for error message
@@ -183,6 +184,7 @@ class _SignUpFormState extends State<_SignUpForm> {
     return TextFormField(
       textInputAction: TextInputAction.done,
       focusNode: _repeatPasswordFocus,
+      obscureText: true,
       decoration: InputDecoration(
         labelText: 'Repeat password *',
         helperText: ' ', // spacing for error message

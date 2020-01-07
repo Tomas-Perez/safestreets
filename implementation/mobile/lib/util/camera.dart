@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
@@ -14,15 +15,13 @@ Future<String> takePicture(
   );
   if (result == null) return null;
   if (result.hasError) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-            'Please grant the application camera permissions to sumbit a report'),
-      ),
+    showErrorSnackbar(
+      context,
+      "Please grant the application camera permissions to sumbit a report",
     );
     return null;
-  }
-  else return result.path;
+  } else
+    return result.path;
 }
 
 class _CameraViewfinder extends StatefulWidget {
