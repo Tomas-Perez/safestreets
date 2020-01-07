@@ -10,6 +10,7 @@ import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/screens/reports_map_screen.dart';
 import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/screens/sign_up_screen.dart';
+import 'package:mobile/services/api_connection_service.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/location_service.dart';
@@ -27,6 +28,9 @@ void main() => runApp(
       MultiProvider(
         child: MyApp(),
         providers: [
+          ChangeNotifierProvider<ApiConnectionService>(
+            create: (_) => MockApiConnectionService('http://192.168.99.100:8080'),
+          ),
           Provider<CameraService>(
             create: (_) => PhoneCameraService(),
           ),

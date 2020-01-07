@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/report_review.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/services/api_connection_service.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/review_service.dart';
 import 'package:mobile/util/snackbar.dart';
+import 'package:mobile/widgets/api_connection_config_alert.dart';
 import 'package:mobile/widgets/photo_review_alert.dart';
 import 'package:mobile/widgets/review_notification_icon.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +32,11 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : null,
       automaticallyImplyLeading: false,
-      title: Text("SafeStreets"),
+      title: GestureDetector(
+        child:
+            Text("SafeStreets", style: TextStyle(color: _titleColor(context))),
+        onLongPress: () => _showUrlConfig(context),
+      ),
       actions: <Widget>[
         if (!currentRouteName(context).contains(PROFILE) && loggedIn)
           IconButton(
@@ -39,6 +45,13 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
           )
       ],
     );
+  }
+
+  Color _titleColor(BuildContext context) {
+    final connected = Provider.of<ApiConnectionService>(context).connected;
+    final defaultColor = Theme.of(context).appBarTheme.textTheme.title.color;
+    final disabledColor = Theme.of(context).disabledColor;
+    return connected ? defaultColor : disabledColor;
   }
 
   Future<void> performReview(
@@ -72,4 +85,11 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       ModalRoute.of(context).settings.name;
 
   Size get preferredSize => Size.fromHeight(40.0);
+
+  _showUrlConfig(BuildContext context) {
+    showDialog(
+      context: context,
+      child: ApiConnectionConfigAlert(),
+    );
+  }
 }
