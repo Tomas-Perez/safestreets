@@ -6,6 +6,8 @@ import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 
 class SignUpScreen extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +30,8 @@ class SignUpScreen extends StatelessWidget {
       ),
     );
   }
+
+  SignUpScreen({Key key}): super(key: key);
 }
 
 typedef _SignUpSubmitListener = void Function(_SignUpFormInfo);

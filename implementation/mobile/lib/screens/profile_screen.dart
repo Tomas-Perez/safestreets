@@ -10,6 +10,8 @@ import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,4 +85,6 @@ class ProfileScreen extends StatelessWidget {
       },
     );
   }
+
+  ProfileScreen({Key key}): super(key: key);
 }

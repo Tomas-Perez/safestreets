@@ -10,8 +10,12 @@ import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
+
+
   @override
   State createState() => _EditProfileScreenState();
+
+  EditProfileScreen({Key key}): super(key: key);
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {

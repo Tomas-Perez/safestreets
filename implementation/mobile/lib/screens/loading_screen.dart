@@ -5,6 +5,8 @@ import 'package:mobile/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class LoadingScreen extends StatefulWidget {
+  LoadingScreen({Key key}): super(key: key);
+
   @override
   State createState() => _LoadingScreenState();
 }

@@ -23,74 +23,76 @@ import 'package:provider/provider.dart';
 
 import 'data/mocks.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+      MultiProvider(
+        child: MyApp(),
+        providers: [
+          Provider<CameraService>(
+            create: (_) => PhoneCameraService(),
+          ),
+          ChangeNotifierProvider<AuthService>(
+            create: (_) => MockAuthService(mockRegisteredUsers),
+          ),
+          ChangeNotifierProxyProvider<AuthService, LocationService>(
+            create: (_) => GeolocatorLocationService(10),
+            update: (_, authService, locationService) {
+              final geolocatorService =
+                  locationService as GeolocatorLocationService;
+              if (authService.authenticated)
+                return geolocatorService..start();
+              else
+                return geolocatorService..stop();
+            },
+          ),
+          ChangeNotifierProxyProvider<AuthService, UserService>(
+            create: (_) => MockUserService(mockProfileByToken, null),
+            update: (_, authService, __) => MockUserService(
+              mockProfileByToken,
+              authService.token,
+            ),
+          ),
+          ProxyProvider<AuthService, ReportSubmissionService>(
+            create: (_) => MockReportSubmissionService(),
+            update: (_, authService, reportService) => reportService,
+          ),
+          ChangeNotifierProxyProvider<AuthService, ReportMapService>(
+            create: (_) => MockReportMapService(),
+            update: (_, authService, reportService) => reportService,
+          ),
+          ChangeNotifierProxyProvider<AuthService, ReviewService>(
+            create: (_) => MockReviewService(
+                loadAssetImage('mocks/mock-image.jpg').then((img) => [
+                      [ReviewRequest('1', img), ReviewRequest('2', img)],
+                      [ReviewRequest('3', img)],
+                    ])),
+            update: (_, authService, reviewService) {
+              if (authService.authenticated)
+                return reviewService..fetchRequests();
+              else
+                return reviewService..clearRequests();
+            },
+          )
+        ],
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: safeStreetsTheme,
-        initialRoute: LOADING,
-        routes: {
-          LOADING: (_) => LoadingScreen(),
-          HOME: (_) => HomeScreen(),
-          MAP: (_) => ReportsMapScreen(),
-          REPORT: (_) => ReportViolationScreen(),
-          PROFILE: (_) => ProfileScreen(),
-          EDIT_PROFILE: (_) => EditProfileScreen(),
-          SIGN_IN: (_) => SignInScreen(),
-          SIGN_UP: (_) => SignUpScreen(),
-        },
-      ),
-      providers: [
-        Provider<CameraService>(
-          create: (_) => PhoneCameraService(),
-        ),
-        ChangeNotifierProvider<AuthService>(
-          create: (_) => MockAuthService(mockRegisteredUsers),
-        ),
-        ChangeNotifierProxyProvider<AuthService, LocationService>(
-          create: (_) => GeolocatorLocationService(10),
-          update: (_, authService, locationService) {
-            final geolocatorService =
-                locationService as GeolocatorLocationService;
-            if (authService.authenticated)
-              return geolocatorService..start();
-            else
-              return geolocatorService..stop();
-          },
-        ),
-        ChangeNotifierProxyProvider<AuthService, UserService>(
-          create: (_) => MockUserService(mockProfileByToken, null),
-          update: (_, authService, __) => MockUserService(
-            mockProfileByToken,
-            authService.token,
-          ),
-        ),
-        ProxyProvider<AuthService, ReportSubmissionService>(
-          create: (_) => MockReportSubmissionService(),
-          update: (_, authService, reportService) => reportService,
-        ),
-        ChangeNotifierProxyProvider<AuthService, ReportMapService>(
-          create: (_) => MockReportMapService(),
-          update: (_, authService, reportService) => reportService,
-        ),
-        ChangeNotifierProxyProvider<AuthService, ReviewService>(
-          create: (_) => MockReviewService(
-              loadAssetImage('mocks/mock-image.jpg').then((img) => [
-                    [ReviewRequest('1', img), ReviewRequest('2', img)],
-                    [ReviewRequest('3', img)],
-                  ])),
-          update: (_, authService, reviewService) {
-            if (authService.authenticated)
-              return reviewService..fetchRequests();
-            else
-              return reviewService..clearRequests();
-          },
-        )
-      ],
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: safeStreetsTheme,
+      initialRoute: LOADING,
+      routes: {
+        LOADING: (_) => LoadingScreen(key: Key('$LOADING screen')),
+        HOME: (_) => HomeScreen(key: Key('$HOME screen')),
+        MAP: (_) => ReportsMapScreen(key: Key('$MAP screen')),
+        REPORT: (_) => ReportViolationScreen(key: Key('$REPORT screen')),
+        PROFILE: (_) => ProfileScreen(key: Key('$PROFILE screen')),
+        EDIT_PROFILE: (_) => EditProfileScreen(key: Key('$EDIT_PROFILE screen')),
+        SIGN_IN: (_) => SignInScreen(key: Key('$SIGN_IN screen')),
+        SIGN_UP: (_) => SignUpScreen(key: Key('$SIGN_UP screen')),
+      },
     );
   }
 }

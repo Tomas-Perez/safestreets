@@ -37,6 +37,7 @@ class HomeScreen extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: _buildCard(
+            key: Key('REPORT card'),
             title: 'Report a violation',
             asset: 'images/traffic-violation-card.jpg',
             onPressed: () => Navigator.pushNamed(context, REPORT),
@@ -44,6 +45,7 @@ class HomeScreen extends StatelessWidget {
         ),
         Expanded(
           child: _buildCard(
+            key: Key('MAP card'),
             title: 'Reports map',
             asset: 'images/reports-map-card.jpg',
             onPressed: () => Navigator.pushNamed(context, MAP),
@@ -55,11 +57,13 @@ class HomeScreen extends StatelessWidget {
   }
 
   Card _buildCard({
+    @required Key key,
     @required String title,
     @required String asset,
     @required VoidCallback onPressed,
   }) {
     return Card(
+      key: key,
       child: InkWell(
         child: Stack(
           children: <Widget>[

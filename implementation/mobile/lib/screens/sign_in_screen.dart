@@ -10,6 +10,8 @@ import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
 class SignInScreen extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +47,8 @@ class SignInScreen extends StatelessWidget {
     await Provider.of<AuthService>(context).login(info.email, info.password);
     await Navigator.pushReplacementNamed(context, HOME);
   }
+
+  SignInScreen({Key key}): super(key: key);
 }
 
 typedef _SignInSubmitListener = void Function(_SignInFormInfo);
