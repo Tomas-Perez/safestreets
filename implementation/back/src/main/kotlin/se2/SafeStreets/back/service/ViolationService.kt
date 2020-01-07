@@ -25,7 +25,7 @@ class ViolationService(
         ) {
 
 
-    @Value("\${imgpath:}")
+    @Value("\${imgpath}")
     lateinit var imgDirPath: String
 
     fun save(violationForm: ViolationReportForm): ObjectId {
@@ -42,8 +42,20 @@ class ViolationService(
     fun saveImage(report: ViolationReport, file: MultipartFile, isLicense: Boolean) {
         val id = ObjectId.get()
         val image = Image(id, id.toHexString())
-        val destFile = File("$imgDirPath\\\\${image.name}")
+        val destFile = File("$imgDirPath/${image.name}")
         file.transferTo(destFile)
+        if (isLicense)
+            report.licenseImage = image
+        else
+            report.images.add(image)
+        violationRepository.save(report)
+    }
+
+    fun saveImage(report: ViolationReport, file: File, isLicense: Boolean) {
+        val id = ObjectId.get()
+        val image = Image(id, id.toHexString())
+        val destFile = File("$imgDirPath/${image.name}")
+        file.copyTo(destFile)
         if (isLicense)
             report.licenseImage = image
         else
@@ -54,7 +66,7 @@ class ViolationService(
     fun endReport(report: ViolationReport): Boolean {
         report.licenseImage?.let {
             val reportLicense = report.licensePlate
-            val recognisedPlates = imageAnalyser.analyse("$imgDirPath\\\\${it.name}")
+            val recognisedPlates = imageAnalyser.analyse("$imgDirPath/${it.name}")
             for (plate in recognisedPlates) {
                 if(plate.license == reportLicense) {
                     if (plate.confidence >= 80) {

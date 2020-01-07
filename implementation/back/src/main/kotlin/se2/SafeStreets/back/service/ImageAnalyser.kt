@@ -9,13 +9,20 @@ class ImageAnalyser {
 
     lateinit var alpr: Alpr
 
-    init {
-        var path = (ImageAnalyser::class).java.classLoader.getResource("openalpr")!!.path
-        path = path.replaceFirst("/", "")
-        path = path.replace("%20", " ")
+    /*
+init {
+    var path = (ImageAnalyser::class).java.classLoader.getResource("openalpr")!!.path
+    path = path.replaceFirst("/", "")
+    path = path.replace("%20", " ")
 
-        alpr = Alpr("us", "$path/runtime_data/config/default.conf", "$path/runtime_data")
-        alpr.setTopN(9)
+    alpr = Alpr("us", "$path/runtime_data/config/default.conf", "$path/runtime_data")
+    alpr.setTopN(9)
+}
+     */
+
+    fun initializeAlpr(path: String) {
+        alpr = Alpr("eu", "$path/runtime_data/config/default.conf", "$path/runtime_data")
+        alpr.setTopN(15)
     }
 
     fun analyse(imagePath: String): List<RecognisedLicense> {

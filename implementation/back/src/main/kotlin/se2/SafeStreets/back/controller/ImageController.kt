@@ -15,7 +15,7 @@ class ImageController(val violationService: ViolationService) {
     @GetMapping("/{name}", produces = ["image/png"])
     fun getImageByName(@PathVariable("name") name: String): ResponseEntity<ByteArray> {
         return try {
-            val result = File("${violationService.imgDirPath}\\\\$name")
+            val result = File("${violationService.imgDirPath}/$name")
             ResponseEntity.ok(result.readBytes())
         } catch (e: Exception) {
             ResponseEntity.notFound().build()
