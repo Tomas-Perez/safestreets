@@ -1,6 +1,7 @@
 package se2.SafeStreets.back
 
 import org.apache.tomcat.util.http.fileupload.FileUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -29,6 +30,9 @@ class StartUp(
         val userRepository: UserRepository
 ) {
 
+    @Value("\${spring.profiles.active:Unknown}")
+    lateinit var profile: String
+
     var initImgPath: String? = null
 
     @EventListener
@@ -39,10 +43,19 @@ class StartUp(
                     .replace("%20", " ")
         }
 
-        val openalprPath = event.applicationContext.environment.getProperty("openalpr")
-        if(openalprPath != null) {
-            imageAnalyser.initializeAlpr(openalprPath)
-        } else throw RuntimeException("openalpr path not present in environment variables.")
+        var openalprPath = event.applicationContext.environment.getProperty("openalpr")
+        when {
+            openalprPath != null -> {
+                imageAnalyser.initializeAlpr(openalprPath)
+            }
+            profile == "test" -> {
+                openalprPath = (ImageAnalyser::class).java.classLoader.getResource("openalpr")!!.path
+                        .replaceFirst("/", "")
+                        .replace("%20", " ")
+                imageAnalyser.initializeAlpr(openalprPath)
+            }
+            else -> throw RuntimeException("openalpr path not present in environment variables.")
+        }
 
         val init = event.applicationContext.environment.getProperty("initdb")
         initImgPath = event.applicationContext.environment.getProperty("initImgPath")

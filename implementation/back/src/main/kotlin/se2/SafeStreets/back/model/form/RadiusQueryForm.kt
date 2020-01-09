@@ -4,8 +4,8 @@ import se2.SafeStreets.back.model.ViolationReportStatus
 import se2.SafeStreets.back.model.ViolationType
 import java.time.LocalDateTime
 
-class RadiusQueryForm(val southWest: Array<Double>,
-                      val northEast: Double,
+class RadiusQueryForm(val location: Array<Double>,
+                      val radius: Double,
                       val from: LocalDateTime,
                       val to: LocalDateTime,
                       val status: List<ViolationReportStatus>,

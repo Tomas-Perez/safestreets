@@ -25,7 +25,7 @@ class ViolationService(
         ) {
 
 
-    @Value("\${imgpath}")
+    @Value("\${imgpath:}")
     lateinit var imgDirPath: String
 
     fun save(violationForm: ViolationReportForm): ObjectId {
@@ -90,12 +90,12 @@ class ViolationService(
     }
 
     fun findByRadius(form: RadiusQueryForm): List<ViolationReportDto> {
-        val reports = violationRepository.findAllInRadius(form.southWest[0], form.southWest[1], form.northEast, form.from, form.to, form.status, form.types)
+        val reports = violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.status, form.types)
         return reports.map { ViolationReportDto.fromReport(it) }
     }
 
     fun findFullByRadius(form: RadiusQueryForm): List<ViolationReport> {
-        return violationRepository.findAllInRadius(form.southWest[0], form.southWest[1], form.northEast, form.from, form.to, form.status, form.types)
+        return violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.status, form.types)
     }
 
     fun findByBounds(form: BoundsQueryForm): List<ViolationReportDto> {
