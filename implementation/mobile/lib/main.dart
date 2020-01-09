@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/data/report_review.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/screens/edit_profile_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
@@ -19,7 +18,6 @@ import 'package:mobile/services/report_submission_service.dart';
 import 'package:mobile/services/review_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
-import 'package:mobile/util/image_helpers.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(
@@ -62,15 +60,21 @@ void main() => runApp(
               return httpService;
             },
           ),
-          ProxyProvider<AuthService, ReportSubmissionService>(
-            create: (_) => MockReportSubmissionService(),
-            update: (_, authService, reportService) => reportService,
+          ProxyProvider2<AuthService, ApiConnectionService,
+              ReportSubmissionService>(
+            create: (_) => HttpReportSubmissionService(null, null),
+            update: (_, authService, conService, reportService) =>
+                HttpReportSubmissionService(
+              conService.url,
+              authService.token,
+            ),
           ),
           ChangeNotifierProxyProvider<AuthService, ReportMapService>(
             create: (_) => MockReportMapService(),
             update: (_, authService, reportService) => reportService,
           ),
-          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService, ReviewService>(
+          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService,
+              ReviewService>(
             create: (_) => HttpReviewService(),
             update: (_, authService, conService, reviewService) {
               final httpService = reviewService as HttpReviewService;
