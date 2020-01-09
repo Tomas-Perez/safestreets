@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/data/report_review.dart';
 
@@ -45,5 +48,79 @@ class MockReviewService with ChangeNotifier implements ReviewService {
   Future<void> clearRequests() async {
     _requests.clear();
     notifyListeners();
+  }
+}
+
+class HttpReviewService with ChangeNotifier implements ReviewService {
+  final _dio = Dio();
+  final List<ReviewRequest> _requests = [];
+
+  @override
+  Future<void> clearRequests() async {
+    _requests.clear();
+    notifyListeners();
+  }
+
+  @override
+  Future<void> fetchRequests() async {
+    _requests.clear();
+    notifyListeners();
+    try {
+      final requestDtos =
+          (await _dio.get<List<dynamic>>('/review/pending/me')).data;
+      final fetchingRequests = requestDtos.map((r) async {
+        final imageData = await _fetchImage(r['imageName']);
+        if (imageData == null) return null;
+        return ReviewRequest(r['id'], imageData);
+      });
+      final requests = await Future.wait(fetchingRequests);
+      _requests.addAll(requests.where((r) => r != null));
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
+  }
+
+  Future<Uint8List> _fetchImage(String name) async {
+    try {
+      final bytes = (await _dio.get<List<int>>(
+        '/image/$name',
+        options: Options(responseType: ResponseType.bytes),
+      ))
+          .data;
+      return Uint8List.fromList(bytes);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  ReviewRequest get request => reviewPending ? _requests.first : null;
+
+  @override
+  bool get reviewPending => _requests.isNotEmpty;
+
+  @override
+  Future<void> submitReview(ReportReview review) async {
+    try {
+      await _dio.post('/review', data: {
+        'reviewId': review.id,
+        'licensePlate': review.licensePlate,
+        'clear': review.clear,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  set baseUrl(String newUrl) {
+    _dio.options.baseUrl = newUrl;
+  }
+
+  set token(String token) {
+    _dio.options.headers = {
+      'Authorization': 'Bearer $token',
+    };
+    if (token != null) fetchRequests();
   }
 }

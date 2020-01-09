@@ -70,17 +70,13 @@ void main() => runApp(
             create: (_) => MockReportMapService(),
             update: (_, authService, reportService) => reportService,
           ),
-          ChangeNotifierProxyProvider<AuthService, ReviewService>(
-            create: (_) => MockReviewService(
-                loadAssetImage('mocks/mock-image.jpg').then((img) => [
-                      [ReviewRequest('1', img), ReviewRequest('2', img)],
-                      [ReviewRequest('3', img)],
-                    ])),
-            update: (_, authService, reviewService) {
-              if (authService.authenticated)
-                return reviewService..fetchRequests();
-              else
-                return reviewService..clearRequests();
+          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService, ReviewService>(
+            create: (_) => HttpReviewService(),
+            update: (_, authService, conService, reviewService) {
+              final httpService = reviewService as HttpReviewService;
+              httpService.baseUrl = conService.url;
+              httpService.token = authService.token;
+              return httpService;
             },
           )
         ],

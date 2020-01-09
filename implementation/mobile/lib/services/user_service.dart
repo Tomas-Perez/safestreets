@@ -99,6 +99,6 @@ class HttpUserService with ChangeNotifier implements UserService {
     _dio.options.headers = {
       'Authorization': 'Bearer $token',
     };
-    _fetchCurrentProfile();
+    if (token != null) _fetchCurrentProfile();
   }
 }
