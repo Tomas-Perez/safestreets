@@ -1,0 +1,25 @@
+
+\subsection{Back-end server and database}
+The recommended way of installing the application is through Docker and the provided docker-compose file. This will set up both the backend server and the mongodb database.\\
+
+\textbf{Pre-requisites:}
+\begin{itemize}[label={\textbf{-}}]
+    \item 
+    Have Docker installed in your computer, can be downloaded from: \url{https://www.docker.com/}
+    \item 
+    Have an internet connection for installation.
+\end{itemize}
+
+\textbf{Installation steps:}
+\begin{itemize}[label={\textbf{-}}]
+    \item 
+    Make sure Docker is running.
+    \item 
+    Open the terminal/command line at the directory containing the provided docker-compose.yml file.
+    \item 
+    Type and run the following command: docker-compose up.
+    \item 
+    Wait for Docker to finish the setup.
+    \item 
+    To check if everything is ok, open a browser and navigate to http://localhost:8080/auth/ping. The text “pong” should be displayed on your screen.
+\end{itemize}

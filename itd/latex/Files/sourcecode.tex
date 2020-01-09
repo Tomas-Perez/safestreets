@@ -1,0 +1,40 @@
+\subsection{Back-end server}
+The source code is organized following the Gradle standard.\\
+
+The application resides in the /back directory, where Gradle configuration files can be found.
+
+\begin{itemize}
+    \item 
+    /src
+    \begin{itemize}[label={$\diamond$}]
+        \item 
+        /main \textcolor{black!70}{contains the source code files.}
+        \item 
+        /java/com/openalpr/jni \textcolor{black!70}{contains the OpenALPR java files.}
+        \item 
+        /kotlin/se2/SafeStreets/back \textcolor{black!70}{contains the kotlin files, organized according to Spring boot framework.}
+        \begin{itemize}[label={\textbf{-}}]
+            \item 
+            /controller \textcolor{black!70}{contains Spring controller classes.}
+            \item 
+            /model \textcolor{black!70}{contains application models and DTOs.}
+            \item 
+            /repository \textcolor{black!70}{contains Spring repository classes.}
+            \item 
+            /security \textcolor{black!70}{contains Spring security configuration and filters.}
+            \item 
+            /service \textcolor{black!70}{contains Spring service classes.}
+        \end{itemize}
+        \item 
+        /resources \textcolor{black!70}{contains resources used by the application, like Spring properties files.}
+    \end{itemize}
+
+    \item 
+    /test \textcolor{black!70}{contains the source code files for testing.}
+    \begin{itemize}[label={$\diamond$}]
+        \item 
+        /kotlin/se2/SafeStreets/back \textcolor{black!70}{contains unit test classes.}
+        \item 
+        /resources \textcolor{black!70}{contains files used for testing, like images.}
+    \end{itemize}
+\end{itemize}
