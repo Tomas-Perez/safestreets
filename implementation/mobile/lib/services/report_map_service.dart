@@ -196,18 +196,19 @@ class HttpReportMapService with ChangeNotifier implements ReportMapService {
 
   Future<void> fetchReports() async {
     _fetching = true;
+    final types = _filterInfo.violationType == null ? ViolationType.values : [_filterInfo.violationType];
     final res =
         await _dio.post<List<dynamic>>('/violation/query/bounds', data: {
       'bottomLeft': [_bounds.southWest.latitude, _bounds.southWest.longitude],
       'upperRight': [_bounds.northEast.latitude, _bounds.northEast.longitude],
       'from': _filterInfo.from.toIso8601String(),
       'to': _filterInfo.to.toIso8601String(),
-      'types': [_filterInfo.violationType],
+      'types': types.map(toDTString).toList(),
     });
     final reports = res.data
         .map((dto) => ReportIndicator(
-              violationType: dto['type'],
-              time: dto['dateTime'],
+              violationType: fromDTString(dto['type']),
+              time: DateTime.parse(dto['dateTime']),
               location: LatLng(dto['location'][0], dto['location'][1]),
             ))
         .toList();

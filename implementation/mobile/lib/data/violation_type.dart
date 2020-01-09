@@ -14,3 +14,33 @@ String violationTypeToString(ViolationType type) {
       throw Exception("$type is not a ViolationType");
   }
 }
+
+String toDTString(ViolationType type) {
+  switch (type) {
+    case ViolationType.PARKING:
+      return "PARKING";
+    case ViolationType.POOR_CONDITION:
+      return "POOR_CONDITION";
+    case ViolationType.CRASH:
+      return 'CRASH';
+    case ViolationType.RED_LIGHT:
+      return 'RED_LIGHT';
+    default:
+      throw Exception("$type is not a ViolationType");
+  }
+}
+
+ViolationType fromDTString(String type) {
+  switch (type) {
+    case "PARKING":
+      return ViolationType.PARKING;
+    case "POOR_CONDITION":
+      return ViolationType.POOR_CONDITION;
+    case "CRASH":
+      return ViolationType.CRASH;
+    case "RED_LIGHT":
+      return ViolationType.RED_LIGHT;
+    default:
+      throw Exception("$type is not a ViolationType");
+  }
+}

@@ -28,7 +28,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
       content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            ReportImage(widget.imageProvider),
+            ReportImage(widget.imageProvider, enableZoom: true),
             _licensePlateField(),
             SizedBox(height: 5),
             Row(

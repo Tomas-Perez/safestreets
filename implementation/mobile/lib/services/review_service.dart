@@ -108,6 +108,8 @@ class HttpReviewService with ChangeNotifier implements ReviewService {
         'licensePlate': review.licensePlate,
         'clear': review.clear,
       });
+      _requests.removeWhere((r) => r.id == review.id);
+      notifyListeners();
     } catch (e) {
       print(e);
     }
