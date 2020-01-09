@@ -5,6 +5,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
+import se2.SafeStreets.back.model.Dto.UserDto
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.repository.UserRepository
 
@@ -32,13 +33,12 @@ class UserService(private val userRepository: UserRepository) {
         return findCurrent()?.let { it } ?: throw NoSuchElementException("User does not exist.")
     }
 
-    fun updateCurrent(userForm: User): User? {
+    fun updateCurrent(userForm: UserDto): User? {
         val optUser = findCurrent()
         optUser?.let { user ->
             user.name = userForm.name
             user.surname = userForm.surname
             user.email = userForm.email
-            user.password = BCrypt.hashpw(userForm.password, BCrypt.gensalt())
             userRepository.save(user)
             return user
         }

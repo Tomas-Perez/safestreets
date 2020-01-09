@@ -66,7 +66,7 @@ class ViolationReportController(val violationService: ViolationService) {
 
     @PostMapping("/query/radius")
     fun getReportsInRadius(@Valid @RequestBody form: RadiusQueryForm): ResponseEntity<List<ViolationReportDto>> {
-        return if (form.location.size == 2) {
+        return if (form.southWest.size == 2) {
             val result = violationService.findByRadius(form)
             ResponseEntity.ok(result)
         } else {
@@ -77,7 +77,7 @@ class ViolationReportController(val violationService: ViolationService) {
     @PostMapping("/query/advanced/radius")
     @Secured("ROLE_ADMIN", "ROLE_MUNICIPALITY")
     fun getFullReportsInRadius(@Valid @RequestBody form: RadiusQueryForm): ResponseEntity<List<ViolationReport>> {
-        return if (form.location.size == 2) {
+        return if (form.southWest.size == 2) {
             val result = violationService.findFullByRadius(form)
             ResponseEntity.ok(result)
         } else {
@@ -87,7 +87,7 @@ class ViolationReportController(val violationService: ViolationService) {
 
     @PostMapping("/query/bounds")
     fun getReportsInBounds(@Valid @RequestBody form: BoundsQueryForm): ResponseEntity<List<ViolationReportDto>> {
-        return if (form.bottomLeft.size == 2 && form.upperRight.size == 2) {
+        return if (form.southWest.size == 2 && form.northEast.size == 2) {
             val result = violationService.findByBounds(form)
             ResponseEntity.ok(result)
         } else {
@@ -98,7 +98,7 @@ class ViolationReportController(val violationService: ViolationService) {
     @PostMapping("/query/advanced/bounds")
     @Secured("ROLE_ADMIN", "ROLE_MUNICIPALITY")
     fun getFullReportsInBounds(@Valid @RequestBody form: BoundsQueryForm): ResponseEntity<List<ViolationReport>> {
-        return if (form.bottomLeft.size == 2 && form.upperRight.size == 2) {
+        return if (form.southWest.size == 2 && form.northEast.size == 2) {
             val result = violationService.findFullByBounds(form)
             ResponseEntity.ok(result)
         } else {

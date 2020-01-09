@@ -111,6 +111,7 @@ class StartUp(
 
                 violations.forEach { v ->
                     if (v.id == violation0.id) {
+                        v.confidence = 76.02543F
                         v.status = ViolationReportStatus.REVIEW
                         violationRepository.save(v)
                         reviewRecruiter.sendForReview(v)

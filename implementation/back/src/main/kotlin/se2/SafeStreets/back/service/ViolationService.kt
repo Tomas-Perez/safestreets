@@ -69,6 +69,7 @@ class ViolationService(
             val recognisedPlates = imageAnalyser.analyse("$imgDirPath/${it.name}")
             for (plate in recognisedPlates) {
                 if(plate.license == reportLicense) {
+                    report.confidence = plate.confidence
                     if (plate.confidence >= 80) {
                         // valid
                         report.status = ViolationReportStatus.HIGH_CONFIDENCE
@@ -89,21 +90,21 @@ class ViolationService(
     }
 
     fun findByRadius(form: RadiusQueryForm): List<ViolationReportDto> {
-        val reports = violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.types)
+        val reports = violationRepository.findAllInRadius(form.southWest[0], form.southWest[1], form.northEast, form.from, form.to, form.status, form.types)
         return reports.map { ViolationReportDto.fromReport(it) }
     }
 
     fun findFullByRadius(form: RadiusQueryForm): List<ViolationReport> {
-        return violationRepository.findAllInRadius(form.location[0], form.location[1], form.radius, form.from, form.to, form.types)
+        return violationRepository.findAllInRadius(form.southWest[0], form.southWest[1], form.northEast, form.from, form.to, form.status, form.types)
     }
 
     fun findByBounds(form: BoundsQueryForm): List<ViolationReportDto> {
-        val reports = violationRepository.findAllInBounds(form.bottomLeft[0], form.bottomLeft[1], form.upperRight[0], form.upperRight[1], form.from, form.to, form.types)
+        val reports = violationRepository.findAllInBounds(form.southWest[0], form.southWest[1], form.northEast[0], form.northEast[1], form.from, form.to, form.status, form.types)
         return reports.map { ViolationReportDto.fromReport(it) }
     }
 
     fun findFullByBounds(form: BoundsQueryForm): List<ViolationReport> {
-        return violationRepository.findAllInBounds(form.bottomLeft[0], form.bottomLeft[1], form.upperRight[0], form.upperRight[1], form.from, form.to, form.types)
+        return violationRepository.findAllInBounds(form.southWest[0], form.southWest[1], form.northEast[0], form.northEast[1], form.from, form.to, form.status, form.types)
     }
 
 }

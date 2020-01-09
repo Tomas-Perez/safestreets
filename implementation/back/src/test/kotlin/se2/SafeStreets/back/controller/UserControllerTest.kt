@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import se2.SafeStreets.back.AbstractTest
+import se2.SafeStreets.back.model.Dto.UserDto
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
 import se2.SafeStreets.back.model.form.SignUpForm
@@ -120,7 +121,7 @@ class UserControllerTest(
                 .andExpect(status().isOk)
                 .andReturn()
         val getCurrentContent = getCurrentResult.response.contentAsString
-        val gottenUser = super.fullMapFromJson(getCurrentContent, User::class.java)
+        val gottenUser = super.fullMapFromJson(getCurrentContent, UserDto::class.java)
         assertEquals(data.user1.id, gottenUser.id)
     }
 

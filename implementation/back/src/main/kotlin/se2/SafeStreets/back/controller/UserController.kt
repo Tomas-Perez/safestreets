@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
+import se2.SafeStreets.back.model.Dto.UserDto
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.model.UserType
 import se2.SafeStreets.back.model.form.SignUpForm
@@ -27,9 +28,11 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable("id") id:ObjectId): ResponseEntity<User> {
+    fun getUserById(@PathVariable("id") id: ObjectId): ResponseEntity<UserDto> {
         val user = userService.findById(id)
-        return user?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+        return user?.let {
+            ResponseEntity.ok(UserDto(it.id!!, it.email, it.username, it.name, it.surname, it.type))
+        } ?: ResponseEntity.notFound().build()
     }
 
     @PostMapping
@@ -41,12 +44,14 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/me")
-    fun getCurrentUser(): ResponseEntity<User> {
-        return userService.findCurrent()?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+    fun getCurrentUser(): ResponseEntity<UserDto> {
+        return userService.findCurrent()?.let {
+            ResponseEntity.ok(UserDto(it.id!!, it.email, it.username, it.name, it.surname, it.type))
+        } ?: ResponseEntity.notFound().build()
     }
 
     @PutMapping("/me")
-    fun modifyCurrentUser(@Valid @RequestBody user: User): ResponseEntity<Any> {
+    fun modifyCurrentUser(@Valid @RequestBody user: UserDto): ResponseEntity<Any> {
         val result: User? = userService.updateCurrent(user)
         return result?.let { ResponseEntity.noContent().build<Any>() } ?: ResponseEntity.notFound().build()
     }

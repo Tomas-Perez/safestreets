@@ -23,6 +23,7 @@ class ViolationReport() {
     lateinit var location: Location
 
     var status: ViolationReportStatus = ViolationReportStatus.INCOMPLETE
+    var confidence: Float? = null
 
     var licenseImage: Image? = null
     var images: ArrayList<Image> = ArrayList()
