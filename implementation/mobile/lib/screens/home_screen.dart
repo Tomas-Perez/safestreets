@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/services/location_service.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SafeStreetsAppBar(),
-      body: _buildBody(context),
+      body: Builder(builder: (ctx) => _buildBody(ctx)),
     );
   }
 
@@ -40,7 +42,12 @@ class HomeScreen extends StatelessWidget {
             key: Key('REPORT card'),
             title: 'Report a violation',
             asset: 'images/traffic-violation-card.jpg',
-            onPressed: () => Navigator.pushNamed(context, REPORT),
+            onPressed: () async {
+              final subResult = await Navigator.pushNamed(context, REPORT)
+                  as ReportSubmission;
+              if (subResult != null && subResult.success)
+                showSimpleSnackbar(context, "Report submitted!");
+            },
           ),
         ),
         Expanded(

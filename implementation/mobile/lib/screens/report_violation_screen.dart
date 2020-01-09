@@ -9,6 +9,7 @@ import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/report_submission_service.dart';
 import 'package:mobile/util/license_plate.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/image_carousel.dart';
@@ -56,7 +57,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
                 const SizedBox(height: 30),
                 Builder(builder: (ctx) => _photosSection(ctx)),
                 const SizedBox(height: 10),
-                _confirmButton(context),
+                Builder(builder: (ctx) => _confirmButton(ctx)),
                 const SizedBox(height: 10),
               ],
             ),
@@ -164,12 +165,12 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         child: Text(
           'Confirm',
         ),
-        onPressed: _images.isEmpty ? null : _submitForm,
+        onPressed: _images.isEmpty ? null : () => _submitForm(context),
       ),
     );
   }
 
-  Future<void> _submitForm() async {
+  Future<void> _submitForm(BuildContext context) async {
     final reportInfo = _controller.submit();
     if (reportInfo == null) return;
     final selectedIndex = await showDialog(
@@ -183,18 +184,23 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       _submitting = true;
     });
     final reportService = Provider.of<ReportSubmissionService>(context);
-    await reportService.submit(
-      ReportForm(
-        violationType: reportInfo.violationType,
-        licensePlate: reportInfo.licensePlate,
-        description: reportInfo.description,
-        images: _images,
-        licensePlateImgIndex: selectedIndex,
-      ),
-    );
-    setState(() {
-      _submitting = false;
-    });
+    try {
+      await reportService.submit(
+        ReportForm(
+          violationType: reportInfo.violationType,
+          licensePlate: reportInfo.licensePlate,
+          description: reportInfo.description,
+          images: _images,
+          licensePlateImgIndex: selectedIndex,
+        ),
+      );
+      Navigator.pop(context, ReportSubmission.success());
+    } catch (e) {
+      setState(() {
+        _submitting = false;
+      });
+      showErrorSnackbar(context, 'There was a problem submitting the report');
+    }
   }
 
   Widget _noItemsPlaceholder() {
@@ -407,4 +413,12 @@ class _ReportFormInfo {
   String toString() {
     return 'ReportInfo{violationType: $violationType, licensePlate: $licensePlate, description: $description}';
   }
+}
+
+class ReportSubmission {
+  bool success;
+
+  ReportSubmission.success() : success = true;
+
+  ReportSubmission.error() : success = false;
 }

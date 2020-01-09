@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:mobile/data/report.dart';
+import 'package:mobile/data/violation_type.dart';
 
 abstract class ReportSubmissionService {
   Future<void> submit(ReportForm form);
@@ -29,7 +30,7 @@ class HttpReportSubmissionService implements ReportSubmissionService {
     try {
       final licensePlateImage = form.images[form.licensePlateImgIndex];
       final nonLicensePlateImgs =
-      form.images.where((i) => i != licensePlateImage);
+          form.images.where((i) => i != licensePlateImage);
       final time = licensePlateImage.time.toIso8601String();
       final location = [
         licensePlateImage.location.latitude,
@@ -39,19 +40,17 @@ class HttpReportSubmissionService implements ReportSubmissionService {
         'licensePlate': form.licensePlate,
         'description': form.description,
         'dateTime': time,
-        'type': form.violationType.toString(),
+        'type': toDTString(form.violationType),
         'location': location,
       });
       final reportId = res.data as String;
-      await Future.wait(
-          [
-            ...nonLicensePlateImgs.map((i) =>
-                uploadImage(reportId, i.imageData)),
-            uploadImage(reportId, licensePlateImage.imageData),
-          ]
-      );
+      await Future.wait([
+        ...nonLicensePlateImgs.map((i) => uploadImage(reportId, i.imageData)),
+        uploadImage(reportId, licensePlateImage.imageData,
+            isLicensePlateImg: true),
+      ]);
       await _dio.post('/violation/$reportId/done');
-    } catch (e) {
+    } on DioError catch (e) {
       print(e);
     }
   }
@@ -61,11 +60,15 @@ class HttpReportSubmissionService implements ReportSubmissionService {
     Uint8List imageData, {
     bool isLicensePlateImg,
   }) async {
-    final file = MultipartFile.fromBytes(imageData.toList());
+    final file = MultipartFile.fromBytes(imageData.toList(), filename: "image");
+    print('/violation/$id' +
+        ((isLicensePlateImg ?? false) ? '/license-image' : '/image'));
     await _dio.post(
       '/violation/$id' +
           ((isLicensePlateImg ?? false) ? '/license-image' : '/image'),
-      data: file,
+      data: FormData.fromMap({
+        "file": file,
+      }),
     );
   }
 }

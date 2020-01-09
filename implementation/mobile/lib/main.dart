@@ -29,7 +29,7 @@ void main() => runApp(
                 HttpApiConnectionService('http://192.168.99.100:8080'),
           ),
           Provider<CameraService>(
-            create: (_) => PhoneCameraService(),
+            create: (_) => MockCameraService("mocks/mock-image.jpg"),
           ),
           ChangeNotifierProxyProvider<ApiConnectionService, AuthService>(
             create: (_) => HttpAuthService(),
