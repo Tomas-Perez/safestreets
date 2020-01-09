@@ -30,7 +30,7 @@ class HttpReportSubmissionService implements ReportSubmissionService {
       final licensePlateImage = form.images[form.licensePlateImgIndex];
       final nonLicensePlateImgs =
       form.images.where((i) => i != licensePlateImage);
-      final time = licensePlateImage.time.millisecondsSinceEpoch;
+      final time = licensePlateImage.time.toIso8601String();
       final location = [
         licensePlateImage.location.latitude,
         licensePlateImage.location.longitude

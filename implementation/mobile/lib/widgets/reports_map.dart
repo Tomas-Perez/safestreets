@@ -12,7 +12,7 @@ class ReportsMap extends StatefulWidget {
   final LatLng initialCenter;
   final double initialZoom;
   final List<ReportIndicator> indicators;
-  final LatLng currentPosition;
+  final LatLng currentLocation;
   final void Function(MapPosition) onPositionChange;
 
   ReportsMap({
@@ -21,7 +21,7 @@ class ReportsMap extends StatefulWidget {
     @required this.initialCenter,
     @required this.initialZoom,
     @required this.indicators,
-    @required this.currentPosition,
+    @required this.currentLocation,
     @required this.onPositionChange,
   }) : super(key: key);
 
@@ -62,7 +62,7 @@ class _ReportsMapState extends State<ReportsMap> {
     return Marker(
       width: size,
       height: size,
-      point: widget.currentPosition,
+      point: widget.currentLocation,
       builder: (_) => Container(
         width: size,
         height: size,
@@ -88,7 +88,7 @@ class _ReportsMapState extends State<ReportsMap> {
     return Marker(
       width: 30,
       height: 27,
-      point: reportMarkerInfo.position,
+      point: reportMarkerInfo.location,
       anchorPos: AnchorPos.align(AnchorAlign.top),
       builder: (ctx) => Container(
         child: _ReportMarker(

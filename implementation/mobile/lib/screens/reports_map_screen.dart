@@ -79,7 +79,7 @@ class _ReportsMapScreenState extends State<ReportsMapScreen> {
                 ReportsMap(
                   mapController: _mapController,
                   initialCenter: _center,
-                  currentPosition:
+                  currentLocation:
                       Provider.of<LocationService>(context).currentLocation,
                   initialZoom: 13.0,
                   indicators: service.reports,

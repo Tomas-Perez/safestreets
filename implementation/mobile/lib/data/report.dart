@@ -26,11 +26,11 @@ class ReportForm {
 class ReportIndicator {
   final ViolationType violationType;
   final DateTime time;
-  final LatLng position;
+  final LatLng location;
 
   ReportIndicator({
     @required this.violationType,
     @required this.time,
-    @required this.position,
+    @required this.location,
   });
 }
