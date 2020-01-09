@@ -22,20 +22,24 @@ import 'package:mobile/theme.dart';
 import 'package:mobile/util/image_helpers.dart';
 import 'package:provider/provider.dart';
 
-import 'data/mocks.dart';
-
 void main() => runApp(
       MultiProvider(
         child: MyApp(),
         providers: [
           ChangeNotifierProvider<ApiConnectionService>(
-            create: (_) => MockApiConnectionService('http://192.168.99.100:8080'),
+            create: (_) =>
+                HttpApiConnectionService('http://192.168.99.100:8080'),
           ),
           Provider<CameraService>(
             create: (_) => PhoneCameraService(),
           ),
-          ChangeNotifierProvider<AuthService>(
+          ChangeNotifierProxyProvider<ApiConnectionService, AuthService>(
             create: (_) => HttpAuthService(),
+            update: (_, conService, authService) {
+              final httpService = authService as HttpAuthService;
+              httpService.baseUrl = conService.url;
+              return httpService;
+            },
           ),
           ChangeNotifierProxyProvider<AuthService, LocationService>(
             create: (_) => GeolocatorLocationService(10),
@@ -48,12 +52,15 @@ void main() => runApp(
                 return geolocatorService..stop();
             },
           ),
-          ChangeNotifierProxyProvider<AuthService, UserService>(
-            create: (_) => MockUserService(mockProfileByToken, null),
-            update: (_, authService, __) => MockUserService(
-              mockProfileByToken,
-              authService.token,
-            ),
+          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService,
+              UserService>(
+            create: (_) => HttpUserService(),
+            update: (_, authService, conService, userService) {
+              final httpService = userService as HttpUserService;
+              httpService.baseUrl = conService.url;
+              httpService.token = authService.token;
+              return httpService;
+            },
           ),
           ProxyProvider<AuthService, ReportSubmissionService>(
             create: (_) => MockReportSubmissionService(),
@@ -93,7 +100,8 @@ class MyApp extends StatelessWidget {
         MAP: (_) => ReportsMapScreen(key: Key('$MAP screen')),
         REPORT: (_) => ReportViolationScreen(key: Key('$REPORT screen')),
         PROFILE: (_) => ProfileScreen(key: Key('$PROFILE screen')),
-        EDIT_PROFILE: (_) => EditProfileScreen(key: Key('$EDIT_PROFILE screen')),
+        EDIT_PROFILE: (_) =>
+            EditProfileScreen(key: Key('$EDIT_PROFILE screen')),
         SIGN_IN: (_) => SignInScreen(key: Key('$SIGN_IN screen')),
         SIGN_UP: (_) => SignUpScreen(key: Key('$SIGN_UP screen')),
       },

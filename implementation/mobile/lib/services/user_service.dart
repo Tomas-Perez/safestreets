@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 
@@ -36,5 +37,68 @@ class MockUserService with ChangeNotifier implements UserService {
       email: edit.email,
     );
     _profileByToken[_token] = _profile;
+  }
+}
+
+class HttpUserService with ChangeNotifier implements UserService {
+  final _dio = Dio();
+  Profile _profile;
+  bool _fetching = false;
+
+  Future<void> _fetchCurrentProfile() async {
+    _fetching = true;
+    notifyListeners();
+    try {
+      final json = (await _dio.get('/user/me')).data;
+      _profile = Profile(
+        name: json['name'],
+        surname: json['surname'],
+        username: json['username'],
+        email: json['email'],
+      );
+    } catch (exc) {
+      print(exc);
+    } finally {
+      _fetching = false;
+      notifyListeners();
+    }
+  }
+
+  @override
+  AsyncSnapshot<Profile> get currentProfile => AsyncSnapshot.withData(
+        _fetching ? ConnectionState.waiting : ConnectionState.done,
+        _profile,
+      );
+
+  @override
+  Future<void> editProfile(EditProfile edit) async {
+    try {
+      await _dio.put('/user/me', data: {
+        'name': edit.name,
+        'surname': edit.surname,
+        'username': edit.username,
+        'email': edit.email,
+      });
+      _profile = Profile(
+        name: edit.name,
+        surname: edit.surname,
+        username: edit.username,
+        email: edit.email,
+      );
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  set baseUrl(String newUrl) {
+    _dio.options.baseUrl = newUrl;
+  }
+
+  set token(String token) {
+    _dio.options.headers = {
+      'Authorization': 'Bearer $token',
+    };
+    _fetchCurrentProfile();
   }
 }

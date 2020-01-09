@@ -64,7 +64,7 @@ class MockAuthService with ChangeNotifier implements AuthService {
 }
 
 class HttpAuthService with ChangeNotifier implements AuthService {
-  final _dio = Dio(BaseOptions(baseUrl: 'http://192.168.99.100:8080'));
+  final _dio = Dio();
   final storage = ss.FlutterSecureStorage();
   String __token;
 
@@ -122,4 +122,8 @@ class HttpAuthService with ChangeNotifier implements AuthService {
 
   @override
   String get token => _token;
+
+  set baseUrl(String baseUrl) {
+    _dio.options.baseUrl = baseUrl;
+  }
 }

@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as ss;
 
 abstract class ApiConnectionService with ChangeNotifier {
   String get url;
@@ -32,8 +34,8 @@ class MockApiConnectionService
 
   @override
   Future<void> connect(String newUrl) async {
-    await Future.delayed(Duration(seconds: 2));
     _url = newUrl;
+    await Future.delayed(Duration(seconds: 2));
     _connected = !__connected;
   }
 
@@ -42,4 +44,48 @@ class MockApiConnectionService
 
   @override
   bool get connected => _connected;
+}
+
+class HttpApiConnectionService with ChangeNotifier implements ApiConnectionService {
+  final _dio = Dio();
+  final storage = ss.FlutterSecureStorage();
+  String __url;
+  bool __connected = false;
+
+  HttpApiConnectionService(String url) {
+    connect(url);
+  }
+
+  @override
+  Future<void> connect(String newUrl) async {
+    _url = newUrl;
+    try {
+      await _dio.get("$newUrl/auth/ping");
+      await storage.write(key: 'baseUrl', value: newUrl);
+      _connected = true;
+    } catch (e) {
+      print(e);
+      _connected = false;
+    }
+  }
+
+  @override
+  bool get connected => _connected;
+
+  @override
+  String get url => _url;
+
+  String get _url => __url;
+
+  set _url(String value) {
+    __url = value;
+    notifyListeners();
+  }
+
+  bool get _connected => __connected;
+
+  set _connected(bool value) {
+    __connected = value;
+    notifyListeners();
+  }
 }
