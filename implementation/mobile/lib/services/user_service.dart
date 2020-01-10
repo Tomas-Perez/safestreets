@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/services/http_client.dart';
 
+/// Provides profile information for the current user, as well as profile edition
+/// and user sign up.
 abstract class UserService with ChangeNotifier {
   AsyncSnapshot<Profile> get currentProfile;
 

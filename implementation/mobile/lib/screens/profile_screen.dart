@@ -10,6 +10,7 @@ import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
+/// Screen showing profile information and redirects to profile edition or sign out.
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

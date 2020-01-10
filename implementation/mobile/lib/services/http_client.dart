@@ -6,6 +6,7 @@ class TimeoutException extends DioError {
   TimeoutException();
 }
 
+/// Obtain an HTTP client with the default options loaded
 Dio getNewDioClient([BaseOptions options]) {
   final resultOptions = options?.merge(
         connectTimeout: 5000,

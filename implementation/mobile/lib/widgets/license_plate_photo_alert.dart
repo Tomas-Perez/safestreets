@@ -3,6 +3,7 @@ import 'package:mobile/widgets/report_image.dart';
 
 import 'image_carousel.dart';
 
+/// Alert to select the photo showing the target license plate of the report.
 class LicensePlateAlert extends StatefulWidget {
   final List<ImageProvider> images;
 

@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'mock_providers.dart';
 
+/// Setup for review and report tests. Providing a already logged in state.
 void main() {
   enableFlutterDriverExtension();
 

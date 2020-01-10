@@ -13,6 +13,7 @@ import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
+/// Screen showing a sign up form
 class SignUpScreen extends StatefulWidget {
   @override
   State createState() => _SignUpScreenState();

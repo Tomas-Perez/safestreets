@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
-import 'package:mobile/screens/report_violation_screen.dart';
 import 'package:mobile/services/location_service.dart';
 import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:provider/provider.dart';
 
+/// Home screen of the application redirecting to main functionality
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key key}) : super(key: key);
 
@@ -45,7 +45,8 @@ class HomeScreen extends StatelessWidget {
             onPressed: () async {
               final display = await Navigator.pushNamed(context, REPORT);
               if (display != null)
-                showSimpleSnackbar(Key('successful report submission'), context, "Report submitted!");
+                showSimpleSnackbar(Key('successful report submission'), context,
+                    "Report submitted!");
             },
           ),
         ),

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/util/camera.dart';
 import 'package:mobile/util/image_helpers.dart';
 
+/// Provides a way to open the device camera and returns the image the user captures.
 abstract class CameraService {
   Future<Uint8List> openViewfinder(BuildContext context);
 }

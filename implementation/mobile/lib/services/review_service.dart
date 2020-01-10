@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/data/report_review.dart';
 import 'package:mobile/services/http_client.dart';
 
+/// Stores the pending reviews for the current user and allows review submission.
 abstract class ReviewService with ChangeNotifier {
   bool get reviewPending;
 

@@ -1,3 +1,4 @@
+/// Utility functions for DateTime.
 DateTime startOfDay(DateTime dateTime) {
   return DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

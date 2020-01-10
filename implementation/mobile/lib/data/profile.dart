@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+/// User profile information.
+
 class Profile {
   String name, surname, username, email;
 
@@ -10,6 +12,8 @@ class Profile {
     @required this.email,
   });
 }
+
+/// User edition form.
 
 class EditProfile {
   String name, surname, username, email;
@@ -30,6 +34,8 @@ class EditProfile {
     email = profile.email;
   }
 }
+
+/// User sign up form.
 
 class CreateProfile {
   final String name, surname, username, email, password;

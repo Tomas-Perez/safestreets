@@ -9,6 +9,9 @@ import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/http_client.dart';
 
+/// Provides the reports to show on the map according to the provided filters.
+/// It must be initialized with some filter and bounds, but after that
+/// the filter and bounds can be changed independently.
 abstract class ReportMapService with ChangeNotifier {
   bool get fetching;
 

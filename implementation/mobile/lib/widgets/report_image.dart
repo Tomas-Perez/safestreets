@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
+/// Image with a fixed aspect ratio, with the possibility to enable zoom on tap.
 class ReportImage extends StatelessWidget {
   final ImageProvider imageProvider;
   final bool enableZoom;

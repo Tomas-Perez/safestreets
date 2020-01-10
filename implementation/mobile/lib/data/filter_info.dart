@@ -1,6 +1,7 @@
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 
+/// Information to filter reports to show on the map.
 class FilterInfo {
   DateTime from, to;
   ViolationType violationType;

@@ -4,6 +4,7 @@ import 'package:mobile/services/api_connection_service.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
+/// Alert used to configure the base url to connect to the server.
 class ApiConnectionConfigAlert extends StatefulWidget {
   ApiConnectionConfigAlert({Key key}) : super(key: key);
 

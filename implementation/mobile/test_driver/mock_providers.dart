@@ -9,6 +9,7 @@ import 'package:mobile/services/review_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:provider/provider.dart';
 
+/// Allow for providing only the services needed for the current test.
 List<SingleChildCloneableWidget> mockRemaining({
   SingleChildCloneableWidget authService,
   SingleChildCloneableWidget apiConnectionService,

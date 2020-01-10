@@ -16,6 +16,9 @@ import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
+/// Screen providing the user with a map, initially centered on their current location.
+/// Allows for filtering the reports to show on the map by date range and type of violation.
+/// It is also possible to move the map to a specific location by entering coordinates manually.
 class ReportsMapScreen extends StatefulWidget {
   const ReportsMapScreen({Key key}) : super(key: key);
 

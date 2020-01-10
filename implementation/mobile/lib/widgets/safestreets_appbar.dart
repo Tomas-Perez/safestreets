@@ -10,6 +10,8 @@ import 'package:mobile/widgets/photo_review_alert.dart';
 import 'package:mobile/widgets/review_notification_icon.dart';
 import 'package:provider/provider.dart';
 
+/// Styled appbar, changing depending on the authentication state.
+/// Also provides a hidden button beneath the SafeStreets title to configure server connection.
 class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SafeStreetsAppBar({
     Key key,

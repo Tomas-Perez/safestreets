@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+/// Review request, containing the byte data of the image to review and review id.
 class ReviewRequest {
   final String id;
   final Uint8List imageData;

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import 'mock_providers.dart';
 
+/// Setup for authentication flow and user service tests.
 void main() {
   enableFlutterDriverExtension();
 

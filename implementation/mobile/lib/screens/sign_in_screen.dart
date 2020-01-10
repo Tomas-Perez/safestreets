@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
-import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/util/email_validation.dart';
@@ -13,6 +12,7 @@ import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
+/// Sign in screen showing a form and a button to redirect to sing up form.
 class SignInScreen extends StatefulWidget {
   @override
   State createState() => _SignInScreenState();
@@ -70,7 +70,8 @@ class _SignInScreenState extends State<SignInScreen> {
       onPressed: () async {
         final display = await Navigator.pushNamed(context, SIGN_UP);
         if (display != null) {
-          showSimpleSnackbar(Key('successful sign-up'), context, 'Sign up successful');
+          showSimpleSnackbar(
+              Key('successful sign-up'), context, 'Sign up successful');
         }
       },
     );
@@ -86,10 +87,12 @@ class _SignInScreenState extends State<SignInScreen> {
     } on TimeoutException catch (_) {
       showNoConnectionSnackbar(context);
     } on InvalidCredentialsException {
-      showErrorSnackbar(Key('invalid credentials'), context, "Invalid credentials");
+      showErrorSnackbar(
+          Key('invalid credentials'), context, "Invalid credentials");
     } catch (e) {
       print(e);
-      showErrorSnackbar(Key('sign-in error'), context, "There was a problem performing the sign-in");
+      showErrorSnackbar(Key('sign-in error'), context,
+          "There was a problem performing the sign-in");
     } finally {
       setState(() {
         _submitting = false;

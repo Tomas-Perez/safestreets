@@ -20,6 +20,7 @@ import 'package:mobile/services/user_service.dart';
 import 'package:mobile/theme.dart';
 import 'package:provider/provider.dart';
 
+/// Run the app and inject the services.
 void main() => runApp(
       MultiProvider(
         child: MyApp(),
@@ -29,7 +30,7 @@ void main() => runApp(
                 HttpApiConnectionService('http://192.168.99.100:8080'),
           ),
           Provider<CameraService>(
-            create: (_) => MockCameraService("mocks/DX034PS.jpeg"),
+            create: (_) => PhoneCameraService(),
           ),
           ChangeNotifierProxyProvider<ApiConnectionService, AuthService>(
             create: (_) => HttpAuthService(),
@@ -93,11 +94,12 @@ void main() => runApp(
       ),
     );
 
+/// Root of the application configuring the route to each screen.
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'SafeStreets',
       theme: safeStreetsTheme,
       initialRoute: LOADING,
       routes: {

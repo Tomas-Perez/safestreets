@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as ss;
 import 'package:mobile/services/http_client.dart';
 
+/// Provides the application with the base url to connect to the server,
+/// as well as the current connection status.
 abstract class ApiConnectionService with ChangeNotifier {
   String get url;
 

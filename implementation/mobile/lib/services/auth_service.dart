@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as ss;
 import 'package:mobile/services/http_client.dart';
 
+/// Provides the app with the current authentication token for the user.
+/// Also allows control of the authentication flow, as well as silentLogin
+/// if the user has previously signed in on the current device.
 abstract class AuthService with ChangeNotifier {
   String get token;
 

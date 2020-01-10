@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 
+/// Provides the current device location as well as whether the user has allowed
+/// tracking.
 abstract class LocationService with ChangeNotifier {
   LatLng get currentLocation;
 

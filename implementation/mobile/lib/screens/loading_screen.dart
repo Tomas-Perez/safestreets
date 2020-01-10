@@ -4,6 +4,7 @@ import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
+/// Screen to act as a buffer while the UserService determines if the user was logged in into the app.
 class LoadingScreen extends StatefulWidget {
   LoadingScreen({Key key}) : super(key: key);
 

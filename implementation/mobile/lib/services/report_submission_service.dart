@@ -5,6 +5,7 @@ import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/http_client.dart';
 
+/// Allows the submission of violation reports to the server
 abstract class ReportSubmissionService {
   Future<void> submit(ReportForm form);
 }

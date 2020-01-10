@@ -1,3 +1,4 @@
+/// Report violation type and utility functions
 enum ViolationType { PARKING, POOR_CONDITION, RED_LIGHT, CRASH }
 
 String violationTypeToString(ViolationType type) {

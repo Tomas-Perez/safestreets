@@ -7,6 +7,8 @@ import 'package:mobile/util/snackbar.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
+/// Open a screen showing the viewfinder of the given camera
+/// Returns the path to the picture taken, stored in the temporary storage of the device.
 Future<String> takePicture(
     BuildContext context, CameraDescription camera) async {
   final result = await Navigator.push<_PictureResult>(

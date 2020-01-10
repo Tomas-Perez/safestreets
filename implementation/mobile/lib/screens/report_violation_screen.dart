@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:latlong/latlong.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
@@ -24,6 +22,7 @@ import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
+/// Screen showing the report violation form
 class ReportViolationScreen extends StatefulWidget {
   const ReportViolationScreen({Key key}) : super(key: key);
 
@@ -83,7 +82,8 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           final service = Provider.of<CameraService>(context);
           final imageData = await service.openViewfinder(context);
           if (imageData != null) {
-            final currentLocation = Provider.of<LocationService>(context).currentLocation;
+            final currentLocation =
+                Provider.of<LocationService>(context).currentLocation;
             final pictureInfo = PictureInfo(
               imageData: imageData,
               location: currentLocation,
@@ -206,7 +206,8 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
-      showErrorSnackbar(Key('submit report error'), context, 'There was a problem submitting the report');
+      showErrorSnackbar(Key('submit report error'), context,
+          'There was a problem submitting the report');
     } finally {
       if (mounted)
         setState(() {

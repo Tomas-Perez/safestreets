@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
+/// Shows a carousel of images.
 class ImageCarousel extends StatefulWidget {
   final IndexedWidgetBuilder itemBuilder;
   final int itemCount;

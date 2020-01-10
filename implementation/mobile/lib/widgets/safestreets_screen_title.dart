@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Styled title for each screen
 class SafeStreetsScreenTitle extends StatelessWidget {
   final String title;
 

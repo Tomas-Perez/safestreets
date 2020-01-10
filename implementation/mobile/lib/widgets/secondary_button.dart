@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Styled secondary button
 class SecondaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;

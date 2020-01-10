@@ -8,6 +8,7 @@ import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/util/date_helpers.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
+/// Wrapper on flutter_map to show styled reports indicators on a map with a popup on tap.
 class ReportsMap extends StatefulWidget {
   final MapController mapController;
   final LatLng initialCenter;

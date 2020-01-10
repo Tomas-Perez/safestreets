@@ -6,6 +6,7 @@ import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/report_image.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 
+/// Alert showing the image to review as well as the form to submit a review
 class PhotoReviewAlert extends StatefulWidget {
   final ImageProvider imageProvider;
 

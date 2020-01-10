@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-const _SNACKBAR_DURATION = const Duration(seconds: 1);
+/// Common functions to maintain snackbar style and duration consistent in the application.
+
+const _SNACKBAR_DURATION = const Duration(seconds: 2);
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showErrorSnackbar(
     Key key,

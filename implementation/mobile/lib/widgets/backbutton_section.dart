@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Shows a back button accordingly if a pop of the screen is possible.
 class BackButtonSection extends StatelessWidget {
   const BackButtonSection({
     Key key,

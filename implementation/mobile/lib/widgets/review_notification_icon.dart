@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Icon for reviews, indicating if there are pending review requests.
 class ReviewNotificationIcon extends StatelessWidget {
   final bool pending;
 

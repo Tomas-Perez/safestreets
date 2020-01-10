@@ -4,6 +4,7 @@ import 'package:mobile/data/confidence_level.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/violation_type.dart';
 
+/// Report submission form.
 class ReportForm {
   final ViolationType violationType;
   final String licensePlate, description;
@@ -24,6 +25,7 @@ class ReportForm {
   }
 }
 
+/// Report information to show on the map.
 class ReportIndicator {
   final ConfidenceLevel confidenceLevel;
   final ViolationType violationType;

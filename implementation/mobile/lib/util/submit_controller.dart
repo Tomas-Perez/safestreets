@@ -1,5 +1,4 @@
-typedef SubmitCallback<T> = T Function();
-
+/// Used to control the submission of the Form widgets.
 abstract class SubmitController<T> {
   T submit();
 
@@ -7,6 +6,8 @@ abstract class SubmitController<T> {
 
   void dispose();
 }
+
+typedef SubmitCallback<T> = T Function();
 
 class SingleListenerController<T> implements SubmitController<T> {
   SubmitCallback<T> _onSubmit;

@@ -1,3 +1,5 @@
+/// Report confidence level and utility functions.
+
 enum ConfidenceLevel { HIGH_CONFIDENCE, LOW_CONFIDENCE }
 
 String confidenceLevelToString(ConfidenceLevel level) {
