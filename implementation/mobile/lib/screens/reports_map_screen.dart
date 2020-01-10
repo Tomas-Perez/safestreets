@@ -222,7 +222,6 @@ class _FilterFormState extends State<_FilterForm> {
             .toList(),
       ],
       onChanged: (violationType) {
-        print("Changed violation type to $violationType");
         setState(() {
           _filterInfo.violationType = violationType;
         });

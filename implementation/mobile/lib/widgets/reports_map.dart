@@ -64,6 +64,7 @@ class _ReportsMapState extends State<ReportsMap> {
       height: size,
       point: widget.currentLocation,
       builder: (_) => Container(
+        key: Key('report indicator'),
         width: size,
         height: size,
         decoration: BoxDecoration(

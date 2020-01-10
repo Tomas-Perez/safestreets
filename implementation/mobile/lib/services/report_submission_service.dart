@@ -62,8 +62,6 @@ class HttpReportSubmissionService implements ReportSubmissionService {
     bool isLicensePlateImg,
   }) async {
     final file = MultipartFile.fromBytes(imageData.toList(), filename: "image");
-    print('/violation/$id' +
-        ((isLicensePlateImg ?? false) ? '/license-image' : '/image'));
     await _dio.post(
       '/violation/$id' +
           ((isLicensePlateImg ?? false) ? '/license-image' : '/image'),

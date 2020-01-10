@@ -48,10 +48,12 @@ class _LicensePlateAlertState extends State<LicensePlateAlert> {
       ),
       actions: <Widget>[
         FlatButton(
+          key: Key('cancel'),
           child: Text("Cancel"),
           onPressed: () => Navigator.pop(context, null),
         ),
         FlatButton(
+          key: Key('ok'),
           child: Text("OK"),
           onPressed: () => Navigator.pop(context, _selectedIndex),
         ),

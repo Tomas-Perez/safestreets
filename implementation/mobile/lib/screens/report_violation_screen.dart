@@ -6,9 +6,11 @@ import 'package:latlong/latlong.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/screens/display_success_snackbar.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/http_client.dart';
+import 'package:mobile/services/location_service.dart';
 import 'package:mobile/services/report_submission_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/util/snackbar.dart';
@@ -74,17 +76,17 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       width: 100,
       height: 25,
       child: RaisedButton(
+        key: Key('take photo'),
         padding: const EdgeInsets.all(0),
         child: Text('Take a photo'),
         onPressed: () async {
           final service = Provider.of<CameraService>(context);
           final imageData = await service.openViewfinder(context);
           if (imageData != null) {
-            Position position = await Geolocator()
-                .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+            final currentLocation = Provider.of<LocationService>(context).currentLocation;
             final pictureInfo = PictureInfo(
               imageData: imageData,
-              location: LatLng(position.latitude, position.longitude),
+              location: currentLocation,
               time: DateTime.now(),
             );
             setState(() {
@@ -163,6 +165,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
   Widget _confirmButton(BuildContext context) {
     return Center(
       child: PrimaryButton(
+        key: Key('submit report'),
         submitting: _submitting,
         width: 130,
         child: Text(
@@ -179,6 +182,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
     final selectedIndex = await showDialog(
       context: context,
       builder: (ctx) => LicensePlateAlert(
+        key: Key('license plate photo alert'),
         images: _images.map((i) => MemoryImage(i.imageData)).toList(),
       ),
     );
@@ -325,6 +329,7 @@ class _ReportFormState extends State<_ReportForm> {
 
   Widget _violationTypeField() {
     return DropdownButtonFormField(
+      key: Key('$REPORT violation type field'),
       value: _reportInfo.violationType,
       decoration: InputDecoration(
         labelText: 'Violation type *',
@@ -343,7 +348,6 @@ class _ReportFormState extends State<_ReportForm> {
         return null;
       },
       onChanged: (violationType) {
-        print("Changed violation type to $violationType");
         setState(() => _reportInfo.violationType = violationType);
       },
     );
@@ -351,6 +355,7 @@ class _ReportFormState extends State<_ReportForm> {
 
   Widget _licensePlateField() {
     return TextFormField(
+      key: Key('$REPORT license plate field'),
       textInputAction: TextInputAction.next,
       focusNode: _licensePlateFocus,
       decoration: InputDecoration(
@@ -373,6 +378,7 @@ class _ReportFormState extends State<_ReportForm> {
 
   Widget _descriptionField() {
     return TextFormField(
+      key: Key('$REPORT description field'),
       maxLengthEnforced: true,
       maxLength: 150,
       minLines: 2,

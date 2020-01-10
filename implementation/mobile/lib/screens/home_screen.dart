@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: _buildCard(
-            key: Key('REPORT card'),
+            key: Key('$REPORT redirect'),
             title: 'Report a violation',
             asset: 'images/traffic-violation-card.jpg',
             onPressed: () async {
@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
         ),
         Expanded(
           child: _buildCard(
-            key: Key('MAP card'),
+            key: Key('$MAP redirect'),
             title: 'Reports map',
             asset: 'images/reports-map-card.jpg',
             onPressed: () => Navigator.pushNamed(context, MAP),
