@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
@@ -32,9 +33,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Column(
               children: <Widget>[
                 SafeStreetsScreenTitle('Edit profile'),
-                _EditProfileForm(
-                  controller: _controller,
-                  submitListener: _onSubmit,
+                Builder(
+                  builder: (ctx) => _EditProfileForm(
+                    controller: _controller,
+                    submitListener: (form) => _onSubmit(ctx, form),
+                  ),
                 ),
                 _submitButton(),
               ],
@@ -53,16 +56,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  void _onSubmit(EditProfile edit) async {
+  void _onSubmit(BuildContext context, EditProfile edit) async {
     final service = Provider.of<UserService>(context);
     setState(() {
       _submitting = true;
     });
-    await service.editProfile(edit);
-    setState(() {
-      _submitting = false;
-    });
-    Navigator.pop(context);
+    try {
+      await service.editProfile(edit);
+      Navigator.pop(context);
+    } catch (e) {
+      print(e);
+      showErrorSnackbar(context, 'There was a problem editing your profile');
+    } finally {
+      if (mounted)
+        setState(() {
+          _submitting = false;
+        });
+    }
   }
 }
 

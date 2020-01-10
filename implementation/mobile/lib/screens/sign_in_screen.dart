@@ -76,7 +76,8 @@ class _SignInScreenState extends State<SignInScreen> {
       await Navigator.pushReplacementNamed(context, HOME);
     } on InvalidCredentialsException {
       showErrorSnackbar(context, "Invalid credentials");
-    } catch (_) {
+    } catch (e) {
+      print(e);
       showErrorSnackbar(context, "There was a problem performing the sign-in");
     } finally {
       setState(() {

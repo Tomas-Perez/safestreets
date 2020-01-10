@@ -69,7 +69,8 @@ void main() => runApp(
               authService.token,
             ),
           ),
-          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService, ReportMapService>(
+          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService,
+              ReportMapService>(
             create: (_) => HttpReportMapService(),
             update: (_, authService, conService, reportService) {
               final httpService = reportService as HttpReportMapService;

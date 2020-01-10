@@ -109,11 +109,9 @@ class HttpAuthService with ChangeNotifier implements AuthService {
       if (token == null) throw SilentLoginFailedException();
       await _dio.get(
         '/user/me',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          }
-        ),
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
       );
       _token = token;
     } catch (_) {

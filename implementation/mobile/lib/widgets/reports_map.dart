@@ -35,13 +35,12 @@ class _ReportsMapState extends State<ReportsMap> {
     return FlutterMap(
       mapController: widget.mapController,
       options: MapOptions(
-        center: widget.initialCenter,
-        zoom: widget.initialZoom,
-        onPositionChanged: (mapPosition, _) {
-          if (widget.onPositionChange != null)
-            widget.onPositionChange(mapPosition);
-        }
-      ),
+          center: widget.initialCenter,
+          zoom: widget.initialZoom,
+          onPositionChanged: (mapPosition, _) {
+            if (widget.onPositionChange != null)
+              widget.onPositionChange(mapPosition);
+          }),
       layers: [
         TileLayerOptions(
           urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -50,7 +49,8 @@ class _ReportsMapState extends State<ReportsMap> {
         MarkerLayerOptions(markers: [
           _currentLocationMarker(),
         ]),
-        MarkerLayerOptions(markers: widget.indicators.map(_reportMarker).toList()),
+        MarkerLayerOptions(
+            markers: widget.indicators.map(_reportMarker).toList()),
       ],
     );
   }

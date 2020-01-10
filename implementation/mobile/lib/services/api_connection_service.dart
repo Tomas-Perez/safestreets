@@ -46,7 +46,9 @@ class MockApiConnectionService
   bool get connected => _connected;
 }
 
-class HttpApiConnectionService with ChangeNotifier implements ApiConnectionService {
+class HttpApiConnectionService
+    with ChangeNotifier
+    implements ApiConnectionService {
   final _dio = Dio();
   final storage = ss.FlutterSecureStorage();
   String __url;

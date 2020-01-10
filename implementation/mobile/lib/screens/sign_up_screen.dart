@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
@@ -34,9 +35,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               children: <Widget>[
                 SafeStreetsScreenTitle("Sign up"),
-                _SignUpForm(
-                  submitListener: _onSubmit,
-                  controller: _controller,
+                Builder(
+                  builder: (ctx) => _SignUpForm(
+                    submitListener: (form) => _onSubmit(ctx, form),
+                    controller: _controller,
+                  ),
                 ),
                 _submitButton(),
               ],
@@ -55,23 +58,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  _onSubmit(_SignUpFormInfo form) async {
+  _onSubmit(BuildContext context, _SignUpFormInfo form) async {
     final service = Provider.of<UserService>(context);
     setState(() {
       _submitting = true;
     });
-    await service.signUp(
-      CreateProfile(
-        name: form.name,
-        surname: form.surname,
-        username: form.username,
-        password: form.password,
-        email: form.email,
-      ),
-    );
-    setState(() {
-      _submitting = false;
-    });
+    try {
+      await service.signUp(
+        CreateProfile(
+          name: form.name,
+          surname: form.surname,
+          username: form.username,
+          password: form.password,
+          email: form.email,
+        ),
+      );
+    } catch (e) {
+      print(e);
+      showErrorSnackbar(context, 'There was a problem performing the sign up');
+    } finally {
+      setState(() {
+        _submitting = false;
+      });
+    }
   }
 }
 

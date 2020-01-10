@@ -27,6 +27,4 @@ class ReportReview {
   String toString() {
     return 'ReportReview{id: $id, clear: $clear, licensePlate: $licensePlate}';
   }
-
-
 }

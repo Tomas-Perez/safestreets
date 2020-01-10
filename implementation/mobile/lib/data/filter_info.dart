@@ -10,7 +10,8 @@ class FilterInfo {
   FilterInfo.empty();
 
   bool test(ReportIndicator report) {
-    if (violationType != null && report.violationType != violationType) return false;
+    if (violationType != null && report.violationType != violationType)
+      return false;
     if (report.time.isAfter(to)) return false;
     if (report.time.isBefore(from)) return false;
     return true;

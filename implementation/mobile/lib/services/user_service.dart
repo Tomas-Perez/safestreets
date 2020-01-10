@@ -6,6 +6,7 @@ abstract class UserService with ChangeNotifier {
   AsyncSnapshot<Profile> get currentProfile;
 
   Future<void> editProfile(EditProfile edit);
+
   Future<void> signUp(CreateProfile createProfile);
 }
 

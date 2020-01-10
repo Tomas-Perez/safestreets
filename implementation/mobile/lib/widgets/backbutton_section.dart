@@ -12,17 +12,17 @@ class BackButtonSection extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Navigator.canPop(context)
           ? FlatButton(
-        padding: EdgeInsets.all(0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Icon(Icons.arrow_back_ios, size: 14.0),
-            SizedBox(width: 5),
-            Text("Back"),
-          ],
-        ),
-        onPressed: () => Navigator.pop(context),
-      )
+              padding: EdgeInsets.all(0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(Icons.arrow_back_ios, size: 14.0),
+                  SizedBox(width: 5),
+                  Text("Back"),
+                ],
+              ),
+              onPressed: () => Navigator.pop(context),
+            )
           : Container(),
     );
   }

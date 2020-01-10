@@ -196,10 +196,13 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       );
       Navigator.pop(context, ReportSubmission.success());
     } catch (e) {
-      setState(() {
-        _submitting = false;
-      });
+      print(e);
       showErrorSnackbar(context, 'There was a problem submitting the report');
+    } finally {
+      if (mounted)
+        setState(() {
+          _submitting = false;
+        });
     }
   }
 

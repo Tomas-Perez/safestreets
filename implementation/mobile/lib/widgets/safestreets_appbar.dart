@@ -75,7 +75,8 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       await reviewService.submitReview(review);
       submittingSnackbar.close();
       showSimpleSnackbar(context, "Review submitted!");
-    } catch (_) {
+    } catch (e) {
+      print(e);
       submittingSnackbar.close();
       showErrorSnackbar(context, "There was a problem submitting the review");
     }

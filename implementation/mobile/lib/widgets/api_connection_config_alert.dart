@@ -1,11 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/services/api_connection_service.dart';
-import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/widgets/primary_button.dart';
-import 'package:mobile/widgets/report_image.dart';
-import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
 class ApiConnectionConfigAlert extends StatefulWidget {
@@ -76,8 +72,7 @@ class _ApiConnectionConfigAlertState extends State<ApiConnectionConfigAlert> {
   }
 
   Widget _connectionIcon(BuildContext context) {
-    if (_connecting)
-      return CircularProgressIndicator(strokeWidth: 2);
+    if (_connecting) return CircularProgressIndicator(strokeWidth: 2);
 
     final connected = Provider.of<ApiConnectionService>(context).connected;
     if (connected)

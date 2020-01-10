@@ -2,16 +2,18 @@ typedef SubmitCallback<T> = T Function();
 
 abstract class SubmitController<T> {
   T submit();
+
   void register(SubmitCallback<T> onSubmit);
+
   void dispose();
 }
 
-class SingleListenerController<T> implements SubmitController<T>{
+class SingleListenerController<T> implements SubmitController<T> {
   SubmitCallback<T> _onSubmit;
 
   void register(SubmitCallback<T> onSubmit) {
     assert(_onSubmit == null,
-    "Another callback is registered on this controller, deregister it first");
+        "Another callback is registered on this controller, deregister it first");
     _onSubmit = onSubmit;
   }
 

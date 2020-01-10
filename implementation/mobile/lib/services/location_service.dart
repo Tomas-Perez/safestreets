@@ -78,7 +78,7 @@ class GeolocatorLocationService with ChangeNotifier implements LocationService {
     );
 
     _subscription = geolocator.getPositionStream(locationOptions).listen(
-          (Position position) {
+      (Position position) {
         _currentLocation = LatLng(position.latitude, position.longitude);
         _permissionGranted = true;
       },
