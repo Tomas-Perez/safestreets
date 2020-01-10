@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/services/http_client.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/util/submit_controller.dart';
@@ -74,6 +75,8 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       await Provider.of<AuthService>(context).login(info.email, info.password);
       await Navigator.pushReplacementNamed(context, HOME);
+    } on TimeoutException catch (_) {
+      showNoConnectionSnackbar(context);
     } on InvalidCredentialsException {
       showErrorSnackbar(context, "Invalid credentials");
     } catch (e) {

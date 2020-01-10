@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/data/report_review.dart';
+import 'package:mobile/services/http_client.dart';
 
 abstract class ReviewService with ChangeNotifier {
   bool get reviewPending;
@@ -52,7 +53,7 @@ class MockReviewService with ChangeNotifier implements ReviewService {
 }
 
 class HttpReviewService with ChangeNotifier implements ReviewService {
-  final _dio = Dio();
+  final _dio = getNewDioClient();
   final List<ReviewRequest> _requests = [];
 
   @override

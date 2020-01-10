@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
+import 'package:mobile/services/http_client.dart';
 
 abstract class UserService with ChangeNotifier {
   AsyncSnapshot<Profile> get currentProfile;
@@ -48,7 +49,7 @@ class MockUserService with ChangeNotifier implements UserService {
 }
 
 class HttpUserService with ChangeNotifier implements UserService {
-  final _dio = Dio();
+  final _dio = getNewDioClient();
   Profile _profile;
   bool _fetching = false;
 

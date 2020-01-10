@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
+import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/util/snackbar.dart';
@@ -73,6 +74,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           email: form.email,
         ),
       );
+    } on TimeoutException {
+      showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
       showErrorSnackbar(context, 'There was a problem performing the sign up');

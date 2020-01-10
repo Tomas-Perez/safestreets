@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as ss;
+import 'package:mobile/services/http_client.dart';
 
 abstract class ApiConnectionService with ChangeNotifier {
   String get url;
@@ -49,7 +49,7 @@ class MockApiConnectionService
 class HttpApiConnectionService
     with ChangeNotifier
     implements ApiConnectionService {
-  final _dio = Dio();
+  final _dio = getNewDioClient();
   final storage = ss.FlutterSecureStorage();
   String __url;
   bool __connected = false;

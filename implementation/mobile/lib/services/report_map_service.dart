@@ -7,6 +7,7 @@ import 'package:latlong/latlong.dart';
 import 'package:mobile/data/filter_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
+import 'package:mobile/services/http_client.dart';
 
 abstract class ReportMapService with ChangeNotifier {
   bool get fetching;
@@ -142,7 +143,7 @@ class MockReportMapService with ChangeNotifier implements ReportMapService {
 }
 
 class HttpReportMapService with ChangeNotifier implements ReportMapService {
-  final _dio = Dio();
+  final _dio = getNewDioClient();
   bool __ready = false;
   bool __fetching = false;
   List<ReportIndicator> __reports = [];

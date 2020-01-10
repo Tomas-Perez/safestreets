@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
+import 'package:mobile/services/http_client.dart';
 
 abstract class ReportSubmissionService {
   Future<void> submit(ReportForm form);
@@ -19,7 +20,7 @@ class HttpReportSubmissionService implements ReportSubmissionService {
   final Dio _dio;
 
   HttpReportSubmissionService(String baseUrl, String token)
-      : _dio = Dio(
+      : _dio = getNewDioClient(
           BaseOptions(baseUrl: baseUrl, headers: {
             'Authorization': 'Bearer $token',
           }),

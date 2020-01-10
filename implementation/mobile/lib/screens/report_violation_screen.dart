@@ -7,6 +7,7 @@ import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/services/camera_service.dart';
+import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/report_submission_service.dart';
 import 'package:mobile/util/license_plate.dart';
 import 'package:mobile/util/snackbar.dart';
@@ -78,7 +79,8 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           final service = Provider.of<CameraService>(context);
           final imageData = await service.openViewfinder(context);
           if (imageData != null) {
-            Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+            Position position = await Geolocator()
+                .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
             final pictureInfo = PictureInfo(
               imageData: imageData,
               location: LatLng(position.latitude, position.longitude),
@@ -195,6 +197,8 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
         ),
       );
       Navigator.pop(context, ReportSubmission.success());
+    } on TimeoutException {
+      showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
       showErrorSnackbar(context, 'There was a problem submitting the report');

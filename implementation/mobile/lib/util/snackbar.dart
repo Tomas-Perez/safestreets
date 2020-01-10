@@ -24,3 +24,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSimpleSnackbar(
         duration: _SNACKBAR_DURATION,
       ),
     );
+
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
+    showNoConnectionSnackbar(BuildContext context) =>
+        showErrorSnackbar(context, 'Connection to server lost');

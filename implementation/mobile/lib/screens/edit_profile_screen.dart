@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
+import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/util/snackbar.dart';
@@ -14,7 +15,7 @@ class EditProfileScreen extends StatefulWidget {
   @override
   State createState() => _EditProfileScreenState();
 
-  EditProfileScreen({Key key}): super(key: key);
+  EditProfileScreen({Key key}) : super(key: key);
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
@@ -64,6 +65,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       await service.editProfile(edit);
       Navigator.pop(context);
+    } on TimeoutException {
+      showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
       showErrorSnackbar(context, 'There was a problem editing your profile');

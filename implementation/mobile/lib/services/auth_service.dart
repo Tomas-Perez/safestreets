@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as ss;
+import 'package:mobile/services/http_client.dart';
 
 abstract class AuthService with ChangeNotifier {
   String get token;
@@ -64,7 +65,7 @@ class MockAuthService with ChangeNotifier implements AuthService {
 }
 
 class HttpAuthService with ChangeNotifier implements AuthService {
-  final _dio = Dio();
+  final _dio = getNewDioClient();
   final storage = ss.FlutterSecureStorage();
   String __token;
 
@@ -92,7 +93,8 @@ class HttpAuthService with ChangeNotifier implements AuthService {
       if (exc.response != null &&
           exc.response.statusCode == HttpStatus.unauthorized) {
         throw const InvalidCredentialsException();
-      }
+      } else
+        throw exc;
     }
   }
 
