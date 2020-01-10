@@ -76,6 +76,7 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _signOutButton(BuildContext context) {
     return SecondaryButton(
+      key: Key('sign out'),
       child: Text("Sign out"),
       onPressed: () async {
         Provider.of<AuthService>(context).logout();

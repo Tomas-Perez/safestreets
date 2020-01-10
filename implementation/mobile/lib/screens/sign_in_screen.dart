@@ -55,6 +55,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _submitButton() {
     return PrimaryButton(
+      key: Key('$SIGN_IN submit'),
       submitting: _submitting,
       child: Text("Sign in"),
       onPressed: _controller.submit,
@@ -63,6 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _signUpButton(BuildContext context) {
     return SecondaryButton(
+      key: Key('$SIGN_IN redirect to $SIGN_UP'),
       child: Text("Sign up"),
       onPressed: () => Navigator.pushNamed(context, SIGN_UP),
     );
@@ -137,6 +139,7 @@ class _SignInFormState extends State<_SignInForm> {
 
   Widget _emailField() {
     return TextFormField(
+      key: Key('$SIGN_IN email field'),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
       focusNode: _emailFocus,
@@ -159,6 +162,7 @@ class _SignInFormState extends State<_SignInForm> {
 
   Widget _passwordField() {
     return TextFormField(
+      key: Key('$SIGN_IN password field'),
       textInputAction: TextInputAction.done,
       obscureText: true,
       focusNode: _passwordFocus,

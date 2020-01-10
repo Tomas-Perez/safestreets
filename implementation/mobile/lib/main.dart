@@ -88,7 +88,7 @@ void main() => runApp(
               httpService.token = authService.token;
               return httpService;
             },
-          )
+          ),
         ],
       ),
     );

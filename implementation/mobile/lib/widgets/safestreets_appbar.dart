@@ -23,6 +23,7 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: loggedIn
           ? IconButton(
+              key: Key('open reviews'),
               icon:
                   ReviewNotificationIcon(pending: reviewService.reviewPending),
               onPressed: () {
@@ -40,6 +41,7 @@ class SafeStreetsAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: <Widget>[
         if (!currentRouteName(context).contains(PROFILE) && loggedIn)
           IconButton(
+            key: Key('$PROFILE redirect'),
             icon: Icon(Icons.person),
             onPressed: () => Navigator.pushNamed(context, PROFILE),
           )

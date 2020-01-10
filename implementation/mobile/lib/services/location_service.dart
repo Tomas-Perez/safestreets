@@ -18,7 +18,7 @@ class MockLocationService with ChangeNotifier implements LocationService {
   LatLng _location;
 
   MockLocationService(this._location, {bool animate}) {
-    if (animate != null && animate) {
+    if (animate ?? false) {
       Timer.periodic(Duration(milliseconds: TIMER_DURATION), (t) {
         _location = LatLng(
           _location.latitude,

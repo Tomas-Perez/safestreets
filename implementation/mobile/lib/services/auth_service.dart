@@ -27,6 +27,39 @@ class SilentLoginFailedException implements Exception {
   const SilentLoginFailedException();
 }
 
+class DefaultTokenAuthService with ChangeNotifier implements AuthService {
+  static final _defaultToken =
+      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMEBtYWlsLmNvbSIsImV4cCI6MTU3ODc2MjIzMiwiYXV0aCI6IlVTRVIifQ."
+      "yWbpW2G3Lggp-1ppACzvuBQqisLRkdLUS0SXvQZZWIvFHjyoVm2oynP_237iLCJohmIVllcwGpP8uqaZD6X_GA";
+
+  String _currentToken;
+
+  @override
+  bool get authenticated => _currentToken == null;
+
+  @override
+  Future<void> login(String email, String password) async {
+    silentLogin();
+  }
+
+  @override
+  Future<void> logout() async {
+    _currentToken = null;
+    notifyListeners();
+  }
+
+  @override
+  Future<void> silentLogin() async {
+    _currentToken = _defaultToken;
+    notifyListeners();
+  }
+
+  @override
+  String get token =>
+      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMEBtYWlsLmNvbSIsImV4cCI6MTU3ODc2MjIzMiwiYXV0aCI6IlVTRVIifQ."
+      "yWbpW2G3Lggp-1ppACzvuBQqisLRkdLUS0SXvQZZWIvFHjyoVm2oynP_237iLCJohmIVllcwGpP8uqaZD6X_GA";
+}
+
 class MockAuthService with ChangeNotifier implements AuthService {
   final Map<String, String> _registeredUsers;
   String __token;
