@@ -12,6 +12,9 @@ import se2.SafeStreets.back.model.form.SignUpForm
 import se2.SafeStreets.back.service.UserService
 import javax.validation.Valid
 
+/**
+ * Controller that handles user information.
+ */
 @RestController
 @RequestMapping("/user")
 class UserController(private val userService: UserService) {

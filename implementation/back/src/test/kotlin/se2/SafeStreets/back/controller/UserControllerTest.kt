@@ -18,6 +18,9 @@ import se2.SafeStreets.back.model.UserType
 import se2.SafeStreets.back.model.form.SignUpForm
 import se2.SafeStreets.back.repository.UserRepository
 
+/**
+ * Tests for the UserController.
+ */
 class UserControllerTest(
         @Autowired val userRepository: UserRepository
 ) : AbstractTest() {

@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController
 import se2.SafeStreets.back.service.ApiKeyService
 import se2.SafeStreets.back.service.UserService
 
+/**
+ * Controller that handles the generation and queries of api keys.
+ */
 @RestController
 @RequestMapping("/api-key")
 class ApiKeyController(private val userService: UserService, private val apiKeyService: ApiKeyService) {

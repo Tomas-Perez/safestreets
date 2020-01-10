@@ -9,6 +9,9 @@ import se2.SafeStreets.back.repository.ReviewRepository
 import se2.SafeStreets.back.repository.UserRepository
 import se2.SafeStreets.back.repository.ViolationRepository
 
+/**
+ * Service for review related actions.
+ */
 @Service
 class ReviewRecruiter(
         val userRepository: UserRepository,

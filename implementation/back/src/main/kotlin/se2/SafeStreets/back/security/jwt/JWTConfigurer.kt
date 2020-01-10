@@ -6,6 +6,9 @@ import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.stereotype.Component
 
+/**
+ * Jason Web Token filter configuration
+ */
 @Component
 class JWTConfigurer(val tokenProvider:TokenProvider): SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
 

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service
 import se2.SafeStreets.back.model.ApiKeyUser
 import se2.SafeStreets.back.repository.ApiKeyRepository
 
+/**
+ * Service for ApiKey related actions.
+ */
 @Service
 class ApiKeyService(private val apiKeyRepository: ApiKeyRepository) {
 

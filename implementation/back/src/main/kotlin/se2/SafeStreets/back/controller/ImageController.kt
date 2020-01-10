@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController
 import se2.SafeStreets.back.service.ViolationService
 import java.io.File
 
+/**
+ * Controller that handles querying of images.
+ */
 @RestController
 @RequestMapping("/image")
 class ImageController(val violationService: ViolationService) {

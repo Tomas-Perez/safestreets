@@ -16,6 +16,9 @@ import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.repository.ViolationRepository
 import java.io.File
 
+/**
+ * Service for violation service related actions.
+ */
 @Service
 class ViolationService(
         val userService: UserService,

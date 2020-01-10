@@ -21,6 +21,9 @@ import se2.SafeStreets.back.repository.UserRepository
 import se2.SafeStreets.back.repository.ViolationRepository
 import java.time.LocalDateTime
 
+/**
+ * Tests for the ReviewController.
+ */
 internal class ReviewControllerTest(
         @Autowired val userRepository: UserRepository,
         @Autowired val violationRepository: ViolationRepository,

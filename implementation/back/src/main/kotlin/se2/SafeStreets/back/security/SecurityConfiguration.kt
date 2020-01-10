@@ -22,13 +22,16 @@ import se2.SafeStreets.back.service.AuthService
 import se2.SafeStreets.back.service.UserService
 
 /**
- * @author Manuel Pedrozo
+ * Spring security configuration.
  */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class SecurityConfiguration {
 
+    /**
+     * Jason Web Token chain configuration.
+     */
     @Configuration
     @Order(2)
     class JWTSecurityConfiguration(val jwtConfigurer: JWTConfigurer, val authService: AuthService): WebSecurityConfigurerAdapter() {
@@ -63,6 +66,9 @@ class SecurityConfiguration {
         }
     }
 
+    /**
+     * Jason Web Token and ApiKey chain configuration.
+     */
     @Configuration
     @Order(1)
     class ApiKeySecurityConfiguration(val authService: AuthService, val userService: UserService, val jwtConfigurer: JWTConfigurer, val apiKeyService: ApiKeyService): WebSecurityConfigurerAdapter() {

@@ -7,7 +7,9 @@ import org.bson.types.ObjectId
 import se2.SafeStreets.back.model.ObjectIDSerializer
 import se2.SafeStreets.back.model.UserType
 
-
+/**
+ * Data Transfer Object for users.
+ */
 class UserDto() {
 
     @JsonSerialize(using = ObjectIDSerializer::class)
@@ -17,7 +19,7 @@ class UserDto() {
     lateinit var username: String
     lateinit var name: String
     lateinit var surname: String
-    lateinit var type: UserType
+    var type: UserType? = null
 
     @JsonIgnore
     var pendingReviews: Int = 0

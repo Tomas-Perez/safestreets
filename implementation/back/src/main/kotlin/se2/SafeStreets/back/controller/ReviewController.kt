@@ -9,6 +9,9 @@ import se2.SafeStreets.back.service.ReviewRecruiter
 import se2.SafeStreets.back.service.UserService
 import javax.validation.Valid
 
+/**
+ * Controller that handles violation report reviews.
+ */
 @RestController
 @RequestMapping("/review")
 class ReviewController(

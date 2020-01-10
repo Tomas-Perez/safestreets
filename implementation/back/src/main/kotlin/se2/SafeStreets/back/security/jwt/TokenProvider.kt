@@ -14,6 +14,9 @@ import java.util.*
 import java.util.stream.Collectors
 import javax.annotation.PostConstruct
 
+/**
+ * Class for Jason Web Token generation and validation.
+ */
 @Component
 class TokenProvider(val authService: AuthService) {
     val log: Logger? = LoggerFactory.getLogger(TokenProvider::class.java)

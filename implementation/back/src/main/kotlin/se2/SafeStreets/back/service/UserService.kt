@@ -9,6 +9,9 @@ import se2.SafeStreets.back.model.Dto.UserDto
 import se2.SafeStreets.back.model.User
 import se2.SafeStreets.back.repository.UserRepository
 
+/**
+ * Service for user related actions.
+ */
 @Service
 class UserService(private val userRepository: UserRepository) {
 

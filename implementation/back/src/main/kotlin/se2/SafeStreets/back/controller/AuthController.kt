@@ -13,6 +13,9 @@ import se2.SafeStreets.back.security.jwt.JWTToken
 import se2.SafeStreets.back.security.jwt.TokenProvider
 import javax.validation.Valid
 
+/**
+ * Controller that handles user authentication.
+ */
 @RestController
 @RequestMapping("/auth")
 class AuthController(val tokenProvider: TokenProvider, val authenticationProvider: AuthenticationProvider) {

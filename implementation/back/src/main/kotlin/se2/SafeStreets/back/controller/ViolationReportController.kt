@@ -16,6 +16,9 @@ import se2.SafeStreets.back.model.form.ViolationReportForm
 import se2.SafeStreets.back.service.ViolationService
 import javax.validation.Valid
 
+/**
+ * Controller that handles violation reports.
+ */
 @RestController
 @RequestMapping("/violation")
 class ViolationReportController(val violationService: ViolationService) {

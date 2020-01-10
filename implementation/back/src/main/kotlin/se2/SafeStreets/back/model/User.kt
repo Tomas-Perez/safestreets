@@ -8,7 +8,9 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
-
+/**
+ * Class that represent an user.
+ */
 @Document(collection = "user")
 class User() {
 

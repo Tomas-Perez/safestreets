@@ -5,6 +5,9 @@ import se2.SafeStreets.back.model.ViolationReportStatus
 import se2.SafeStreets.back.model.ViolationType
 import java.time.LocalDateTime
 
+/**
+ * Data Transfer Object for violation reports.
+ */
 class ViolationReportDto() {
 
     lateinit var description: String

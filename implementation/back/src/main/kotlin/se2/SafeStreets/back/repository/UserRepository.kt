@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository
 import se2.SafeStreets.back.model.User
 import java.util.*
 
+/**
+ * Repository for User objects.
+ */
 @Repository
 interface UserRepository: MongoRepository<User, ObjectId> {
     fun findAllByActiveIsTrue(): List<User>

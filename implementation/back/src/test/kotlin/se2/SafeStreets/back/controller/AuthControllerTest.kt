@@ -16,6 +16,9 @@ import se2.SafeStreets.back.model.UserType
 import se2.SafeStreets.back.model.form.LoginForm
 import se2.SafeStreets.back.repository.UserRepository
 
+/**
+ * Tests for the AuthController.
+ */
 internal class AuthControllerTest(
         @Autowired val userRepository: UserRepository
 ) : AbstractTest() {

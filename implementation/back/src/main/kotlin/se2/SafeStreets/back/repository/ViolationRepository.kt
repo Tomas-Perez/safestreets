@@ -10,6 +10,9 @@ import se2.SafeStreets.back.model.ViolationReportStatus
 import se2.SafeStreets.back.model.ViolationType
 import java.time.LocalDateTime
 
+/**
+ * Repository for ViolationReport objects.
+ */
 interface ViolationRepository: MongoRepository<ViolationReport, ObjectId>, ViolationCustomRepository
 
 interface ViolationCustomRepository {
@@ -17,6 +20,9 @@ interface ViolationCustomRepository {
     fun findAllInBounds(bllon: Double, bllat: Double, urlon: Double, urlat: Double, from: LocalDateTime, to: LocalDateTime, status: List<ViolationReportStatus>, types: List<ViolationType>): List<ViolationReport>
 }
 
+/**
+ * Class that implements ViolationCustomRepository since MongoOperations injection is needed.
+ */
 class ViolationRepositoryImpl(private val mongoOperations: MongoOperations): ViolationCustomRepository {
     override fun findAllInRadius(lon: Double, lat: Double, radius: Double, from: LocalDateTime, to: LocalDateTime, status: List<ViolationReportStatus>, types: List<ViolationType>): List<ViolationReport> {
         val q = BasicQuery("{'location': {\$geoWithin: { \$centerSphere: [[$lon, $lat], ${radius/6378.1}]}}}")

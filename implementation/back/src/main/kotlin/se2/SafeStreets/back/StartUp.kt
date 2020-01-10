@@ -18,6 +18,9 @@ import se2.SafeStreets.back.service.ViolationService
 import java.io.File
 import java.time.LocalDateTime
 
+/**
+ * Class for initialization stuff, like setting up openAlpr and database initialization.
+ */
 @Component
 class StartUp(
         val violationRepository: ViolationRepository,

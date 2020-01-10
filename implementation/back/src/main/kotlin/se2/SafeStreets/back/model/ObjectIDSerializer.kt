@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import org.bson.types.ObjectId
 import java.io.IOException
 
+/**
+ * Object id serializer to write them as a string when mapping to json.
+ */
 class ObjectIDSerializer : JsonSerializer<ObjectId?>() {
     @Throws(IOException::class, JsonProcessingException::class)
     override fun serialize(objid: ObjectId?, jsongen: JsonGenerator, provider: SerializerProvider) {

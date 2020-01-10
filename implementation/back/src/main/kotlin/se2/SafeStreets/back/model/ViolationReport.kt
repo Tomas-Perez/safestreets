@@ -6,6 +6,9 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
+/**
+ * Class that represents a violation report.
+ */
 @Document(collection = "violation-report")
 class ViolationReport() {
 

@@ -16,6 +16,9 @@ import se2.SafeStreets.back.model.UserType
 import se2.SafeStreets.back.repository.ApiKeyRepository
 import se2.SafeStreets.back.repository.UserRepository
 
+/**
+ * Tests for the ApiKeyController.
+ */
 internal class ApiKeyControllerTest(
         @Autowired val userRepository: UserRepository,
         @Autowired val apiKeyRepository: ApiKeyRepository

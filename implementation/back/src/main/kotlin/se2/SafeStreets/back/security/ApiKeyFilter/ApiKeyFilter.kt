@@ -22,6 +22,9 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 
+/**
+ * Filter requests by api key.
+ */
 class ApiKeyFilter(private val userService: UserService, private val apiKeyService: ApiKeyService): GenericFilterBean() {
 
     @Throws(IOException::class, ServletException::class)
@@ -36,7 +39,6 @@ class ApiKeyFilter(private val userService: UserService, private val apiKeyServi
         filterChain.doFilter(servletRequest, servletResponse)
     }
 
-
     private fun getAuthentication(key: String): Authentication? {
         val apiKeyUser = apiKeyService.getApiKeyUserByKey(key)
         return apiKeyUser?.let {
@@ -50,6 +52,9 @@ class ApiKeyFilter(private val userService: UserService, private val apiKeyServi
 
 }
 
+/**
+ * Api key filter configuration.
+ */
 class ApiKeyConfigurer(private val userService: UserService, private val apiKeyService: ApiKeyService): SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
 
     companion object {

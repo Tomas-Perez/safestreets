@@ -13,6 +13,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.*
 import java.util.regex.Pattern
 
+/**
+ * Class that maps exceptions into ResponseEntities.
+ */
 @RestControllerAdvice
 class ExceptionMapper: ResponseEntityExceptionHandler() {
 

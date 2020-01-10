@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.bson.types.ObjectId
 import se2.SafeStreets.back.model.ObjectIDSerializer
 
+/**
+ * Data Transfer Object for reviews.
+ */
 class ReviewDto() {
 
     @JsonSerialize(using = ObjectIDSerializer::class)

@@ -10,6 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
 import se2.SafeStreets.back.repository.UserRepository
 
+/**
+ * Service for authentication related actions.
+ */
 @Service
 class AuthService(val userRepository: UserRepository): AuthenticationProvider {
 
