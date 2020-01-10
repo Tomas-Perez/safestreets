@@ -54,6 +54,7 @@ class SecurityConfiguration {
                     .authorizeRequests()
                     .antMatchers("/user/sign-up").permitAll()
                     .antMatchers("/auth/**").permitAll()
+                    .antMatchers("/debug/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                     .apply(jwtConfigurer)

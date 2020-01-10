@@ -80,11 +80,11 @@ class StartUp(
             userService.save(User("user0@mail.com", "user1", "pass1", "User1", "last1", UserType.USER))
             userService.save(User("municipality0@mail.com", "municipality1", "pass1", "Muni1", "MuniLast1", UserType.MUNICIPALITY))
 
-            userService.save(generateUser("Corben", "Contreras", UserType.MUNICIPALITY))
-            userService.save(generateUser("Everett", "Giles", UserType.MUNICIPALITY))
-            userService.save(generateUser("Ismael", "Hammond", UserType.MUNICIPALITY))
-            userService.save(generateUser("Fallon", "Jarvis"))
-            userService.save(generateUser("Clyde", "Peralta"))
+            generateUser("Corben", "Contreras", UserType.MUNICIPALITY)
+            generateUser("Everett", "Giles", UserType.MUNICIPALITY)
+            generateUser("Ismael", "Hammond", UserType.MUNICIPALITY)
+            generateUser("Fallon", "Jarvis")
+            generateUser("Clyde", "Peralta")
             val user1 = generateUser("Padraig", "Gallagher")
             val user2 = generateUser("Ewan", "Shepard")
             val user3 = generateUser("Fox", "Halliday")
@@ -101,11 +101,11 @@ class StartUp(
             val user14 = generateUser("Amira", "Ruiz")
 
             if (initImgPath != null) {
-                val violation0 = ViolationReport(user1.id!!, "EX215GC", "The car is parked in the middle of the street", LocalDateTime.now().minusDays(2).minusHours(8).minusMinutes(25), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
-                val violation1 = ViolationReport(user1.id!!, "DA102GE", "Crashing cars", LocalDateTime.now().minusDays(4).minusHours(3).minusMinutes(2), ViolationType.CRASH, Location(arrayOf(45.465978, 9.191353)))
-                val violation2 = ViolationReport(user2.id!!, "FH712CL", "Wont move", LocalDateTime.now().minusDays(4).minusHours(10).minusMinutes(21), ViolationType.PARKING, Location(arrayOf(45.384839, 8.698427)))
-                val violation3 = ViolationReport(user3.id!!, "DX034PS", "Old car", LocalDateTime.now().minusDays(5).minusHours(7).minusMinutes(13), ViolationType.POOR_CONDITION, Location(arrayOf(45.457854, 9.176277)))
-                val violation4 = ViolationReport(user4.id!!, "KX618KJ", "", LocalDateTime.now().minusDays(3).minusHours(6).minusMinutes(48), ViolationType.PARKING, Location(arrayOf(45.470074, 9.169583)))
+                val violation0 = ViolationReport(user1.id!!, "EX215GC", "The car is parked in the middle of the street", LocalDateTime.now().minusDays(2).minusHours(8).minusMinutes(25), ViolationType.PARKING, Location(arrayOf(9.225708, 45.479183)))
+                val violation1 = ViolationReport(user1.id!!, "DA102GE", "Crashing cars", LocalDateTime.now().minusDays(4).minusHours(3).minusMinutes(2), ViolationType.CRASH, Location(arrayOf(9.191353, 45.465978)))
+                val violation2 = ViolationReport(user2.id!!, "FH712CL", "Wont move", LocalDateTime.now().minusDays(4).minusHours(10).minusMinutes(21), ViolationType.PARKING, Location(arrayOf(8.698427, 45.384839)))
+                val violation3 = ViolationReport(user3.id!!, "DX034PS", "Old car", LocalDateTime.now().minusDays(5).minusHours(7).minusMinutes(13), ViolationType.POOR_CONDITION, Location(arrayOf(9.176277, 45.457854)))
+                val violation4 = ViolationReport(user4.id!!, "KX618KJ", "", LocalDateTime.now().minusDays(3).minusHours(6).minusMinutes(48), ViolationType.PARKING, Location(arrayOf(9.169583, 45.470074)))
 
                 violationRepository.save(violation0)
                 violationRepository.save(violation1)

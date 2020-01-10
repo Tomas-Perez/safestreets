@@ -66,13 +66,13 @@ class ViolationReportControllerTest(
             userRepository.save(user5)
             userRepository.save(user6)
 
-            report1 = ViolationReport(user2.id!!,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
+            report1 = ViolationReport(user2.id!!,"EX215GC", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(9.225708, 45.479183)))
             report1.status = ViolationReportStatus.REVIEW
             val image1Id = ObjectId.get()
             report1.licenseImage = Image(image1Id, image1Id.toHexString())
             violationRepository.save(report1)
 
-            report2 = ViolationReport(user3.id!!,"AG310PX", "", LocalDateTime.now(), ViolationType.POOR_CONDITION, Location(arrayOf(47.5681668,10.1290574)))
+            report2 = ViolationReport(user3.id!!,"AG310PX", "", LocalDateTime.now(), ViolationType.POOR_CONDITION, Location(arrayOf(10.1290574, 47.5681668)))
             report2.status = ViolationReportStatus.HIGH_CONFIDENCE
             val image2Id = ObjectId.get()
             report2.licenseImage = Image(image2Id, image2Id.toHexString())
@@ -100,7 +100,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "user1@mail.com")
     fun submitReportShouldReturnCreated() {
         val uri = "/violation"
-        val report = ViolationReportForm("EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING, arrayOf(45.479183, 9.225708))
+        val report = ViolationReportForm("EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING, arrayOf(9.225708, 45.479183))
         mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(report)))
@@ -111,7 +111,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "user1@mail.com")
     fun uploadImageShouldSaveImage() {
         val uri = "/violation"
-        val report = ViolationReport(data.user1.id!! ,"EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
+        val report = ViolationReport(data.user1.id!! ,"EX2631", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(9.225708, 45.479183)))
         violationRepository.save(report)
         val image = ResourceUtils.getFile("classpath:../resources/test.jpg")
         val multipartFile = MockMultipartFile("file", "test.jpg", "image/jpg", image.readBytes())
@@ -133,7 +133,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "user1@mail.com")
     fun endReportShouldAnalyseIt() {
         val uri = "/violation"
-        val report = ViolationReport(data.user1.id!! ,"DX034PS", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(45.479183, 9.225708)))
+        val report = ViolationReport(data.user1.id!! ,"DX034PS", "bad parking", LocalDateTime.now(), ViolationType.PARKING, Location(arrayOf(9.225708, 45.479183)))
         violationRepository.save(report)
 
         val image = ResourceUtils.getFile("classpath:../resources/test.jpg")
@@ -155,7 +155,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "user1@mail.com")
     fun getReportsInRadiusShouldReturnCorrectReports() {
         val uri = "/violation/query/radius"
-        val radiusForm = RadiusQueryForm(arrayOf(45.463213, 9.1812342), 10.0, data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationReportStatus.LOW_CONFIDENCE, ViolationReportStatus.REVIEW, ViolationReportStatus.HIGH_CONFIDENCE), arrayListOf(ViolationType.PARKING))
+        val radiusForm = RadiusQueryForm(arrayOf(9.1812342, 45.463213), 10.0, data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationReportStatus.LOW_CONFIDENCE, ViolationReportStatus.REVIEW, ViolationReportStatus.HIGH_CONFIDENCE), arrayListOf(ViolationType.PARKING))
         val getReportsResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(radiusForm)))
@@ -171,7 +171,7 @@ class ViolationReportControllerTest(
     @WithMockUser(username = "user1@mail.com")
     fun getReportsInBoundsShouldReturnCorrectReports() {
         val uri = "/violation/query/bounds"
-        val boundsForm = BoundsQueryForm(arrayOf(43.0, 8.0), arrayOf(45.5, 10.0), data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationReportStatus.LOW_CONFIDENCE, ViolationReportStatus.REVIEW, ViolationReportStatus.HIGH_CONFIDENCE), arrayListOf(ViolationType.PARKING))
+        val boundsForm = BoundsQueryForm(arrayOf(8.0, 43.0), arrayOf(10.0, 45.5), data.report1.dateTime.minusHours(3), data.report1.dateTime.plusHours(3), arrayListOf(ViolationReportStatus.LOW_CONFIDENCE, ViolationReportStatus.REVIEW, ViolationReportStatus.HIGH_CONFIDENCE), arrayListOf(ViolationType.PARKING))
         val getReportsResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapToJson(boundsForm)))
