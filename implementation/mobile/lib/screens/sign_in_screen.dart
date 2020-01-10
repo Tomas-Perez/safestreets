@@ -3,6 +3,7 @@ import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/util/email_validation.dart';
 import 'package:mobile/util/snackbar.dart';
+import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -10,7 +11,17 @@ import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:mobile/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
+  @override
+  State createState() => _SignInScreenState();
+
+  SignInScreen({Key key}) : super(key: key);
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final _controller = SingleListenerController<void>();
+  var _submitting = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,15 +38,25 @@ class SignInScreen extends StatelessWidget {
                 SafeStreetsScreenTitle("Sign in"),
                 Builder(
                   builder: (ctx) => _SignInForm(
-                    submitListener: (info) => _onSubmit(ctx, info)
+                    submitListener: (info) => _onSubmit(ctx, info),
+                    controller: _controller,
                   ),
                 ),
+                _submitButton(),
                 Center(child: _signUpButton(context)),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _submitButton() {
+    return PrimaryButton(
+      submitting: _submitting,
+      child: Text("Sign in"),
+      onPressed: _controller.submit,
     );
   }
 
@@ -47,6 +68,9 @@ class SignInScreen extends StatelessWidget {
   }
 
   Future<void> _onSubmit(BuildContext context, _SignInFormInfo info) async {
+    setState(() {
+      _submitting = true;
+    });
     try {
       await Provider.of<AuthService>(context).login(info.email, info.password);
       await Navigator.pushReplacementNamed(context, HOME);
@@ -54,18 +78,25 @@ class SignInScreen extends StatelessWidget {
       showErrorSnackbar(context, "Invalid credentials");
     } catch (_) {
       showErrorSnackbar(context, "There was a problem performing the sign-in");
+    } finally {
+      setState(() {
+        _submitting = false;
+      });
     }
   }
-
-  SignInScreen({Key key}) : super(key: key);
 }
 
 typedef _SignInSubmitListener = void Function(_SignInFormInfo);
 
 class _SignInForm extends StatefulWidget {
   final _SignInSubmitListener submitListener;
+  final SubmitController<void> controller;
 
-  _SignInForm({Key key, @required this.submitListener}) : super(key: key);
+  _SignInForm({
+    Key key,
+    @required this.submitListener,
+    @required this.controller,
+  }) : super(key: key);
 
   @override
   State createState() => _SignInFormState();
@@ -79,6 +110,14 @@ class _SignInFormState extends State<_SignInForm> {
   var _autovalidate = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.controller != null) {
+      widget.controller.register(_submit);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -87,7 +126,6 @@ class _SignInFormState extends State<_SignInForm> {
         children: <Widget>[
           _emailField(),
           _passwordField(),
-          _submitButton(),
         ],
       ),
     );
@@ -150,13 +188,6 @@ class _SignInFormState extends State<_SignInForm> {
         });
       }
     }
-  }
-
-  Widget _submitButton() {
-    return PrimaryButton(
-      child: Text("Sign in"),
-      onPressed: _submit,
-    );
   }
 }
 
