@@ -102,17 +102,13 @@ class HttpReviewService with ChangeNotifier implements ReviewService {
 
   @override
   Future<void> submitReview(ReportReview review) async {
-    try {
-      await _dio.post('/review', data: {
-        'reviewId': review.id,
-        'licensePlate': review.licensePlate,
-        'clear': review.clear,
-      });
-      _requests.removeWhere((r) => r.id == review.id);
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+    await _dio.post('/review', data: {
+      'reviewId': review.id,
+      'licensePlate': review.licensePlate,
+      'clear': review.clear,
+    });
+    _requests.removeWhere((r) => r.id == review.id);
+    notifyListeners();
   }
 
   set baseUrl(String newUrl) {

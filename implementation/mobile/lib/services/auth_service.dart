@@ -106,6 +106,7 @@ class HttpAuthService with ChangeNotifier implements AuthService {
   Future<void> silentLogin() async {
     try {
       final token = await storage.read(key: 'token');
+      if (token == null) throw SilentLoginFailedException();
       await _dio.get(
         '/user/me',
         options: Options(

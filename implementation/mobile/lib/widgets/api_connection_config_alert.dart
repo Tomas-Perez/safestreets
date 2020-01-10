@@ -109,9 +109,10 @@ class _ApiConnectionConfigAlertState extends State<ApiConnectionConfigAlert> {
         _connecting = true;
       });
       await service.connect(_url);
-      setState(() {
-        _connecting = false;
-      });
+      if (mounted)
+        setState(() {
+          _connecting = false;
+        });
     } else {
       if (!_autovalidate) {
         setState(() {

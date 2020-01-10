@@ -5,6 +5,11 @@ class ReviewRequest {
   final Uint8List imageData;
 
   ReviewRequest(this.id, this.imageData);
+
+  @override
+  String toString() {
+    return 'ReviewRequest{id: $id}';
+  }
 }
 
 class ReportReview {
@@ -17,4 +22,11 @@ class ReportReview {
   ReportReview.notClear(this.id)
       : clear = false,
         licensePlate = null;
+
+  @override
+  String toString() {
+    return 'ReportReview{id: $id, clear: $clear, licensePlate: $licensePlate}';
+  }
+
+
 }

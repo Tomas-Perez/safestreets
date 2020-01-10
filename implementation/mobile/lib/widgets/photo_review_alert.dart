@@ -78,7 +78,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
 
   Widget _confirmButton() {
     return PrimaryButton(
-      width: 100,
+      width: 120,
       child: Text('Confirm'),
       onPressed: _submit,
     );

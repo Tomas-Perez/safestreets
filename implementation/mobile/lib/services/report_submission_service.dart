@@ -33,8 +33,8 @@ class HttpReportSubmissionService implements ReportSubmissionService {
           form.images.where((i) => i != licensePlateImage);
       final time = licensePlateImage.time.toIso8601String();
       final location = [
-        licensePlateImage.location.latitude,
-        licensePlateImage.location.longitude
+        licensePlateImage.location.longitude,
+        licensePlateImage.location.latitude
       ];
       final res = await _dio.post('/violation', data: {
         'licensePlate': form.licensePlate,
