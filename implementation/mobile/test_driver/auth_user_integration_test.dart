@@ -82,6 +82,7 @@ void main() {
 
       await driver.tap(find.byValueKey('edit profile'));
       await driver.waitFor(profileScreen);
+      await driver.waitFor(find.byValueKey('successful profile edition'));
 
       expect(newName, await driver.getText(find.byValueKey('profile name')));
       expect(
@@ -121,6 +122,8 @@ void main() {
       await driver.enterTextInField(repeatPasswordField, password);
       await driver.tap(find.byValueKey('sign up'));
       await driver.waitFor(signInScreen);
+      await driver.waitFor(find.byValueKey('successful sign-up'));
+
       await driver.enterTextInField(signInEmailField, email);
       await driver.enterTextInField(signInPasswordField, password);
       await driver.tap(signInButton);

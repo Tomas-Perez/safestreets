@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/user_service.dart';
+import 'package:mobile/util/snackbar.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
@@ -22,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
             child: _buildProfileData(context),
           ),
           SizedBox(height: 30),
-          Center(child: _editButton(context)),
+          Center(child: Builder(builder: (ctx) => _editButton(ctx))),
           Center(child: _signOutButton(context)),
         ],
       ),
@@ -71,7 +72,15 @@ class ProfileScreen extends StatelessWidget {
     return PrimaryButton(
       key: Key('$EDIT_PROFILE redirect'),
       child: Text("Edit"),
-      onPressed: () => Navigator.pushNamed(context, EDIT_PROFILE),
+      onPressed: () async {
+        final display = Navigator.pushNamed(context, EDIT_PROFILE);
+        if (display != null)
+          showSimpleSnackbar(
+            Key('successful profile edition'),
+            context,
+            'Profile edition successful!',
+          );
+      },
     );
   }
 

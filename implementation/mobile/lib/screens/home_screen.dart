@@ -43,9 +43,8 @@ class HomeScreen extends StatelessWidget {
             title: 'Report a violation',
             asset: 'images/traffic-violation-card.jpg',
             onPressed: () async {
-              final subResult = await Navigator.pushNamed(context, REPORT)
-                  as ReportSubmission;
-              if (subResult != null && subResult.success)
+              final display = await Navigator.pushNamed(context, REPORT);
+              if (display != null)
                 showSimpleSnackbar(Key('successful report submission'), context, "Report submitted!");
             },
           ),

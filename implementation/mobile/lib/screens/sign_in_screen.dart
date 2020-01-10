@@ -68,8 +68,8 @@ class _SignInScreenState extends State<SignInScreen> {
       key: Key('$SIGN_UP redirect'),
       child: Text("Sign up"),
       onPressed: () async {
-        final res = await Navigator.pushNamed(context, SIGN_UP) as SignUpResult;
-        if (res?.success ?? false) {
+        final display = await Navigator.pushNamed(context, SIGN_UP);
+        if (display != null) {
           showSimpleSnackbar(Key('successful sign-up'), context, 'Sign up successful');
         }
       },

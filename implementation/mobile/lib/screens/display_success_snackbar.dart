@@ -1,0 +1,3 @@
+class DisplaySuccessSnackbar {
+  const DisplaySuccessSnackbar();
+}

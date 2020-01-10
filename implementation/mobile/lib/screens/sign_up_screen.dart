@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/screens/display_success_snackbar.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
@@ -76,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           email: form.email,
         ),
       );
-      Navigator.pop(context, SignUpResult.success());
+      Navigator.pop(context, const DisplaySuccessSnackbar());
     } on TimeoutException {
       showNoConnectionSnackbar(context);
     } catch (e) {
@@ -308,12 +309,4 @@ class _SignUpFormInfo {
   });
 
   _SignUpFormInfo.empty();
-}
-
-class SignUpResult {
-  final bool success;
-
-  SignUpResult.success() : success = true;
-
-
 }

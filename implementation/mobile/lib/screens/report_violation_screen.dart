@@ -6,6 +6,7 @@ import 'package:latlong/latlong.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
+import 'package:mobile/screens/display_success_snackbar.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/report_submission_service.dart';
@@ -196,7 +197,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
           licensePlateImgIndex: selectedIndex,
         ),
       );
-      Navigator.pop(context, ReportSubmission.success());
+      Navigator.pop(context, const DisplaySuccessSnackbar());
     } on TimeoutException {
       showNoConnectionSnackbar(context);
     } catch (e) {
@@ -420,12 +421,4 @@ class _ReportFormInfo {
   String toString() {
     return 'ReportInfo{violationType: $violationType, licensePlate: $licensePlate, description: $description}';
   }
-}
-
-class ReportSubmission {
-  bool success;
-
-  ReportSubmission.success() : success = true;
-
-  ReportSubmission.error() : success = false;
 }

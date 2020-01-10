@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/screens/display_success_snackbar.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
@@ -66,7 +67,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
     try {
       await service.editProfile(edit);
-      Navigator.pop(context);
+      Navigator.pop(context, const DisplaySuccessSnackbar());
     } on TimeoutException {
       showNoConnectionSnackbar(context);
     } catch (e) {
