@@ -30,3 +30,15 @@ class EditProfile {
     email = profile.email;
   }
 }
+
+class CreateProfile {
+  final String name, surname, username, email, password;
+
+  CreateProfile({
+    this.name,
+    this.surname,
+    this.username,
+    this.email,
+    this.password,
+  });
+}

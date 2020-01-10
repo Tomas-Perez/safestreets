@@ -6,6 +6,7 @@ abstract class UserService with ChangeNotifier {
   AsyncSnapshot<Profile> get currentProfile;
 
   Future<void> editProfile(EditProfile edit);
+  Future<void> signUp(CreateProfile createProfile);
 }
 
 class MockUserService with ChangeNotifier implements UserService {
@@ -37,6 +38,11 @@ class MockUserService with ChangeNotifier implements UserService {
       email: edit.email,
     );
     _profileByToken[_token] = _profile;
+  }
+
+  @override
+  Future<void> signUp(CreateProfile createProfile) async {
+    print(createProfile);
   }
 }
 
@@ -100,5 +106,16 @@ class HttpUserService with ChangeNotifier implements UserService {
       'Authorization': 'Bearer $token',
     };
     if (token != null) _fetchCurrentProfile();
+  }
+
+  @override
+  Future<void> signUp(CreateProfile createProfile) async {
+    await _dio.post('/user/sign-up', data: {
+      'name': createProfile.name,
+      'surname': createProfile.surname,
+      'username': createProfile.username,
+      'email': createProfile.email,
+      'password': createProfile.password,
+    });
   }
 }

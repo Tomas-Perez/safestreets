@@ -10,8 +10,6 @@ import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
-
-
   @override
   State createState() => _EditProfileScreenState();
 
@@ -51,7 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return PrimaryButton(
       child: Text('Confirm'),
       submitting: _submitting,
-      onPressed: () => _controller.submit(),
+      onPressed: _controller.submit,
     );
   }
 

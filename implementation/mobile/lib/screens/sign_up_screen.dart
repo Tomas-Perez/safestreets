@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/profile.dart';
+import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
+import 'package:mobile/util/submit_controller.dart';
 import 'package:mobile/widgets/backbutton_section.dart';
 import 'package:mobile/widgets/primary_button.dart';
 import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
+import 'package:provider/provider.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
+  @override
+  State createState() => _SignUpScreenState();
 
+  SignUpScreen({Key key}) : super(key: key);
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _controller = SingleListenerController<void>();
+  bool _submitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +34,11 @@ class SignUpScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SafeStreetsScreenTitle("Sign up"),
-                _SignUpForm(submitListener: print),
+                _SignUpForm(
+                  submitListener: _onSubmit,
+                  controller: _controller,
+                ),
+                _submitButton(),
               ],
             ),
           )
@@ -31,15 +47,45 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  SignUpScreen({Key key}): super(key: key);
+  Widget _submitButton() {
+    return PrimaryButton(
+      submitting: _submitting,
+      child: Text("Sign up"),
+      onPressed: _controller.submit,
+    );
+  }
+
+  _onSubmit(_SignUpFormInfo form) async {
+    final service = Provider.of<UserService>(context);
+    setState(() {
+      _submitting = true;
+    });
+    await service.signUp(
+      CreateProfile(
+        name: form.name,
+        surname: form.surname,
+        username: form.username,
+        password: form.password,
+        email: form.email,
+      ),
+    );
+    setState(() {
+      _submitting = false;
+    });
+  }
 }
 
 typedef _SignUpSubmitListener = void Function(_SignUpFormInfo);
 
 class _SignUpForm extends StatefulWidget {
   final _SignUpSubmitListener submitListener;
+  final SubmitController<void> controller;
 
-  _SignUpForm({Key key, @required this.submitListener}) : super(key: key);
+  _SignUpForm({
+    Key key,
+    @required this.submitListener,
+    @required this.controller,
+  }) : super(key: key);
 
   @override
   State createState() => _SignUpFormState();
@@ -58,6 +104,14 @@ class _SignUpFormState extends State<_SignUpForm> {
   var _autovalidate = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.controller != null) {
+      widget.controller.register(_submit);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -70,7 +124,6 @@ class _SignUpFormState extends State<_SignUpForm> {
           _emailField(),
           _passwordField(),
           _repeatPasswordField(),
-          _submitButton(),
         ],
       ),
     );
@@ -219,13 +272,6 @@ class _SignUpFormState extends State<_SignUpForm> {
         });
       }
     }
-  }
-
-  Widget _submitButton() {
-    return PrimaryButton(
-      child: Text("Sign up"),
-      onPressed: _submit,
-    );
   }
 }
 
