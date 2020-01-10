@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
-      showErrorSnackbar(context, 'There was a problem performing the sign up');
+      showErrorSnackbar(Key('sign-up error'), context, 'There was a problem performing the sign up');
     } finally {
       setState(() {
         _submitting = false;

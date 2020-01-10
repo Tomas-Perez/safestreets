@@ -201,7 +201,7 @@ class _ReportViolationScreenState extends State<ReportViolationScreen> {
       showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
-      showErrorSnackbar(context, 'There was a problem submitting the report');
+      showErrorSnackbar(Key('submit report error'), context, 'There was a problem submitting the report');
     } finally {
       if (mounted)
         setState(() {

@@ -16,7 +16,7 @@ class PhotoReviewAlert extends StatefulWidget {
 }
 
 class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
-  final _fieldKey = GlobalKey<FormFieldState>();
+  final _fieldKey = GlobalKey<FormFieldState>(debugLabel: 'review license plate field');
   final _licensePlateFocus = FocusNode();
   var _licensePlate = '';
   var _autovalidate = false;
@@ -78,6 +78,7 @@ class _PhotoReviewAlertState extends State<PhotoReviewAlert> {
 
   Widget _confirmButton() {
     return PrimaryButton(
+      key: Key('submit review'),
       width: 120,
       child: Text('Confirm'),
       onPressed: _submit,

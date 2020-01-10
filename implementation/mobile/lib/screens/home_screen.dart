@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
               final subResult = await Navigator.pushNamed(context, REPORT)
                   as ReportSubmission;
               if (subResult != null && subResult.success)
-                showSimpleSnackbar(context, "Report submitted!");
+                showSimpleSnackbar(Key('successful report submission'), context, "Report submitted!");
             },
           ),
         ),

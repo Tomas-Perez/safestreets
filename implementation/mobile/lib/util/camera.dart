@@ -16,6 +16,7 @@ Future<String> takePicture(
   if (result == null) return null;
   if (result.hasError) {
     showErrorSnackbar(
+      Key('no camera permissions'),
       context,
       "Please grant the application camera permissions to sumbit a report",
     );

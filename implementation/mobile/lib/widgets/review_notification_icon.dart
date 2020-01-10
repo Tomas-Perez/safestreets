@@ -15,6 +15,7 @@ class ReviewNotificationIcon extends StatelessWidget {
         ),
         if (pending)
           Positioned(
+            key: Key('pending reviews'),
             right: 8,
             bottom: 0,
             child: Container(

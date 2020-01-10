@@ -71,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       showNoConnectionSnackbar(context);
     } catch (e) {
       print(e);
-      showErrorSnackbar(context, 'There was a problem editing your profile');
+      showErrorSnackbar(Key('edit profile error'), context, 'There was a problem editing your profile');
     } finally {
       if (mounted)
         setState(() {

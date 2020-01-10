@@ -4,6 +4,7 @@ import 'package:mobile/routes.dart';
 import 'package:test/test.dart';
 
 import 'config.dart';
+import 'screen_finders.dart';
 import 'test_helpers.dart';
 
 void main() {
@@ -11,14 +12,7 @@ void main() {
     FlutterDriver driver;
 
     setUpAll(() async {
-      await Dio().get(
-        '$baseUrl/debug/reinitializedb',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $debugToken',
-          },
-        ),
-      );
+      await Dio().get('$baseUrl/debug/reinitializedb');
       driver = await FlutterDriver.connect();
     });
 
@@ -31,14 +25,11 @@ void main() {
     final mockEmail = 'user0@mail.com';
     final mockPassword = 'pass1';
 
-    final signInScreen = find.byValueKey('$SIGN_IN screen');
     final profileButton = find.byValueKey('$PROFILE redirect');
     final reviewsButton = find.byValueKey('open reviews');
-    final homeScreen = find.byValueKey('$HOME screen');
     final signInEmailField = find.byValueKey('$SIGN_IN email field');
     final signInPasswordField = find.byValueKey('$SIGN_IN password field');
     final signInButton = find.byValueKey('sign in');
-    final profileScreen = find.byValueKey('$PROFILE screen');
 
     test('signs in correctly', () async {
       await driver.waitFor(signInScreen);
@@ -62,15 +53,17 @@ void main() {
       final mockUsername = 'user1';
 
       expect(mockName, await driver.getText(find.byValueKey('profile name')));
-      expect(mockSurname, await driver.getText(find.byValueKey('profile surname')));
-      expect(mockUsername, await driver.getText(find.byValueKey('profile username')));
+      expect(mockSurname,
+          await driver.getText(find.byValueKey('profile surname')));
+      expect(mockUsername,
+          await driver.getText(find.byValueKey('profile username')));
       expect(mockEmail, await driver.getText(find.byValueKey('profile email')));
     });
 
     test('edits user profile correctly', () async {
       await driver.waitFor(profileScreen);
       await driver.tap(find.byValueKey('$EDIT_PROFILE redirect'));
-      await driver.waitFor(find.byValueKey('$EDIT_PROFILE screen'));
+      await driver.waitFor(editProfileScreen);
 
       final nameField = find.byValueKey('$EDIT_PROFILE name field');
       final surnameField = find.byValueKey('$EDIT_PROFILE surname field');
@@ -91,8 +84,10 @@ void main() {
       await driver.waitFor(profileScreen);
 
       expect(newName, await driver.getText(find.byValueKey('profile name')));
-      expect(newSurname, await driver.getText(find.byValueKey('profile surname')));
-      expect(newUsername, await driver.getText(find.byValueKey('profile username')));
+      expect(
+          newSurname, await driver.getText(find.byValueKey('profile surname')));
+      expect(newUsername,
+          await driver.getText(find.byValueKey('profile username')));
       expect(newEmail, await driver.getText(find.byValueKey('profile email')));
     });
 
@@ -107,7 +102,7 @@ void main() {
     test('signs up correctly', () async {
       await driver.waitFor(signInScreen);
       await driver.tap(find.byValueKey('$SIGN_UP redirect'));
-      await driver.waitFor(find.byValueKey('$SIGN_UP screen'));
+      await driver.waitFor(signUpScreen);
       final nameField = find.byValueKey('$SIGN_UP name field');
       final surnameField = find.byValueKey('$SIGN_UP surname field');
       final usernameField = find.byValueKey('$SIGN_UP username field');

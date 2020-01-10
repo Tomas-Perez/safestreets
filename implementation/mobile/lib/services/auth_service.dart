@@ -35,7 +35,7 @@ class DefaultTokenAuthService with ChangeNotifier implements AuthService {
   String _currentToken;
 
   @override
-  bool get authenticated => _currentToken == null;
+  bool get authenticated => _currentToken != null;
 
   @override
   Future<void> login(String email, String password) async {

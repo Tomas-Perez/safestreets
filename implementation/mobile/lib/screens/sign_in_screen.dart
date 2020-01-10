@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
       onPressed: () async {
         final res = await Navigator.pushNamed(context, SIGN_UP) as SignUpResult;
         if (res?.success ?? false) {
-          showSimpleSnackbar(context, 'Sign up successful');
+          showSimpleSnackbar(Key('successful sign-up'), context, 'Sign up successful');
         }
       },
     );
@@ -86,10 +86,10 @@ class _SignInScreenState extends State<SignInScreen> {
     } on TimeoutException catch (_) {
       showNoConnectionSnackbar(context);
     } on InvalidCredentialsException {
-      showErrorSnackbar(context, "Invalid credentials");
+      showErrorSnackbar(Key('invalid credentials'), context, "Invalid credentials");
     } catch (e) {
       print(e);
-      showErrorSnackbar(context, "There was a problem performing the sign-in");
+      showErrorSnackbar(Key('sign-in error'), context, "There was a problem performing the sign-in");
     } finally {
       setState(() {
         _submitting = false;
