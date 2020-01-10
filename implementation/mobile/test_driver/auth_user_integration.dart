@@ -6,7 +6,7 @@ import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:provider/provider.dart';
 
-import 'optional_providers.dart';
+import 'mock_providers.dart';
 
 void main() {
   enableFlutterDriverExtension();

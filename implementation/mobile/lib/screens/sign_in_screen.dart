@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes.dart';
+import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/util/email_validation.dart';
@@ -44,7 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 _submitButton(),
-                Center(child: _signUpButton(context)),
+                Builder(builder: (ctx) => _signUpButton(ctx)),
               ],
             ),
           ),
@@ -55,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _submitButton() {
     return PrimaryButton(
-      key: Key('$SIGN_IN submit'),
+      key: Key('sign in'),
       submitting: _submitting,
       child: Text("Sign in"),
       onPressed: _controller.submit,
@@ -64,9 +65,14 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _signUpButton(BuildContext context) {
     return SecondaryButton(
-      key: Key('$SIGN_IN redirect to $SIGN_UP'),
+      key: Key('$SIGN_UP redirect'),
       child: Text("Sign up"),
-      onPressed: () => Navigator.pushNamed(context, SIGN_UP),
+      onPressed: () async {
+        final res = await Navigator.pushNamed(context, SIGN_UP) as SignUpResult;
+        if (res?.success ?? false) {
+          showSimpleSnackbar(context, 'Sign up successful');
+        }
+      },
     );
   }
 

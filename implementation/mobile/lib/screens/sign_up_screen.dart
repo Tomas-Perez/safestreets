@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
@@ -53,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _submitButton() {
     return PrimaryButton(
+      key: Key('sign up'),
       submitting: _submitting,
       child: Text("Sign up"),
       onPressed: _controller.submit,
@@ -74,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           email: form.email,
         ),
       );
+      Navigator.pop(context, SignUpResult.success());
     } on TimeoutException {
       showNoConnectionSnackbar(context);
     } catch (e) {
@@ -143,6 +146,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _nameField() {
     return TextFormField(
+      key: Key('$SIGN_UP name field'),
       textInputAction: TextInputAction.next,
       focusNode: _nameFocus,
       decoration: InputDecoration(
@@ -163,6 +167,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _surnameField() {
     return TextFormField(
+      key: Key('$SIGN_UP surname field'),
       textInputAction: TextInputAction.next,
       focusNode: _surnameFocus,
       decoration: InputDecoration(
@@ -183,6 +188,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _usernameField() {
     return TextFormField(
+      key: Key('$SIGN_UP username field'),
       textInputAction: TextInputAction.next,
       focusNode: _usernameFocus,
       decoration: InputDecoration(
@@ -203,6 +209,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _emailField() {
     return TextFormField(
+      key: Key('$SIGN_UP email field'),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
       focusNode: _emailFocus,
@@ -225,6 +232,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _passwordField() {
     return TextFormField(
+      key: Key('$SIGN_UP password field'),
       textInputAction: TextInputAction.next,
       focusNode: _passwordFocus,
       obscureText: true,
@@ -247,6 +255,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   Widget _repeatPasswordField() {
     return TextFormField(
+      key: Key('$SIGN_UP repeat password field'),
       textInputAction: TextInputAction.done,
       focusNode: _repeatPasswordFocus,
       obscureText: true,
@@ -299,4 +308,12 @@ class _SignUpFormInfo {
   });
 
   _SignUpFormInfo.empty();
+}
+
+class SignUpResult {
+  final bool success;
+
+  SignUpResult.success() : success = true;
+
+
 }
