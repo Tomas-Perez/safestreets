@@ -15,7 +15,7 @@ String violationTypeToString(ViolationType type) {
   }
 }
 
-String toDTString(ViolationType type) {
+String violationTypeToDTString(ViolationType type) {
   switch (type) {
     case ViolationType.PARKING:
       return "PARKING";
@@ -30,7 +30,7 @@ String toDTString(ViolationType type) {
   }
 }
 
-ViolationType fromDTString(String type) {
+ViolationType violationTypeFromDTString(String type) {
   switch (type) {
     case "PARKING":
       return ViolationType.PARKING;

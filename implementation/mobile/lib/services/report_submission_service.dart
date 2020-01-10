@@ -41,7 +41,7 @@ class HttpReportSubmissionService implements ReportSubmissionService {
         'licensePlate': form.licensePlate,
         'description': form.description,
         'dateTime': time,
-        'type': toDTString(form.violationType),
+        'type': violationTypeToDTString(form.violationType),
         'location': location,
       });
       final reportId = res.data as String;

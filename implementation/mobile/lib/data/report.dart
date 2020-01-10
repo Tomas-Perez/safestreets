@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:latlong/latlong.dart';
+import 'package:mobile/data/confidence_level.dart';
 import 'package:mobile/data/picture_info.dart';
 import 'package:mobile/data/violation_type.dart';
 
@@ -24,11 +25,13 @@ class ReportForm {
 }
 
 class ReportIndicator {
+  final ConfidenceLevel confidenceLevel;
   final ViolationType violationType;
   final DateTime time;
   final LatLng location;
 
   ReportIndicator({
+    @required this.confidenceLevel,
     @required this.violationType,
     @required this.time,
     @required this.location,

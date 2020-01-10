@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+import 'package:mobile/data/confidence_level.dart';
 import 'package:mobile/data/filter_info.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
@@ -105,6 +105,7 @@ class MockReportMapService with ChangeNotifier implements ReportMapService {
 
   ReportIndicator _randomIndicator() {
     return ReportIndicator(
+      confidenceLevel: ConfidenceLevel.HIGH_CONFIDENCE,
       violationType: _randomViolationTypeInFilter(),
       time: _randomTimeInTimeFilter(),
       location: _randomPositionInBounds(),
@@ -206,12 +207,13 @@ class HttpReportMapService with ChangeNotifier implements ReportMapService {
       'northEast': [_bounds.northEast.longitude, _bounds.northEast.latitude],
       'from': _filterInfo.from.toIso8601String(),
       'to': _filterInfo.to.toIso8601String(),
-      'types': types.map(toDTString).toList(),
-      'status': ['HIGH_CONFIDENCE', 'LOW_CONFIDENCE'],
+      'types': types.map(violationTypeToDTString).toList(),
+      'status': ConfidenceLevel.values.map(confidenceToDTString).toList(),
     });
     final reports = res.data
         .map((dto) => ReportIndicator(
-              violationType: fromDTString(dto['type']),
+              confidenceLevel: confidenceFromDTString(dto['status']),
+              violationType: violationTypeFromDTString(dto['type']),
               time: DateTime.parse(dto['dateTime']),
               location: LatLng(dto['location'][1], dto['location'][0]),
             ))

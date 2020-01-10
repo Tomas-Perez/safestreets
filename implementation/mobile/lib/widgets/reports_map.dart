@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+import 'package:mobile/data/confidence_level.dart';
 import 'package:mobile/data/report.dart';
 import 'package:mobile/data/violation_type.dart';
 import 'package:mobile/util/date_helpers.dart';
@@ -93,6 +94,7 @@ class _ReportsMapState extends State<ReportsMap> {
       anchorPos: AnchorPos.align(AnchorAlign.top),
       builder: (ctx) => Container(
         child: _ReportMarker(
+          confidenceLevel: reportMarkerInfo.confidenceLevel,
           dateTime: reportMarkerInfo.time,
           violationType: reportMarkerInfo.violationType,
         ),
@@ -102,11 +104,13 @@ class _ReportsMapState extends State<ReportsMap> {
 }
 
 class _ReportMarker extends StatelessWidget {
+  final ConfidenceLevel confidenceLevel;
   final DateTime dateTime;
   final ViolationType violationType;
 
   _ReportMarker({
     Key key,
+    @required this.confidenceLevel,
     @required this.dateTime,
     @required this.violationType,
   }) : super(key: key);
@@ -171,6 +175,20 @@ class _ReportMarker extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(text: "${formatTime(dateTime)}"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 10),
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "Confidence level: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: confidenceLevel == ConfidenceLevel.HIGH_CONFIDENCE ? 'HIGH' : 'LOW'),
                   ],
                 ),
                 textAlign: TextAlign.start,
