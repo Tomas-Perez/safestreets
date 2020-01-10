@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
+import 'package:mobile/routes.dart';
 import 'package:mobile/services/http_client.dart';
 import 'package:mobile/services/user_service.dart';
 import 'package:mobile/util/email_validation.dart';
@@ -51,6 +52,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Widget _submitButton() {
     return PrimaryButton(
+      key: Key('edit profile'),
       child: Text('Confirm'),
       submitting: _submitting,
       onPressed: _controller.submit,
@@ -136,6 +138,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
 
   Widget _nameField() {
     return TextFormField(
+      key: Key('$EDIT_PROFILE name field'),
       initialValue: _editInfo.name,
       textInputAction: TextInputAction.next,
       focusNode: _nameFocus,
@@ -157,6 +160,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
 
   Widget _surnameField() {
     return TextFormField(
+      key: Key('$EDIT_PROFILE surname field'),
       initialValue: _editInfo.surname,
       textInputAction: TextInputAction.next,
       focusNode: _surnameFocus,
@@ -178,6 +182,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
 
   Widget _usernameField() {
     return TextFormField(
+      key: Key('$EDIT_PROFILE username field'),
       initialValue: _editInfo.username,
       textInputAction: TextInputAction.next,
       focusNode: _usernameFocus,
@@ -199,6 +204,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
 
   Widget _emailField() {
     return TextFormField(
+      key: Key('$EDIT_PROFILE email field'),
       initialValue: _editInfo.email,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.emailAddress,

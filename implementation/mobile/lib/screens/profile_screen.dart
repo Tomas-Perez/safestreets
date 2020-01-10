@@ -46,29 +46,30 @@ class ProfileScreen extends StatelessWidget {
       children: <Widget>[
         SafeStreetsScreenTitle("Profile"),
         SizedBox(height: 30),
-        _buildRow("Name:", profile.name),
+        _buildRow(Key('profile name'), "Name:", profile.name),
         SizedBox(height: 20),
-        _buildRow("Surname:", profile.surname),
+        _buildRow(Key('profile surname'), "Surname:", profile.surname),
         SizedBox(height: 20),
-        _buildRow("Username:", profile.username),
+        _buildRow(Key('profile username'), "Username:", profile.username),
         SizedBox(height: 20),
-        _buildRow("Email:", profile.email),
+        _buildRow(Key('profile email'), "Email:", profile.email),
       ],
     );
   }
 
-  Widget _buildRow(String type, String value) {
+  Widget _buildRow(Key key, String type, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(type),
-        Text(value),
+        Text(value, key: key),
       ],
     );
   }
 
   Widget _editButton(BuildContext context) {
     return PrimaryButton(
+      key: Key('$EDIT_PROFILE redirect'),
       child: Text("Edit"),
       onPressed: () => Navigator.pushNamed(context, EDIT_PROFILE),
     );

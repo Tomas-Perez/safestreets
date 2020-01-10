@@ -28,8 +28,8 @@ void main() {
       }
     });
 
-    final email = 'user0@mail.com';
-    final password = 'pass1';
+    final mockEmail = 'user0@mail.com';
+    final mockPassword = 'pass1';
 
     final signInScreen = find.byValueKey('$SIGN_IN screen');
     final profileButton = find.byValueKey('$PROFILE redirect');
@@ -38,23 +38,66 @@ void main() {
     final signInEmailField = find.byValueKey('$SIGN_IN email field');
     final signInPasswordField = find.byValueKey('$SIGN_IN password field');
     final signInButton = find.byValueKey('sign in');
+    final profileScreen = find.byValueKey('$PROFILE screen');
 
     test('signs in correctly', () async {
       await driver.waitFor(signInScreen);
       await driver.waitForAbsent(profileButton);
       await driver.waitForAbsent(reviewsButton);
-      await driver.enterTextInField(signInEmailField, email);
-      await driver.enterTextInField(signInPasswordField, password);
+      await driver.enterTextInField(signInEmailField, mockEmail);
+      await driver.enterTextInField(signInPasswordField, mockPassword);
       await driver.tap(signInButton);
       await driver.waitFor(homeScreen);
       await driver.waitFor(profileButton);
       await driver.waitFor(reviewsButton);
     });
 
-    test('signs out correctly', () async {
+    test('shows user profile correctly', () async {
       await driver.waitFor(homeScreen);
       await driver.tap(profileButton);
-      await driver.waitFor(find.byValueKey('$PROFILE screen'));
+      await driver.waitFor(profileScreen);
+
+      final mockName = 'User1';
+      final mockSurname = 'last1';
+      final mockUsername = 'user1';
+
+      expect(mockName, await driver.getText(find.byValueKey('profile name')));
+      expect(mockSurname, await driver.getText(find.byValueKey('profile surname')));
+      expect(mockUsername, await driver.getText(find.byValueKey('profile username')));
+      expect(mockEmail, await driver.getText(find.byValueKey('profile email')));
+    });
+
+    test('edits user profile correctly', () async {
+      await driver.waitFor(profileScreen);
+      await driver.tap(find.byValueKey('$EDIT_PROFILE redirect'));
+      await driver.waitFor(find.byValueKey('$EDIT_PROFILE screen'));
+
+      final nameField = find.byValueKey('$EDIT_PROFILE name field');
+      final surnameField = find.byValueKey('$EDIT_PROFILE surname field');
+      final usernameField = find.byValueKey('$EDIT_PROFILE username field');
+      final emailField = find.byValueKey('$EDIT_PROFILE email field');
+
+      final newName = 'newName';
+      final newSurname = 'newSurname';
+      final newUsername = 'newUsername';
+      final newEmail = 'newMail@mail.com';
+
+      await driver.enterTextInField(nameField, newName);
+      await driver.enterTextInField(surnameField, newSurname);
+      await driver.enterTextInField(usernameField, newUsername);
+      await driver.enterTextInField(emailField, newEmail);
+
+      await driver.tap(find.byValueKey('edit profile'));
+      await driver.waitFor(profileScreen);
+
+      expect(newName, await driver.getText(find.byValueKey('profile name')));
+      expect(newSurname, await driver.getText(find.byValueKey('profile surname')));
+      expect(newUsername, await driver.getText(find.byValueKey('profile username')));
+      expect(newEmail, await driver.getText(find.byValueKey('profile email')));
+    });
+
+    test('signs out correctly', () async {
+      await driver.waitFor(profileScreen);
       await driver.tap(find.byValueKey('sign out'));
       await driver.waitFor(signInScreen);
       await driver.waitForAbsent(profileButton);
