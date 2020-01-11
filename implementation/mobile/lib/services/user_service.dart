@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/data/profile.dart';
 import 'package:mobile/services/http_client.dart';
@@ -53,6 +56,7 @@ class HttpUserService with ChangeNotifier implements UserService {
   final _dio = getNewDioClient();
   Profile _profile;
   bool _fetching = false;
+  void Function(String) onNewTokenListener;
 
   Future<void> _fetchCurrentProfile() async {
     _fetching = true;
@@ -82,7 +86,7 @@ class HttpUserService with ChangeNotifier implements UserService {
   @override
   Future<void> editProfile(EditProfile edit) async {
     try {
-      await _dio.put('/user/me', data: {
+      final res = await _dio.put('/user/me', data: {
         'name': edit.name,
         'surname': edit.surname,
         'username': edit.username,
@@ -94,9 +98,18 @@ class HttpUserService with ChangeNotifier implements UserService {
         username: edit.username,
         email: edit.email,
       );
+      if (onNewTokenListener != null) onNewTokenListener(res.data['token']);
       notifyListeners();
-    } catch (e) {
-      print(e);
+    } on DioError catch (e) {
+      if (e.response != null && e.response.statusCode == HttpStatus.conflict) {
+        final message = e.response.data as String;
+        if (message == 'Duplicated key: username') {
+          throw const UsernameTakenException();
+        } else if (message == 'Duplicated key: email') {
+          throw const EmailTakenException();
+        }
+      }
+      throw e;
     }
   }
 
@@ -113,12 +126,36 @@ class HttpUserService with ChangeNotifier implements UserService {
 
   @override
   Future<void> signUp(CreateProfile createProfile) async {
-    await _dio.post('/user/sign-up', data: {
-      'name': createProfile.name,
-      'surname': createProfile.surname,
-      'username': createProfile.username,
-      'email': createProfile.email,
-      'password': createProfile.password,
-    });
+    try {
+      await _dio.post('/user/sign-up', data: {
+        'name': createProfile.name,
+        'surname': createProfile.surname,
+        'username': createProfile.username,
+        'email': createProfile.email,
+        'password': createProfile.password,
+      });
+    } on DioError catch (e) {
+      if (e.response != null && e.response.statusCode == HttpStatus.conflict) {
+        final message = e.response.data as String;
+        if (message == 'Duplicated key: username') {
+          throw const UsernameTakenException();
+        } else if (message == 'Duplicated key: email') {
+          throw const EmailTakenException();
+        }
+      }
+      throw e;
+    }
   }
+}
+
+class EmailTakenException implements Exception {
+  final message = 'Email taken';
+
+  const EmailTakenException();
+}
+
+class UsernameTakenException implements Exception {
+  final message = 'Username taken';
+
+  const UsernameTakenException();
 }
