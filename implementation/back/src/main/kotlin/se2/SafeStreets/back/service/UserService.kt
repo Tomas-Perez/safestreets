@@ -40,6 +40,7 @@ class UserService(private val userRepository: UserRepository) {
         val optUser = findCurrent()
         optUser?.let { user ->
             user.name = userForm.name
+            user.username = userForm.username
             user.surname = userForm.surname
             user.email = userForm.email
             userRepository.save(user)
