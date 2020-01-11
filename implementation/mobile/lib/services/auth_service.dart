@@ -32,8 +32,8 @@ class SilentLoginFailedException implements Exception {
 
 class DefaultTokenAuthService with ChangeNotifier implements AuthService {
   static final _defaultToken =
-      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMEBtYWlsLmNvbSIsImV4cCI6MTU3ODc2MjIzMiwiYXV0aCI6IlVTRVIifQ."
-      "yWbpW2G3Lggp-1ppACzvuBQqisLRkdLUS0SXvQZZWIvFHjyoVm2oynP_237iLCJohmIVllcwGpP8uqaZD6X_GA";
+      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMEBtYWlsLmNvbSIsImV4cCI6MTU3ODg2OTY5NywiYXV0aCI6IlVTRVIifQ."
+      "IFZPN1GfrroFoptelYZNnxPNk59KAj27Ra2c9bgAbRSDDu410v-fi3l3X1qHnSdOIA0uW00GL1e22mxWl-C0hg";
 
   String _currentToken;
 
@@ -58,9 +58,7 @@ class DefaultTokenAuthService with ChangeNotifier implements AuthService {
   }
 
   @override
-  String get token =>
-      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMEBtYWlsLmNvbSIsImV4cCI6MTU3ODc2MjIzMiwiYXV0aCI6IlVTRVIifQ."
-      "yWbpW2G3Lggp-1ppACzvuBQqisLRkdLUS0SXvQZZWIvFHjyoVm2oynP_237iLCJohmIVllcwGpP8uqaZD6X_GA";
+  String get token => _currentToken;
 }
 
 class MockAuthService with ChangeNotifier implements AuthService {
