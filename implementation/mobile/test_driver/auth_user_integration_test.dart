@@ -60,6 +60,12 @@ void main() {
       expect(mockEmail, await driver.getText(find.byValueKey('profile email')));
     });
 
+    test('gets api key correctly', () async {
+      await driver.waitFor(profileScreen);
+      await driver.tap(find.byValueKey('get api key'));
+      await driver.waitFor(find.byValueKey('api key'));
+    });
+
     test('edits user profile correctly', () async {
       await driver.waitFor(profileScreen);
       await driver.tap(find.byValueKey('$EDIT_PROFILE redirect'));

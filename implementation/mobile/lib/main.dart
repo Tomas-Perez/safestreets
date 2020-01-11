@@ -10,6 +10,7 @@ import 'package:mobile/screens/reports_map_screen.dart';
 import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/services/api_connection_service.dart';
+import 'package:mobile/services/api_key_service.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/location_service.dart';
@@ -37,6 +38,16 @@ void main() => runApp(
             update: (_, conService, authService) {
               final httpService = authService as HttpAuthService;
               httpService.baseUrl = conService.url;
+              return httpService;
+            },
+          ),
+          ChangeNotifierProxyProvider2<AuthService, ApiConnectionService,
+              ApiKeyService>(
+            create: (_) => HttpApiKeyService(),
+            update: (_, authService, conService, keyService) {
+              final httpService = keyService as HttpApiKeyService;
+              httpService.baseUrl = conService.url;
+              httpService.token = authService.token;
               return httpService;
             },
           ),

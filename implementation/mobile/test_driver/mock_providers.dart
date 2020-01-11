@@ -1,5 +1,6 @@
 import 'package:latlong/latlong.dart';
 import 'package:mobile/services/api_connection_service.dart';
+import 'package:mobile/services/api_key_service.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/camera_service.dart';
 import 'package:mobile/services/location_service.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 List<SingleChildCloneableWidget> mockRemaining({
   SingleChildCloneableWidget authService,
   SingleChildCloneableWidget apiConnectionService,
+  SingleChildCloneableWidget apiKeyService,
   SingleChildCloneableWidget cameraService,
   SingleChildCloneableWidget locationService,
   SingleChildCloneableWidget reportMapService,
@@ -28,6 +30,10 @@ List<SingleChildCloneableWidget> mockRemaining({
     authService ??
         ChangeNotifierProvider<AuthService>(
           create: (_) => DefaultTokenAuthService(),
+        ),
+    apiKeyService ??
+        ChangeNotifierProvider<ApiKeyService>(
+          create: (_) => MockApiKeyService(),
         ),
     cameraService ??
         Provider<CameraService>(
