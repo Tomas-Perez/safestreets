@@ -228,7 +228,9 @@ Exit condition  &
  - The user is redirected to the login screen.
 \\ \hline
 Exceptions      &
-    - The user is already registered in the system. The system warns the user that the email is already in use. 
+    - The email is already registered in the system. The system warns the user that the email is already in use.
+
+    - The username is already registered in the system. The system warns the user that the username is already in use.
 
     - The user did not fill all the required fields. The system marks the empty fields for the user to fill.
 
@@ -255,7 +257,7 @@ Entry condition &
 Event flow      & 
     1. The user presses the “Sign in” button.
 
-    2. The user fills the “Username” and “Password” fields.
+    2. The user fills the “Email” and “Password” fields.
 
     3. The user presses the “Sign in” button.
     
@@ -267,7 +269,7 @@ Exit condition  &
     - The user is redirected to the home screen.
 \\ \hline
 Exceptions      &
-    - The user enters a non matching combination of “username” and “password”. The system shows a warning that “username” and “password” do not match.
+    - The user enters a non matching combination of “email” and “password”. The system shows a warning that “email” and “password” do not match.
 
     - The user did not fill all the required fields. The system marks the empty fields for the user to fill.
 \\ \hline
@@ -322,21 +324,25 @@ Entry condition &
 Event flow      & 
     1. The user presses the “edit” button.
 
-    2. The user edits the fields they want to change.
+    2. The user is redirected to the edit profile screen.
 
-    3. The user presses the “confirm” button.
+    3. The user edits the fields they want to change.
+
+    4. The user presses the “confirm” button.
     
-    4. The system saves the data.
+    5. The system saves the data.
 \\ \hline
 Exit condition  & 
     - The user information is successfully updated.
 
-    - The user profile is in view-only state.
+    - The user is redirected to the profile screen.
 \\ \hline
 Exceptions      &
     - The user did not fill all the required fields. The system marks the empty fields for the user to fill.
 
     - The email is already registered in the system. The system warns the user that the email is already in use.
+
+    - The username is already registered in the system. The system warns the user that the username is already in use.
 \\ \hline
 \end{tabular}
 \end{table}
@@ -387,7 +393,7 @@ Exit condition  &
 Exceptions      &
     - The user did not fill all the required fields. The system marks the empty fields for the user to fill.
 
-    - The user did not take a photo. The system warns the user to take a photo
+    - The user did not take a photo. The “Confirm” button is disabled.
 \\ \hline
 \end{tabular}
 \end{table}
@@ -447,20 +453,22 @@ Entry condition &
 Event flow      & 
     1. The user presses the review photo button.
 
-    2. The user fills the “license plate” field.
+    2. An alert with a photo to review and a “license plate” field is shown.
 
-    3. The user presses the “confirm” button.
+    3. The user fills the “license plate” field.
 
-    4. The system saves the review.
+    4. The user presses the “confirm” button.
+
+    5. The system saves the review.
 \\ \hline
 Exit condition  & 
     - The review is saved in the system.
 
-    - The system shows another photo to review.
+    - The alert is closed.
 \\ \hline
 Exceptions      &
     - The user did not fill the “license plate” field. The system marks the empty field for the user to fill.
-    - The user presses the “The photo is not clear” button. The system shows another photo to review.
+    - The user presses the “The photo is not clear” button. The system saves the review as unclear.
 \\ \hline
 \end{tabular}
 \end{table}
