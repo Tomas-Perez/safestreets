@@ -163,4 +163,8 @@ class HttpAuthService with ChangeNotifier implements AuthService {
   set baseUrl(String baseUrl) {
     _dio.options.baseUrl = baseUrl;
   }
+
+  set token(String token) {
+    _token = token;
+  }
 }

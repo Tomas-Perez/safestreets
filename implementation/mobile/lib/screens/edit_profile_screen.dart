@@ -71,9 +71,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       Navigator.pop(context, const DisplaySuccessSnackbar());
     } on TimeoutException {
       showNoConnectionSnackbar(context);
+    } on EmailTakenException {
+      showErrorSnackbar(
+        Key('email taken error'),
+        context,
+        'Email is already in use',
+      );
+    } on UsernameTakenException {
+      showErrorSnackbar(
+        Key('username taken error'),
+        context,
+        'Username is already in use',
+      );
     } catch (e) {
       print(e);
-      showErrorSnackbar(Key('edit profile error'), context, 'There was a problem editing your profile');
+      showErrorSnackbar(Key('edit profile error'), context,
+          'There was a problem editing your profile');
     } finally {
       if (mounted)
         setState(() {

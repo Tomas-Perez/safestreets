@@ -13,6 +13,8 @@ import 'package:mobile/widgets/safestreets_appbar.dart';
 import 'package:mobile/widgets/safestreets_screen_title.dart';
 import 'package:provider/provider.dart';
 
+const MIN_PASSWORD_LENGTH = 8;
+
 /// Screen showing a sign up form
 class SignUpScreen extends StatefulWidget {
   @override
@@ -81,9 +83,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.pop(context, const DisplaySuccessSnackbar());
     } on TimeoutException {
       showNoConnectionSnackbar(context);
+    } on EmailTakenException {
+      showErrorSnackbar(
+        Key('email taken error'),
+        context,
+        'Email is already in use',
+      );
+    } on UsernameTakenException {
+      showErrorSnackbar(
+        Key('username taken error'),
+        context,
+        'Username is already in use',
+      );
     } catch (e) {
       print(e);
-      showErrorSnackbar(Key('sign-up error'), context, 'There was a problem performing the sign up');
+      showErrorSnackbar(Key('sign-up error'), context,
+          'There was a problem performing the sign up');
     } finally {
       setState(() {
         _submitting = false;
@@ -244,6 +259,8 @@ class _SignUpFormState extends State<_SignUpForm> {
       ),
       validator: (value) {
         if (value.isEmpty) return "Password missing";
+        if (value.length < MIN_PASSWORD_LENGTH)
+          return "Password must be 8 characters or longer";
         return null;
       },
       onChanged: (value) => _passwordFieldValue = value,

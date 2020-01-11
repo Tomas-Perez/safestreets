@@ -23,7 +23,7 @@ void main() {
     });
 
     final mockEmail = 'user0@mail.com';
-    final mockPassword = 'pass1';
+    final mockPassword = 'password1';
 
     final profileButton = find.byValueKey('$PROFILE redirect');
     final reviewsButton = find.byValueKey('open reviews');
@@ -118,7 +118,7 @@ void main() {
       final repeatPasswordField =
           find.byValueKey('$SIGN_UP repeat password field');
       final email = 'email@mail.com';
-      final password = 'pass';
+      final password = 'password';
 
       await driver.enterTextInField(nameField, 'name');
       await driver.enterTextInField(surnameField, 'surname');

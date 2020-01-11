@@ -33,6 +33,9 @@ void main() {
             final httpService = userService as HttpUserService;
             httpService.baseUrl = conService.url;
             httpService.token = authService.token;
+            final httpAuthService = authService as HttpAuthService;
+            httpService.onNewTokenListener =
+                (token) => httpAuthService.token = token;
             return httpService;
           },
         ),
