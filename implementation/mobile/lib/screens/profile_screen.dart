@@ -95,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       key: Key('$EDIT_PROFILE redirect'),
       child: Text("Edit"),
       onPressed: () async {
-        final display = Navigator.pushNamed(context, EDIT_PROFILE);
+        final display = await Navigator.pushNamed(context, EDIT_PROFILE);
         if (display != null)
           showSimpleSnackbar(
             Key('successful profile edition'),

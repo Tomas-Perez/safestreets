@@ -102,7 +102,7 @@ class HttpUserService with ChangeNotifier implements UserService {
       notifyListeners();
     } on DioError catch (e) {
       if (e.response != null && e.response.statusCode == HttpStatus.conflict) {
-        final message = e.response.data as String;
+        final message = e.response.data['message'] as String;
         if (message == 'Duplicated key: username') {
           throw const UsernameTakenException();
         } else if (message == 'Duplicated key: email') {
@@ -136,7 +136,7 @@ class HttpUserService with ChangeNotifier implements UserService {
       });
     } on DioError catch (e) {
       if (e.response != null && e.response.statusCode == HttpStatus.conflict) {
-        final message = e.response.data as String;
+        final message = e.response.data['message'] as String;
         if (message == 'Duplicated key: username') {
           throw const UsernameTakenException();
         } else if (message == 'Duplicated key: email') {
