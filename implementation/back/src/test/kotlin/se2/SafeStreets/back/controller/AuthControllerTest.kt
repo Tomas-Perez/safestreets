@@ -36,13 +36,13 @@ internal class AuthControllerTest(
         lateinit var user6: User
 
         fun setup() {
-            admin1 = User("admin1@mail.com", "admin1", BCrypt.hashpw("pass", BCrypt.gensalt()), "Admin", "last", UserType.ADMIN)
-            user1 = User("user1@mail.com", "username1", BCrypt.hashpw("pass1", BCrypt.gensalt()), "User1", "last1", UserType.USER)
-            user2 = User("user2@mail.com", "username2", BCrypt.hashpw("pass2", BCrypt.gensalt()), "User2", "last2", UserType.USER)
-            user3 = User("user3@mail.com", "username3", BCrypt.hashpw("pass3", BCrypt.gensalt()), "User3", "last3", UserType.USER)
-            user4 = User("user4@mail.com", "username4", BCrypt.hashpw("pass4", BCrypt.gensalt()), "User4", "last4", UserType.USER)
-            user5 = User("user5@mail.com", "username5", BCrypt.hashpw("pass5", BCrypt.gensalt()), "User5", "last5", UserType.USER)
-            user6 = User("user6@mail.com", "username6", BCrypt.hashpw("pass6", BCrypt.gensalt()), "User6", "last6", UserType.USER)
+            admin1 = User("admin1@mail.com", "admin1", BCrypt.hashpw("password", BCrypt.gensalt()), "Admin", "last", UserType.ADMIN)
+            user1 = User("user1@mail.com", "username1", BCrypt.hashpw("password1", BCrypt.gensalt()), "User1", "last1", UserType.USER)
+            user2 = User("user2@mail.com", "username2", BCrypt.hashpw("password2", BCrypt.gensalt()), "User2", "last2", UserType.USER)
+            user3 = User("user3@mail.com", "username3", BCrypt.hashpw("password3", BCrypt.gensalt()), "User3", "last3", UserType.USER)
+            user4 = User("user4@mail.com", "username4", BCrypt.hashpw("password4", BCrypt.gensalt()), "User4", "last4", UserType.USER)
+            user5 = User("user5@mail.com", "username5", BCrypt.hashpw("password5", BCrypt.gensalt()), "User5", "last5", UserType.USER)
+            user6 = User("user6@mail.com", "username6", BCrypt.hashpw("password6", BCrypt.gensalt()), "User6", "last6", UserType.USER)
             userRepository.save(admin1)
             userRepository.save(user1)
             userRepository.save(user2)
@@ -70,7 +70,7 @@ internal class AuthControllerTest(
     @Test
     fun logInWithCorrectDataShouldReturnToken() {
         val uri = "/auth"
-        val loginForm = LoginForm("user1@mail.com", "pass1")
+        val loginForm = LoginForm("user1@mail.com", "password1")
         val loginResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -99,7 +99,7 @@ internal class AuthControllerTest(
     @Test
     fun logInWithIncorrectUsernameShouldReturnUnauthorized() {
         val uri = "/auth"
-        val loginForm = LoginForm("wrong@test.com", "pass1")
+        val loginForm = LoginForm("wrong@test.com", "password1")
         mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)

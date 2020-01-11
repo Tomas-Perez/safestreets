@@ -69,16 +69,16 @@ class StartUp(
     }
 
     fun generateUser(name: String, surname: String, type: UserType = UserType.USER): User {
-        val user = User("${name.toLowerCase()}@mail.com", "${name.toLowerCase()}${surname.toLowerCase()}", "pass", name, surname, type)
+        val user = User("${name.toLowerCase()}@mail.com", "${name.toLowerCase()}${surname.toLowerCase()}", "password", name, surname, type)
         userService.save(user)
         return user
     }
 
     fun initdb() {
         try {
-            userService.save(User("admin@mail.com", "admin", "pass", "Admin", "AdminLast", UserType.ADMIN))
-            userService.save(User("user0@mail.com", "user1", "pass1", "User1", "last1", UserType.USER))
-            userService.save(User("municipality0@mail.com", "municipality1", "pass1", "Muni1", "MuniLast1", UserType.MUNICIPALITY))
+            userService.save(User("admin@mail.com", "admin", "password", "Admin", "AdminLast", UserType.ADMIN))
+            userService.save(User("user0@mail.com", "user1", "password1", "User1", "last1", UserType.USER))
+            userService.save(User("municipality0@mail.com", "municipality1", "password1", "Muni1", "MuniLast1", UserType.MUNICIPALITY))
 
             generateUser("Corben", "Contreras", UserType.MUNICIPALITY)
             generateUser("Everett", "Giles", UserType.MUNICIPALITY)
