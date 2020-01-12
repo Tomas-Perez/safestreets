@@ -215,6 +215,7 @@ class HttpReportMapService with ChangeNotifier implements ReportMapService {
     });
     final reports = res.data
         .map((dto) => ReportIndicator(
+              id: dto['id'],
               confidenceLevel: confidenceFromDTString(dto['status']),
               violationType: violationTypeFromDTString(dto['type']),
               time: DateTime.parse(dto['dateTime']),

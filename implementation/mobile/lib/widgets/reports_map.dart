@@ -95,6 +95,8 @@ class _ReportsMapState extends State<ReportsMap> {
       anchorPos: AnchorPos.align(AnchorAlign.top),
       builder: (ctx) => Container(
         child: _ReportMarker(
+          id: reportMarkerInfo.id,
+          location: reportMarkerInfo.location,
           confidenceLevel: reportMarkerInfo.confidenceLevel,
           dateTime: reportMarkerInfo.time,
           violationType: reportMarkerInfo.violationType,
@@ -105,12 +107,16 @@ class _ReportsMapState extends State<ReportsMap> {
 }
 
 class _ReportMarker extends StatelessWidget {
+  final String id;
+  final LatLng location;
   final ConfidenceLevel confidenceLevel;
   final DateTime dateTime;
   final ViolationType violationType;
 
   _ReportMarker({
     Key key,
+    @required this.id,
+    @required this.location,
     @required this.confidenceLevel,
     @required this.dateTime,
     @required this.violationType,
@@ -139,6 +145,48 @@ class _ReportMarker extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "ID: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: "$id"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 10),
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "Lat: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: "${location.latitude}"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 10),
+              Text.rich(
+                TextSpan(
+                  style: popupTextStyle,
+                  children: [
+                    TextSpan(
+                      text: "Lon: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: "${location.longitude}"),
+                  ],
+                ),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 10),
               Text.rich(
                 TextSpan(
                   style: popupTextStyle,

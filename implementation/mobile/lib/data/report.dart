@@ -27,12 +27,14 @@ class ReportForm {
 
 /// Report information to show on the map.
 class ReportIndicator {
+  final String id;
   final ConfidenceLevel confidenceLevel;
   final ViolationType violationType;
   final DateTime time;
   final LatLng location;
 
   ReportIndicator({
+    @required this.id,
     @required this.confidenceLevel,
     @required this.violationType,
     @required this.time,
