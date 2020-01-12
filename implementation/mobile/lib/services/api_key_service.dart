@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile/services/http_client.dart';
 
+/// Provides the ability to fetch the current users API key
 abstract class ApiKeyService with ChangeNotifier {
   String get key;
 
