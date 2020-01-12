@@ -1,5 +1,10 @@
 Since the development time for the application is short, for the most part the team opted for known technologies as to reduce the risk of missing the timeline by encountering unexpected obstacles. This also allowed the team to focus on unknown areas, like the integration with external APIs.\\
 
+\subsection{Mobile}
+As stated in section 5.1.1 of the Design Document, the mobile application is developed in the Flutter framework, which uses the Dart programming language.
+The advantage of Flutter is that it is a complete toolset, allowing for development without the necessity of third party packages for core functionality, which can bring incompatibilities. In spite of that, some packages more specific to the application were used to speed up development (such as the map, geolocation and camera). Also, being completely written in Dart, a typed language, makes implementation more intuitive and easier to follow compared to web technologies, which juggle HTML, CSS and Javascript at the same time.
+The main disadvantage of Flutter is, at the same time, the Dart language which is very young (2013) and unknown to most developers currently. However, its syntax is familiar and easy to pickup.
+
 \subsection{Back-end server}
 
 As stated in section 5.1.2 of the Design Document, the backend is implemented in Kotlin utilizing the Spring boot framework.

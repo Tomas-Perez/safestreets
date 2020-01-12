@@ -1,5 +1,70 @@
+\subsection{Mobile}
+The mobile application resides in the /mobile directory
+
+\begin{itemize}
+    \item 
+    /src
+    \begin{itemize}[label={$\diamond$}]
+        \item 
+        /android \textcolor{black!70}{Android application specific files.}
+        \item 
+        /fonts \textcolor{black!70}{extra fonts added to the application.}
+        \item 
+        /images \textcolor{black!70}{asset images.}
+        \item 
+        /ios \textcolor{black!70}{iOS application specific files.}
+        \item 
+        /lib \textcolor{black!70}{root of the source files.}
+        \begin{itemize}[label={\textbf{-}}]
+            \item 
+            /data \textcolor{black!70}{data structures used in multiple parts of the app (structures need in only one screen are kept private to that file).}
+            \item 
+            /screens \textcolor{black!70}{widgets for each screen in the app.}
+            \item 
+            /services \textcolor{black!70}{services used by the app, most of them used to talk to the application server.}
+            \item 
+            /util \textcolor{black!70}{utility functions.}
+            \item 
+            /widgets \textcolor{black!70}{other widgets included in the screens.}
+        \end{itemize}
+        \item 
+        /mocks \textcolor{black!70}{mock images used for testing.}
+        \item 
+        /test\_driver \textcolor{black!70}{E2E test files.}
+    \end{itemize}
+
+    \item 
+    /test \textcolor{black!70}{contains the source code files for testing.}
+    \begin{itemize}[label={$\diamond$}]
+        \item 
+        /kotlin/se2/SafeStreets/back \textcolor{black!70}{contains unit test classes.}
+        \item 
+        /resources \textcolor{black!70}{contains files used for testing, like images.}
+    \end{itemize}
+\end{itemize}
+
 \subsection{Back-end server}
-The source code is organized following the Gradle standard.\\
+The source code is organized following the Gradle standard and Spring boot naming conventions. This resulted in deviations from some names specified in the DD. Furthermore, due to the reduced scale of the implementation in comparison to what was previously specified (see Implemented Requirements \ref{sub-sect:inc-req}), certain components suffered some changes, specifically:\\
+
+Controllers handle requests from the system users, these are: 
+\begin{itemize}[label={\textbf{-}}, leftmargin=2cm]  \itemsep0em
+    \item AuthController
+    \item UserController
+    \item ViolationReportController
+    \item ReviewController
+    \item ImageController
+    \item ApiKeyController
+\end{itemize}
+
+Services handle the system logic:
+\begin{itemize}[label={\textbf{-}}, leftmargin=2cm] \itemsep0em
+    \item AuthService: Acts as the previously defined IdentificationManager and acts as the authentication provider of Spring Security.
+    \item UserService: Was merged with UserManager.
+    \item ViolationReportService: Was merged with ViolationReportManager.
+    \item ReviewService: Was merged with ReviewManager.
+\end{itemize}
+
+The AuthorizationGuard component was removed since its responsibilities are now handled by Spring security.
 
 The application resides in the /back directory, where Gradle configuration files can be found.
 

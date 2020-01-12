@@ -1,4 +1,3 @@
-
 \subsection{Back-end server and database}
 The recommended way of installing the application is through Docker and the provided docker-compose file. This will set up both the backend server and the mongodb database.\\
 
@@ -22,4 +21,41 @@ The recommended way of installing the application is through Docker and the prov
     Wait for Docker to finish the setup.
     \item 
     To check if everything is ok, open a browser and navigate to http://localhost:8080/auth/ping. The text “pong” should be displayed on your screen.
+\end{itemize}
+
+\subsection{Mobile}
+To install the mobile application:
+
+\textbf{Pre-requisites:}
+\begin{itemize}[label={\textbf{-}}]
+    \item 
+    Android phone.
+    \item 
+    Application server running.
+\end{itemize}
+
+\textbf{Installation steps:}
+\begin{itemize}[label={\textbf{-}}]
+    \item 
+    Transfer the provided APK file to the phone.
+    \item 
+    On the phone, navigate to the directory containing the APK and tap on the file.
+    \item 
+    Some warnings may pop up, as the application is not registered, ignore them and continue with the installation.
+    \item 
+    The app is installed.
+    \item 
+    Open the app and do a tap and hold on the grey “SafeStreets” title.
+    \item 
+    An alert will pop up to enter the URL to connect to the application server.
+    \begin{itemize}[label={\textbf{-}}]
+        \item Note: instead of localhost, the URL will have the ip of the machine running the server, for example http://192.168.99.100:8080.
+    \end{itemize}
+    \item Press connect.
+    \item A tick mark should appear next to the URL field, indicating a good connection, and the “SafeStreets” title will change to blue.
+    \item You can either sign up as a new user or use a preexisting user, for example: 
+        \begin{itemize}[label={\textbf{-}}]
+            \item email: ewan@mail.com
+            \item password: password
+        \end{itemize}
 \end{itemize}

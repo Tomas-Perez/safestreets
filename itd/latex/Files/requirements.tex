@@ -1,6 +1,6 @@
 In this section, the requirements specified in chapter 3 of the RASD document are categorized according to their implementation state.\\
 
-\subsection{Included requirements}
+\subsection{Included requirements} \label{sub-sect:inc-req}
 The following requirements were fully implemented:
 
 \begin{itemize}[label={}]
@@ -15,15 +15,7 @@ The following requirements were fully implemented:
             \item {[FR4]} - The user can submit a full report to the system
 
             \item {[FR5]} - The user is provided a map where the location of reports are indicated by markers.
-            \item {[FR6]} - The user can filter the reports shown on the map by date, time and type of violation.
-            \item {[FR7]} - The user can search for a specific location on the map by inputting coordinates or an address.
-            \item {[FR8]} - The user can select a report on the map and obtain information about it. This information includes:
-            \begin{itemize}[label={\textbullet}]
-                \item Report ID: unique reference to each report
-                \item Type of violation
-                \item Date and time
-                \item Location: gps coordinates, approximate street name and number
-            \end{itemize}
+            \item {[FR6]} - The user can filter the reports shown on the map by date and type of violation.
 
             \item {[FR9]} - A secured API is provided to obtain and filter report information. The following filters are possible:
             \begin{itemize}[label={\textbullet}]
@@ -49,13 +41,27 @@ The following requirements were fully implemented:
             \item {[FR19]} - The user has access to view his full account information.
             \item {[FR20]} - The user can edit his email and full name.
             \item {[FR21]} - An API key is provided to the user via their profile screen in the mobile application
-            \item {[FR22]} - The user can login to the mobile application by providing their username and password.
+            \item {[FR22]} - The user can login to the mobile application by providing their email and password.
 \end{itemize}
 
 
 \subsection{Partially included requirements}
-Since there was no integration with an external license plate registry, the degree of confidence is based on the license plate recognition only.
 
+Location is shown, and searched, by coordinates only. This is because, in order to get an approximate address, it is required to integrate with the Google Places API, which is paid per request.
+\begin{itemize}[label={}]
+
+    \item {[FR7]} - The user can search for a specific location on the map by inputting coordinates or an address.
+    \item {[FR8]} - The user can select a report on the map and obtain information about it. This information includes:
+    \begin{itemize}[label={\textbullet}]
+        \item Report ID: unique reference to each report
+        \item Type of violation
+        \item Date and time
+        \item Location: gps coordinates, approximate street name and number
+    \end{itemize}
+\end{itemize}
+
+\vspace{5mm}
+Since there was no integration with an external license plate registry, the degree of confidence is based on the license plate recognition only.
 \begin{itemize}[label={}]
 
             \item {[FR12]} - A degree of confidence is assigned to each report, where a high confidence report will have:
@@ -67,6 +73,7 @@ Since there was no integration with an external license plate registry, the degr
             If any of these criteria are not met the report is considered low confidence.
 
 \end{itemize}
+
 
 \subsection{Excluded requirements}
 As previously mentioned, currently there is no integration with an external license plate registry.
