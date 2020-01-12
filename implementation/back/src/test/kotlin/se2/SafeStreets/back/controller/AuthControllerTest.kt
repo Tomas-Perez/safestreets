@@ -88,7 +88,7 @@ internal class AuthControllerTest(
     @Test
     fun logInWithIncorrectPasswordShouldReturnUnauthorized() {
         val uri = "/auth"
-        val loginForm = LoginForm("user1@test.com", "wrongPassword")
+        val loginForm = LoginForm("user1@mail.com", "wrongPassword")
         mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)

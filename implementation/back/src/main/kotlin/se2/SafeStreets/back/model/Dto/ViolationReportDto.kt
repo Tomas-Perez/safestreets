@@ -10,6 +10,7 @@ import java.time.LocalDateTime
  */
 class ViolationReportDto() {
 
+    var id: String? = null
     lateinit var description: String
     lateinit var dateTime: LocalDateTime
     lateinit var type: ViolationType
@@ -17,7 +18,8 @@ class ViolationReportDto() {
     lateinit var status: ViolationReportStatus
     var confidence: Float? = null
 
-    constructor(description: String, dateTime:LocalDateTime, type: ViolationType, location: Array<Double>, status: ViolationReportStatus, confidence: Float? = null) : this() {
+    constructor(id: String?, description: String, dateTime:LocalDateTime, type: ViolationType, location: Array<Double>, status: ViolationReportStatus, confidence: Float? = null) : this() {
+        this.id = id
         this.description = description
         this.dateTime = dateTime
         this.type = type
@@ -28,7 +30,7 @@ class ViolationReportDto() {
 
     companion object {
         fun fromReport(report: ViolationReport): ViolationReportDto {
-            return ViolationReportDto(report.description, report.dateTime, report.type, report.location.coordinates, report.status, report.confidence)
+            return ViolationReportDto(report.id?.toHexString(), report.description, report.dateTime, report.type, report.location.coordinates, report.status, report.confidence)
         }
     }
 }

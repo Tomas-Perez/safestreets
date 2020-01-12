@@ -20,12 +20,12 @@ class ImageAnalyser {
     fun analyse(imagePath: String): List<RecognisedLicense> {
         val result: ArrayList<RecognisedLicense> = ArrayList()
         val alprResults = alpr.recognize(imagePath)
-        System.out.format("  %-15s%-8s\n", "Plate Number", "Confidence")
+        //System.out.format("  %-15s%-8s\n", "Plate Number", "Confidence")
         for (plates in alprResults.plates) {
             for (plate in plates.topNPlates) {
                 result.add(RecognisedLicense(plate.characters, plate.overallConfidence))
-                print("  * ")
-                System.out.format("%-15s%-8f\n", plate.characters, plate.overallConfidence)
+                //print("  * ")
+                //System.out.format("%-15s%-8f\n", plate.characters, plate.overallConfidence)
             }
         }
         return result
