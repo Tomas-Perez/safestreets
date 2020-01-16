@@ -1,7 +1,7 @@
 The acceptance tests performed are based on the documentation provided by the team. \\
 
 \subsection{Acceptance tests based on use cases}
-The tests were developed taking the use cases described in the RASD and modifying them according to what was finally implemented as explained in the ITD. 
+The tests were developed taking the use cases described in the RASD and modifying them according to what was finally implemented as explained in the ITD. \\
 The “expected steps” describe the flow we would expect to follow to complete a test, before coming into contact with the finished prototype. While the “real steps” are the steps followed to complete the use case when using the prototype. \\
 
 \begin{table}[H]
@@ -90,8 +90,12 @@ The “expected steps” describe the flow we would expect to follow to complete
     \begin{tabular}{p{3cm}p{10cm}}
         \textbf{Notes} & The system does not appear to detect license plates in a photo, as the license plate input is always shown.
         Other photos used:
-        \includegraphics[width=.3\textwidth]{Images/test-photo2.png}
-        \includegraphics[width=.3\textwidth]{Images/test-photo3.png}
+        \begin{center}
+            \includegraphics[width=.3\textwidth]{Images/test-photo2.png}
+        \end{center}
+        \begin{center}
+            \includegraphics[width=.3\textwidth]{Images/test-photo3.png}
+        \end{center}
      \\ \hline
     \end{tabular}
 \end{table}
@@ -126,20 +130,22 @@ The “expected steps” describe the flow we would expect to follow to complete
     \textbf{Pre-requisites} & Logged into the app as an Authority. \\ \hline
     \textbf{Expected steps} & 
         \begin{enumerate} \itemsep0em
+            \item Submit multiple reports for a license plate
+            \item Go to home screen
             \item Input the license plate code.
             \item The system displays a list of reports for the given license plate ordered by date in descending order.
         \end{enumerate} \\ \hline
     \textbf{Real steps} & 
         \begin{enumerate} \itemsep0em
-            \item aaaaa
-            \item aaaaa
-            \item aaaaa
-            \item aaaaa
-            \item aaaaa
+            \item Submit multiple reports for the license plate: “AS123AS”
+            \item Go to home screen
+            \item Press “Get License Plate Information”
+            \item Input the license plate code “AS123AS”
+            \item The system displays a list of reports for the given license plate in no apparent order
         \end{enumerate} \\ \hline
-    \textbf{Expected output} & The list of reports for the given license plate is displayed. \\ \hline
-    \textbf{Real output} &  \\ \hline
-    \textbf{Outcome} & Success \\ \hline
+    \textbf{Expected output} & The list of reports for the given license plate is displayed ordered by date in descending order. \\ \hline
+    \textbf{Real output} &  The list of reports for the given license plate is displayed in no apparent order. \\ \hline
+    \textbf{Outcome} & Partial success, the reports are not sorted as described in the use case. \\ \hline
     \end{tabular}
 \end{table}
 
@@ -169,6 +175,7 @@ The “expected steps” describe the flow we would expect to follow to complete
         \begin{itemize} \itemsep0em
             \item If the app is not open, a system notification pop ups, but when pressed it just opens the app on the screen it was on. If the app was completely closed, it opens it on the home screen.
         \end{itemize} \\ \hline
+    \textbf{Note} & One is able to receive notifications while logged in as a regular user, which should not be possible as this functionality is listed as Authority only. \\ \hline
     \end{tabular}
 \end{table}
 
@@ -181,20 +188,21 @@ The “expected steps” describe the flow we would expect to follow to complete
     \textbf{Pre-requisites} & Logged into the app as an Authority. \\ \hline
     \textbf{Expected steps} & 
         \begin{enumerate} \itemsep0em
+            \item Submit multiple reports in a specific area
+            \item Go to home screen
             \item Input the area of interest.
             \item The system shows a list of reports in the area.
         \end{enumerate} \\ \hline
     \textbf{Real steps} & 
         \begin{enumerate} \itemsep0em
-            \item aaaaa
-            \item aaaaa
-            \item aaaaa
-            \item aaaaa
-            \item aaaaa
+            \item Submit multiple reports in the same area
+            \item Go to home screen
+            \item Press “Get Area 1 Violation”
+            \item The system shows a list of reports
         \end{enumerate} \\ \hline
     \textbf{Expected output} & The system displays a list of reports inside the given area. \\ \hline
-    \textbf{Real output} &  \\ \hline
-    \textbf{Outcome} & aaaaa \\ \hline
+    \textbf{Real output} & The system shows a list of reports, with drastically different coordinates \\ \hline
+    \textbf{Outcome} & Fail, the reports shown are in completely different areas. For example one is at (45.6744862, 9.1789748) which is Cabiate, Italy, while another is at (37.4219983, -122.084) which is the Google Campus in California. \\ \hline
     \end{tabular}
 \end{table}
 
